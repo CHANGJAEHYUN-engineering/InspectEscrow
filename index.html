@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="InspectEscrow — AI 기반 제조 검사 이견·재검·정산 연계 인터랙티브 프로토타입" />
+  <title>InspectEscrow — Interactive Prototype</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">IE</div>
+      <div>
+        <h1>InspectEscrow</h1>
+        <p>AI 기반 제조 검사 이견·재검·비수탁 검수잔금 연계 프로토타입</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="chip chip-blue">Interactive Prototype</span>
+      <span class="chip chip-gray">AI/Contract 일부 시뮬레이션</span>
+      <a class="ghost-link" href="#limits">한계 보기</a>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="페이지 탭">
+    <button class="tab active" data-tab="demo">Demo</button>
+    <button class="tab" data-tab="architecture">Architecture</button>
+    <button class="tab" data-tab="scope">Scope & Limits</button>
+  </nav>
+
+  <main class="page">
+    <section id="demo" class="tab-panel active">
+      <section class="hero">
+        <div>
+          <div class="eyebrow">LOCKED TOPIC · 산업 및 비즈니스 혁신 솔루션</div>
+          <h2>검사 결과가 다르면,<br/>어떤 기준으로 잔금을 풀어야 할까?</h2>
+          <p>
+            거래 전에 <b>영상 evidence · 검사 recipe · AI model · 재검 규칙</b>을 고정하고,
+            출하·입고 검사 이견을 <b>독립 재검</b>과 <b>예치 잔금 상태</b>로 연결합니다.
+          </p>
+          <div class="hero-cta">
+            <button id="startDemo" class="primary">90초 데모 시작</button>
+            <button id="resetDemo" class="secondary">초기화</button>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="mini-label">현재 거래 상태</div>
+          <div id="heroState" class="hero-state">DRAFT</div>
+          <div class="money-row">
+            <span>검수 잔금</span>
+            <b id="escrowAmount">1.00 Test ETH</b>
+          </div>
+          <div class="money-row">
+            <span>집행 권한</span>
+            <b id="custodyLabel">미예치</b>
+          </div>
+          <div class="money-row">
+            <span>분쟁</span>
+            <b id="disputeLabel">없음</b>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-layout">
+        <aside class="stepper-card">
+          <div class="card-title-row">
+            <h3>Demo Flow</h3>
+            <span class="mini-label">Buyer · Supplier · Inspector</span>
+          </div>
+          <ol class="stepper" id="stepper">
+            <li class="step active" data-step="0"><span>1</span><div><b>Pre-commit</b><small>기준·모델·재검 조건 고정</small></div></li>
+            <li class="step" data-step="1"><span>2</span><div><b>Outbound evidence</b><small>공급사 출하검사 제출</small></div></li>
+            <li class="step" data-step="2"><span>3</span><div><b>Inbound inspection</b><small>입고검사 AI REVIEW</small></div></li>
+            <li class="step" data-step="3"><span>4</span><div><b>Dispute</b><small>구매사 이의제기 · 잔금 동결</small></div></li>
+            <li class="step" data-step="4"><span>5</span><div><b>Reinspection</b><small>독립 검사기관 재검</small></div></li>
+            <li class="step" data-step="5"><span>6</span><div><b>Settlement</b><small>사전 규칙에 따라 정산</small></div></li>
+          </ol>
+          <div class="divider"></div>
+          <label class="field-label">현재 역할</label>
+          <div class="role-switch">
+            <button class="role active" data-role="Supplier">Supplier</button>
+            <button class="role" data-role="Buyer">Buyer</button>
+            <button class="role" data-role="Inspector">Inspector</button>
+          </div>
+          <p class="helper">역할은 시연 UI용입니다. 실제 권한 분리는 본선 MVP에서 지갑 주소로 구현합니다.</p>
+        </aside>
+
+        <section class="main-column">
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <span class="mini-label">STEP 1</span>
+                <h3>거래 전 검사 조건 고정</h3>
+              </div>
+              <span id="lockBadge" class="status status-gray">DRAFT</span>
+            </div>
+
+            <div class="spec-grid">
+              <div class="spec"><span>Part</span><b>Industrial Connector A-17</b></div>
+              <div class="spec"><span>Lot</span><b>LOT-2026-0914-01</b></div>
+              <div class="spec"><span>AI Model</span><b>PatchCore v0.1</b></div>
+              <div class="spec"><span>Preprocess</span><b>ROI-Norm v0.1</b></div>
+              <div class="spec"><span>Review threshold</span><b>0.65</b></div>
+              <div class="spec"><span>Reinspection</span><b>Independent Inspector</b></div>
+              <div class="spec"><span>Dispute window</span><b>24h (demo)</b></div>
+              <div class="spec"><span>Escrow</span><b>1.00 Test ETH</b></div>
+            </div>
+
+            <div class="action-row">
+              <button id="lockFund" class="primary">조건 고정 + Test Asset 예치</button>
+              <button id="tryRuleChange" class="danger-outline" disabled>Buyer가 기준 바꿔보기</button>
+              <button id="tryAdminSweep" class="danger-outline" disabled>Operator 임의 출금 시도</button>
+            </div>
+          </div>
+
+          <div class="inspection-grid">
+            <article class="inspection-card">
+              <div class="card-title-row">
+                <div>
+                  <span class="mini-label">OUTBOUND</span>
+                  <h3>출하 검사</h3>
+                </div>
+                <span id="outBadge" class="status status-gray">대기</span>
+              </div>
+              <img src="assets/outbound.svg" alt="정상 출하검사 예시" />
+              <div class="metric-line"><span>Anomaly score</span><b id="outScore">—</b></div>
+              <div class="metric-line"><span>Decision</span><b id="outDecision">—</b></div>
+              <button id="submitOutbound" class="secondary full" disabled>Supplier evidence 제출</button>
+            </article>
+
+            <article class="inspection-card">
+              <div class="card-title-row">
+                <div>
+                  <span class="mini-label">INBOUND</span>
+                  <h3>입고 검사</h3>
+                </div>
+                <span id="inBadge" class="status status-gray">대기</span>
+              </div>
+              <img src="assets/inbound.svg" alt="이상 입고검사 예시" />
+              <div class="metric-line"><span>Anomaly score</span><b id="inScore">—</b></div>
+              <div class="metric-line"><span>Decision</span><b id="inDecision">—</b></div>
+              <button id="runInbound" class="secondary full" disabled>Buyer 검사 실행</button>
+            </article>
+
+            <article class="inspection-card">
+              <div class="card-title-row">
+                <div>
+                  <span class="mini-label">REINSPECTION</span>
+                  <h3>독립 재검</h3>
+                </div>
+                <span id="reBadge" class="status status-gray">대기</span>
+              </div>
+              <img src="assets/reinspection.svg" alt="독립 재검 예시" />
+              <div class="metric-line"><span>Anomaly score</span><b id="reScore">—</b></div>
+              <div class="metric-line"><span>Inspector decision</span><b id="reDecision">—</b></div>
+              <button id="runReinspect" class="secondary full" disabled>Inspector 재검 제출</button>
+            </article>
+          </div>
+
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <span class="mini-label">DISPUTE & SETTLEMENT</span>
+                <h3>분쟁·정산 State Machine</h3>
+              </div>
+              <span id="contractStateBadge" class="status status-gray">DRAFT</span>
+            </div>
+
+            <div class="state-machine">
+              <div class="state-node active" data-state="DRAFT">DRAFT</div>
+              <div class="arrow">→</div>
+              <div class="state-node" data-state="FUNDED">FUNDED</div>
+              <div class="arrow">→</div>
+              <div class="state-node" data-state="REVIEW">REVIEW</div>
+              <div class="arrow">→</div>
+              <div class="state-node" data-state="DISPUTED">DISPUTED</div>
+              <div class="arrow">→</div>
+              <div class="state-node" data-state="RESOLVED">RESOLVED</div>
+            </div>
+
+            <div class="settlement-box">
+              <div>
+                <span class="mini-label">Settlement rule (demo)</span>
+                <b>Inspector confirms REVIEW → Buyer refund 1.00 Test ETH</b>
+              </div>
+              <div id="freezeIndicator" class="freeze">NOT FUNDED</div>
+            </div>
+
+            <div class="action-row">
+              <button id="raiseDispute" class="primary" disabled>Buyer 이의제기</button>
+              <button id="resolveSettlement" class="primary" disabled>사전 규칙으로 정산</button>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="card">
+              <div class="card-title-row">
+                <h3>Evidence Manifest</h3>
+                <button id="copyManifest" class="tiny-btn">Copy JSON</button>
+              </div>
+              <pre id="manifestBox" class="code-box">{
+  "status": "waiting_for_evidence"
+}</pre>
+            </div>
+
+            <div class="card">
+              <div class="card-title-row">
+                <h3>Contract Event Log</h3>
+                <button id="downloadLog" class="tiny-btn">Download</button>
+              </div>
+              <ol id="eventLog" class="event-log">
+                <li><time>00:00</time><span>Job created · DRAFT</span></li>
+              </ol>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="message-card">
+        <div class="message-icon">!</div>
+        <div>
+          <b>핵심 한계</b>
+          <p>Blockchain은 사진 속 물체가 실제 납품품과 동일하다는 <b>Physical Truth</b>를 보장하지 않습니다. InspectEscrow는 등록된 evidence와 합의된 거래 상태를 다룹니다.</p>
+        </div>
+      </section>
+    </section>
+
+    <section id="architecture" class="tab-panel">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">SYSTEM DESIGN</div>
+          <h2>On-chain / Off-chain 경계를 분리합니다</h2>
+        </div>
+      </div>
+
+      <div class="architecture-card">
+        <div class="arch-col">
+          <span class="arch-label">Physical / Acquisition</span>
+          <div class="arch-box">Part + Lot ID</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-box">Camera / Fixture</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-box">Evidence Manifest</div>
+        </div>
+
+        <div class="arch-col">
+          <span class="arch-label">Off-chain</span>
+          <div class="arch-box blue">Object Storage</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-box blue">PatchCore + Baselines</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-box blue">FastAPI + PostgreSQL</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-box blue">React Dashboard</div>
+        </div>
+
+        <div class="arch-col">
+          <span class="arch-label">On-chain</span>
+          <div class="arch-box dark">MetaMask Wallets</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-box dark">InspectEscrow.sol</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-box dark">Sepolia Test Asset</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-box dark">Settlement State</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <h3>Off-chain</h3>
+          <ul class="clean-list">
+            <li>원본 이미지</li>
+            <li>AI weights / preprocessing</li>
+            <li>Heatmap / 상세 report</li>
+            <li>민감한 기업 원본 데이터</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>On-chain</h3>
+          <ul class="clean-list">
+            <li>Evidence / rule / model digest</li>
+            <li>Parties / deadlines / dispute state</li>
+            <li>Inspector decision reference</li>
+            <li>Escrow settlement state</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="scope" class="tab-panel">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">SCOPE DISCIPLINE</div>
+          <h2>무엇을 만들고, 무엇은 주장하지 않는가</h2>
+        </div>
+      </div>
+
+      <div class="three-col">
+        <div class="card">
+          <h3>MUST HAVE</h3>
+          <ul class="clean-list">
+            <li>한 부품군·고정 fixture</li>
+            <li>PatchCore vs 강한 영상 baseline</li>
+            <li>Buyer / Supplier / Inspector 3역할</li>
+            <li>1개 escrow contract</li>
+            <li>정상·분쟁·재검·정산 흐름</li>
+            <li>무권한 변경·출금 거부</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>DO NOT BUILD</h3>
+          <ul class="clean-list">
+            <li>전체 공급망 추적</li>
+            <li>NFT / DAO / 자체 토큰</li>
+            <li>여러 체인</li>
+            <li>반도체 미세결함 특화 주장</li>
+            <li>ZK / TEE / FHE</li>
+            <li>AI 자동 지급</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>PROHIBITED CLAIMS</h3>
+          <ul class="clean-list">
+            <li>세계 최초</li>
+            <li>실물 진위 보장</li>
+            <li>AI가 법적 불량 확정</li>
+            <li>MVTec = 실제 생산라인 성능</li>
+            <li>검증된 고객 수요</li>
+            <li>검증된 비용 절감률</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="limits" class="card limits-card">
+        <h3>Prototype transparency</h3>
+        <p>
+          이 GitHub Pages 데모의 상태 전이와 AI score는 <b>예선 설명을 위한 인터랙티브 시뮬레이션</b>입니다.
+          파일 SHA-256은 브라우저 Web Crypto API로 실제 계산하지만, PatchCore 추론·MetaMask·Sepolia·Solidity는 아직 연결하지 않았습니다.
+          본선 진출 시 동일 UI 흐름을 실제 Python AI와 테스트넷 contract에 연결하는 것이 구현 목표입니다.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <b>InspectEscrow</b>
+    <span>Pre-committed AI Inspection & Dispute Escrow for Manufacturing Transactions</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
