@@ -1,0 +1,16 @@
+{
+  "AIIsFinalDefectAuthority": false,
+  "blockchainTransaction": false,
+  "canonicalProductSpecFile": "DEMO_PRODUCT_SPEC_V1.jcs.json",
+  "canonicalization": "RFC8785-JCS",
+  "datasetCategory": "metal_nut",
+  "digestAlgorithm": "keccak256",
+  "productSpecHash": "0x68e3eb25a12d6521ae2aa37735ffad831810f6a05268d940b33a3bae6915d4e7",
+  "productSpecId": "MVTec-metal_nut-PUBLIC-DATASET-DEMO-V1",
+  "productionSpecificationClaimed": false,
+  "project": "InspectEscrow",
+  "readableProductSpecFile": "DEMO_PRODUCT_SPEC_V1.json",
+  "requiredViewSetIncluded": false,
+  "schema": "inspectescrow.product-spec-commitment/1.0.0",
+  "status": "FINAL_CONTRACT_FACING"
+}

@@ -1,0 +1,161 @@
+{
+  "contract_version": "PHASE2-PATCH2",
+  "enums": {
+    "InspectionOutcome": {
+      "ADMISSIBLE_PASS": 2,
+      "ADMISSIBLE_REVIEW": 3,
+      "INSPECTION_INVALID": 1,
+      "NONE": 0
+    },
+    "InspectionRole": {
+      "BUYER": 1,
+      "SUPPLIER": 0
+    },
+    "InspectionValidity": {
+      "ADMISSIBLE": 0,
+      "INVALID": 1
+    },
+    "InvalidReason": {
+      "CAPTURE_PROFILE_NONCONFORMING": 3,
+      "EVIDENCE_PACKAGE_INCOMPLETE": 6,
+      "IMAGE_QA_FAILED": 2,
+      "NONE": 0,
+      "OTHER_POLICY_DEFINED": 7,
+      "RECAPTURE_RULE_VIOLATION": 5,
+      "REQUIRED_VIEW_MISSING": 1,
+      "SPECIMEN_EVIDENCE_INSUFFICIENT": 4
+    }
+  },
+  "evidence_note": "Current InspectEscrow.AIEvidence.v1 SHA-256 is an off-chain AI sub-artifact integrity digest. Do not directly treat it as the final trade-specific StationAttestation evidencePackageHash.",
+  "important_semantics": {
+    "admissible_inspectionValidity": 0,
+    "admissible_invalidReason": 0,
+    "contract_derives_verdict": true,
+    "station_supplies_authoritative_verdict": false
+  },
+  "not_yet_assigned_trade_specific_fields": [
+    "tradeId",
+    "station",
+    "attempt",
+    "sessionNonce",
+    "policyHash",
+    "modelBundleHash",
+    "captureProfileHash",
+    "specimenManifestHash",
+    "evidencePackageHash",
+    "issuedAt",
+    "validUntil",
+    "signature"
+  ],
+  "primary_demo_scores": [
+    {
+      "aggregateScoreScaled": 56834435,
+      "contract_derived_decision": "PASS",
+      "dataset_relative_path": "demo/good/014.png",
+      "raw_anomaly_score": "56.834434509277344"
+    },
+    {
+      "aggregateScoreScaled": 55724724,
+      "contract_derived_decision": "PASS",
+      "dataset_relative_path": "demo/good/002.png",
+      "raw_anomaly_score": "55.72472381591797"
+    },
+    {
+      "aggregateScoreScaled": 55442036,
+      "contract_derived_decision": "PASS",
+      "dataset_relative_path": "demo/good/000.png",
+      "raw_anomaly_score": "55.44203567504883"
+    },
+    {
+      "aggregateScoreScaled": 60138172,
+      "contract_derived_decision": "REVIEW_REQUIRED",
+      "dataset_relative_path": "demo/scratch/022.png",
+      "raw_anomaly_score": "60.1381721496582"
+    },
+    {
+      "aggregateScoreScaled": 60733288,
+      "contract_derived_decision": "REVIEW_REQUIRED",
+      "dataset_relative_path": "demo/scratch/010.png",
+      "raw_anomaly_score": "60.7332878112793"
+    }
+  ],
+  "project": "InspectEscrow",
+  "schema": "InspectEscrow.AIContractBridge.v1",
+  "score_encoding": {
+    "contract_rule": "aggregateScoreScaled < thresholdScaled => ADMISSIBLE_PASS; otherwise ADMISSIBLE_REVIEW",
+    "raw_threshold": "57.90403747558594",
+    "rounding_rule": "ROUND_HALF_UP_FOR_NONNEGATIVE_SCORE",
+    "scale": 1000000,
+    "scoreScaleExponent": 6,
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "score_schema_name": "PATCHCORE_AGGREGATE_SCORE_V1",
+    "thresholdScaled": 57904037
+  },
+  "station_attestation_field_order": [
+    [
+      "tradeId",
+      "bytes32"
+    ],
+    [
+      "role",
+      "uint8"
+    ],
+    [
+      "station",
+      "address"
+    ],
+    [
+      "attempt",
+      "uint32"
+    ],
+    [
+      "sessionNonce",
+      "bytes32"
+    ],
+    [
+      "policyHash",
+      "bytes32"
+    ],
+    [
+      "modelBundleHash",
+      "bytes32"
+    ],
+    [
+      "captureProfileHash",
+      "bytes32"
+    ],
+    [
+      "specimenManifestHash",
+      "bytes32"
+    ],
+    [
+      "evidencePackageHash",
+      "bytes32"
+    ],
+    [
+      "aggregateScoreScaled",
+      "uint128"
+    ],
+    [
+      "scoreSchemaId",
+      "bytes32"
+    ],
+    [
+      "inspectionValidity",
+      "uint8"
+    ],
+    [
+      "invalidReason",
+      "uint8"
+    ],
+    [
+      "issuedAt",
+      "uint64"
+    ],
+    [
+      "validUntil",
+      "uint64"
+    ]
+  ],
+  "submitInspection_signature": "submitInspection((bytes32,uint8,address,uint32,bytes32,bytes32,bytes32,bytes32,bytes32,bytes32,uint128,bytes32,uint8,uint8,uint64,uint64),bytes)"
+}

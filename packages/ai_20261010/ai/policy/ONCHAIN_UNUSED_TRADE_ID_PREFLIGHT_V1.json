@@ -1,0 +1,167 @@
+{
+  "blockchainTransaction": false,
+  "contract": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9",
+  "exactUnusedConfirmations": 3,
+  "expectedUnusedRevert": {
+    "error": "TradeNotFound()",
+    "selector": "0x630bae04"
+  },
+  "getTradeStateSelector": "0xfb2f989f",
+  "network": {
+    "chainId": 11155111,
+    "name": "Ethereum Sepolia"
+  },
+  "observedBlockRange": {
+    "maximum": 11878870,
+    "minimum": 11878870,
+    "spread": 0
+  },
+  "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+  "privateKeyUsed": false,
+  "project": "InspectEscrow",
+  "raceWindowWarning": "This is a point-in-time read-only preflight. Re-check getTradeState immediately before sending proposeTrade.",
+  "rpcResults": [
+    {
+      "blockNumber": 11878870,
+      "blockResponse": {
+        "kind": "result",
+        "result": "0xb541d6"
+      },
+      "callResponse": {
+        "error": {
+          "code": 3,
+          "data": "0x630bae04",
+          "message": "execution reverted"
+        },
+        "kind": "rpc_error"
+      },
+      "chainId": 11155111,
+      "chainResponse": {
+        "kind": "result",
+        "result": "0xaa36a7"
+      },
+      "codeResponseKind": "result",
+      "revertDataCandidates": [
+        "0x630bae04"
+      ],
+      "rpc": "https://ethereum-sepolia-rpc.publicnode.com",
+      "runtimeCodeHash": "0x467fc5d214966b4ca7711eb9e9977d8bece096b78e4fe2046beb6acf5f46518c",
+      "runtimeCodePresent": true,
+      "tradeState": null,
+      "verdict": "UNUSED_CONFIRMED_TRADE_NOT_FOUND"
+    },
+    {
+      "blockNumber": 11856335,
+      "blockResponse": {
+        "kind": "result",
+        "result": "0xb4e9cf"
+      },
+      "callResponse": {
+        "kind": "result",
+        "result": "0x"
+      },
+      "chainId": 11155111,
+      "chainResponse": {
+        "kind": "result",
+        "result": "0xaa36a7"
+      },
+      "codeResponseKind": "result",
+      "revertDataCandidates": [],
+      "rpc": "https://0xrpc.io/sep",
+      "runtimeCodeHash": null,
+      "runtimeCodePresent": false,
+      "tradeState": null,
+      "verdict": "INCONCLUSIVE"
+    },
+    {
+      "blockNumber": 11878870,
+      "blockResponse": {
+        "kind": "result",
+        "result": "0xb541d6"
+      },
+      "callResponse": {
+        "error": {
+          "code": 3,
+          "data": "0x630bae04",
+          "message": "execution reverted"
+        },
+        "kind": "rpc_error"
+      },
+      "chainId": 11155111,
+      "chainResponse": {
+        "kind": "result",
+        "result": "0xaa36a7"
+      },
+      "codeResponseKind": "result",
+      "revertDataCandidates": [
+        "0x630bae04"
+      ],
+      "rpc": "https://gateway.tenderly.co/public/sepolia",
+      "runtimeCodeHash": "0x467fc5d214966b4ca7711eb9e9977d8bece096b78e4fe2046beb6acf5f46518c",
+      "runtimeCodePresent": true,
+      "tradeState": null,
+      "verdict": "UNUSED_CONFIRMED_TRADE_NOT_FOUND"
+    },
+    {
+      "blockNumber": 11878870,
+      "blockResponse": {
+        "kind": "result",
+        "result": "0xb541d6"
+      },
+      "callResponse": {
+        "error": "cu limit exceeded; Method \"eth_call\" is not available for unregistered accounts. Please visit https://zan.top/ and register to unlock more.",
+        "kind": "rpc_error"
+      },
+      "chainId": 11155111,
+      "chainResponse": {
+        "kind": "result",
+        "result": "0xaa36a7"
+      },
+      "codeResponseKind": "result",
+      "revertDataCandidates": [],
+      "rpc": "https://api.zan.top/eth-sepolia",
+      "runtimeCodeHash": "0x467fc5d214966b4ca7711eb9e9977d8bece096b78e4fe2046beb6acf5f46518c",
+      "runtimeCodePresent": true,
+      "tradeState": null,
+      "verdict": "INCONCLUSIVE"
+    },
+    {
+      "blockNumber": 11878870,
+      "blockResponse": {
+        "kind": "result",
+        "result": "0xb541d6"
+      },
+      "callResponse": {
+        "error": {
+          "code": 3,
+          "data": "0x630bae04",
+          "message": "execution reverted"
+        },
+        "kind": "rpc_error"
+      },
+      "chainId": 11155111,
+      "chainResponse": {
+        "kind": "result",
+        "result": "0xaa36a7"
+      },
+      "codeResponseKind": "result",
+      "revertDataCandidates": [
+        "0x630bae04"
+      ],
+      "rpc": "https://rpc.sepolia.ethpandaops.io",
+      "runtimeCodeHash": "0x467fc5d214966b4ca7711eb9e9977d8bece096b78e4fe2046beb6acf5f46518c",
+      "runtimeCodePresent": true,
+      "tradeState": null,
+      "verdict": "UNUSED_CONFIRMED_TRADE_NOT_FOUND"
+    }
+  ],
+  "runtimeCodeHashConsensus": {
+    "agreeingRpcCount": 4,
+    "hash": "0x467fc5d214966b4ca7711eb9e9977d8bece096b78e4fe2046beb6acf5f46518c"
+  },
+  "schema": "inspectescrow.onchain-unused-tradeid-preflight/1.0.0",
+  "signingPerformed": false,
+  "status": "PASS_UNUSED_TRADE_ID_AT_OBSERVED_BLOCKS",
+  "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+  "validRpcCount": 4
+}

@@ -1,0 +1,21 @@
+{
+  "blockchainTransaction": false,
+  "canonicalProfileFile": "DEMO_CAPTURE_PROFILE_V1.jcs.json",
+  "canonicalization": "RFC8785-JCS",
+  "captureProfileHash": "0x3ea93a717cf8570d9b5c0662b1d27bb4a882651784342013786266b269db96da",
+  "digestAlgorithm": "keccak256",
+  "modelChanged": false,
+  "physicalCaptureConditionsAsserted": false,
+  "profileId": "MVTec-metal_nut-PUBLIC-DATASET-SIMULATION-V1",
+  "project": "InspectEscrow",
+  "readableProfileFile": "DEMO_CAPTURE_PROFILE_V1.json",
+  "schema": "inspectescrow.capture-profile-commitment/1.0.0",
+  "status": "FINAL_CONTRACT_FACING",
+  "thresholdChanged": false,
+  "verifiedDemoImageCount": 7,
+  "verifiedDigitalInputProperties": {
+    "colorMode": "RGB",
+    "format": "PNG",
+    "resolution": "700x700"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "blockchainTransaction": false,
+  "buyerInspection": {
+    "aggregateScoreScaled": 60138172,
+    "contractDerivedDecision": "REVIEW_REQUIRED",
+    "datasetRelativePath": "demo/scratch/022.png",
+    "rawAnomalyScore": "60.1381721496582",
+    "role": "BUYER"
+  },
+  "expectedConflictSemantics": "Both inspections are admissible under the frozen policy, but Supplier PASS and Buyer REVIEW conflict. This opens a real protocol dispute.",
+  "expectedStatePath": [
+    "PROPOSED",
+    "PARTIES_ACCEPTED",
+    "INSPECTORS_ACCEPTED",
+    "FUNDED",
+    "AWAIT_SUPPLIER",
+    "AWAIT_BUYER",
+    "DISPUTED_PRIMARY"
+  ],
+  "finalSettlementPrecommitted": false,
+  "finalSettlementRule": "AI REVIEW does not itself decide money. Independent Replay and the authorized Inspector procedure determine whether the final contractual outcome is RELEASE_TO_SUPPLIER or REFUND_TO_BUYER.",
+  "forbiddenMixingRule": "Do not submit NORMAL or PRE_SHIPMENT scenario evidence under the frozen DISPUTE tradeId.",
+  "inspectorRequired": true,
+  "otherDemoScenarios": {
+    "NORMAL": {
+      "boundToThisTradeId": false,
+      "buyer": "demo/good/002.png",
+      "onChainUseRequires": "NEW_TRADE_ID_AND_NEW_POLICY_HASH",
+      "supplier": "demo/good/014.png"
+    },
+    "PRE_SHIPMENT": {
+      "boundToThisTradeId": false,
+      "onChainUseRequires": "NEW_TRADE_ID_AND_NEW_POLICY_HASH",
+      "supplier": "demo/scratch/010.png"
+    }
+  },
+  "project": "InspectEscrow",
+  "replayRequired": true,
+  "scenarioId": "DISPUTE_SUPPLIER_PASS_BUYER_REVIEW",
+  "scenarioRole": "PRIMARY_MEANINGFUL_FUNDED_SEPOLIA_DEMO",
+  "schema": "inspectescrow.meaningful-onchain-demo-scenario/1.0.0",
+  "selectionReason": "This scenario exercises the largest portion of the InspectEscrow value proposition in one real trade: AI inspection, conflicting admissible results, escrow lock, replay, Inspector authority and eventual rule-bound settlement.",
+  "status": "FINAL_FROZEN",
+  "supplierInspection": {
+    "aggregateScoreScaled": 55442036,
+    "contractDerivedDecision": "PASS",
+    "datasetRelativePath": "demo/good/000.png",
+    "rawAnomalyScore": "55.44203567504883",
+    "role": "SUPPLIER"
+  },
+  "thresholdScaled": 57904037,
+  "tradeBinding": {
+    "chainId": 11155111,
+    "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "network": "Ethereum Sepolia",
+    "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+    "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+    "verifyingContract": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9"
+  }
+}

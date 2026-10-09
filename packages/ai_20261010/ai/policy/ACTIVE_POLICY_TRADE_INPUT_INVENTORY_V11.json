@@ -1,0 +1,250 @@
+{
+  "blockchain_propose_trade_handoff": {
+    "file": "BLOCKCHAIN_PROPOSE_TRADE_HANDOFF_V1.json",
+    "immediatePreTransactionTradeIdRecheckRequired": true,
+    "sha256": "c430b355cc7111653277aecfd16850b1a11729b6b35bd43bbe6f189acb6867da",
+    "status": "READY_FOR_BLOCKCHAIN_OWNER"
+  },
+  "blocking_before_first_station_attestation": [
+    "final policyHash",
+    "inspection-specific specimenManifestHash",
+    "inspection-specific evidencePackageHash",
+    "sessionNonce",
+    "attempt",
+    "issuedAt",
+    "validUntil"
+  ],
+  "blocking_before_policy_hash": [],
+  "blocking_before_propose_trade": [],
+  "contract_trade_terms_mapping": {
+    "backupInspector": "0xeE9652D5F77ffee10aFeb7854E88f7B83bDAF7dd",
+    "buyer": "0x5B52D3B71dD5B4637B828Fd2a0e8bC78346709eE",
+    "buyerStation": "0xD5acfa7301BD73FfcBb3f73705E4dA4a2548faab",
+    "captureProfileHash": "0x3ea93a717cf8570d9b5c0662b1d27bb4a882651784342013786266b269db96da",
+    "escrowAmount": 5000000000000000,
+    "inspectorStation": "0x0d9B5d1caf10e7E66AE1F63A4085387F707d092d",
+    "maxBuyerRetries": 1,
+    "maxSupplierRetries": 1,
+    "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+    "policyVersion": 1,
+    "primaryInspector": "0xb60F55bC142a078781199C6a1689Bd7a86d4f6a8",
+    "productSpecHash": "0x68e3eb25a12d6521ae2aa37735ffad831810f6a05268d940b33a3bae6915d4e7",
+    "requiredViewSetHash": "0x5db9617738ccb9a0b2811e49716ad46cb24474d56a9cd55867df831a01c4abc3",
+    "scoreMaxScaled": 340282366920938463463374607431768211455,
+    "scoreMinScaled": 0,
+    "scoreScaleExponent": 6,
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "supplier": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
+    "supplierStation": "0x02883F2C472E6d82B88373448E54a209C27A6779",
+    "thresholdScaled": 57904037,
+    "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+    "windows": {
+      "backupInspector": 3600,
+      "buyerAcceptance": 1800,
+      "buyerInspection": 3600,
+      "primaryInspector": 3600,
+      "supplierInspection": 3600
+    }
+  },
+  "deployment": {
+    "chainId": 11155111,
+    "network": "Ethereum Sepolia",
+    "settlementAsset": "NATIVE_SEPOLIA_ETH",
+    "verifyingContract": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9"
+  },
+  "escrow_amount_policy": {
+    "auditedBuyerBalanceETH": "0.02",
+    "escrowAmountETH": "0.005",
+    "escrowAmountWei": 5000000000000000,
+    "file": "DEMO_ESCROW_AMOUNT_POLICY_V1.json",
+    "nominalRemainingETH": "0.015",
+    "sha256": "b6ac6d5bc2bdb50832d641fda2e38520f3b1cdaa1f01d84c9e270e471f82acf9",
+    "status": "FINAL_FROZEN"
+  },
+  "final_policy": {
+    "canonicalPolicy": "INSPECTION_POLICY_V1_1_FINAL.jcs.json",
+    "commitmentFile": "INSPECTION_POLICY_V1_1_COMMITMENT.json",
+    "commitmentSHA256": "78fbfd8fbb1a30291a98c7da4801d20736418c2494a871a5514a1a48cfa20f86",
+    "contractTermsConsistency": "PASS",
+    "hashPreimage": "INSPECTION_POLICY_V1_1_HASH_PREIMAGE.jcs.json",
+    "largeIntegerEncoding": "scoreMaximumScaled is exact decimal string in RFC8785 Policy JSON; parsed to uint128 for Solidity.",
+    "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+    "policyId": "0x94f9b3919df10d0bba367041f4c2bd2b69cf0a1c6a45417be4fe11f4d82b8337",
+    "readablePolicy": "INSPECTION_POLICY_V1_1_FINAL.json",
+    "schemaFile": "inspection-policy-v1.1.schema.json",
+    "schemaVersion": "1.1.0",
+    "selfHashRecomputation": "PASS",
+    "status": "FINAL_POLICY_HASH_FROZEN"
+  },
+  "final_policy_integration_clarification": {
+    "evidencePackageHashRule": "ZERO_ATTESTATION_DIGEST_PREIMAGE_V1",
+    "file": "FINAL_POLICY_INTEGRATION_CLARIFICATION_V1.json",
+    "jcsKeccak256": "0xd3c64c3e2c6f6d5123b97a949e9b4b996494e6d8281194814ba4a45d027de76b",
+    "policyHashRule": "ZERO_POLICY_HASH_PREIMAGE_V1",
+    "policyId": "0x94f9b3919df10d0bba367041f4c2bd2b69cf0a1c6a45417be4fe11f4d82b8337",
+    "policySchemaVersion": "1.1.0",
+    "sha256": "752cf82a018ec5311fd04b7c93e84757d9d1cceddc88e01b5093ea88fed0eef2",
+    "status": "FINAL_FROZEN"
+  },
+  "inspection_specific": {
+    "aggregateScoreScaled": "CREATED_BY_ACTUAL_INFERENCE",
+    "attempt": "CREATED_BY_PROTOCOL_STATE",
+    "evidencePackageHash": "CREATED_PER_INSPECTION",
+    "issuedAt": "CREATED_AT_ATTESTATION_TIME",
+    "sessionNonce": "CREATED_PER_CAPTURE_SESSION",
+    "specimenManifestHash": "CREATED_PER_INSPECTION",
+    "validUntil": "CREATED_AT_ATTESTATION_TIME"
+  },
+  "meaningful_onchain_demo_scenario": {
+    "file": "MEANINGFUL_ONCHAIN_DEMO_SCENARIO_V1.json",
+    "normalScenarioBoundToTrade": false,
+    "preShipmentScenarioBoundToTrade": false,
+    "scenarioId": "DISPUTE_SUPPLIER_PASS_BUYER_REVIEW",
+    "sha256": "9e108254bcaef0f324343a3fab3f44d569e3f148369f916558cfb8346741dee0",
+    "status": "FINAL_FROZEN"
+  },
+  "model_bundle_final_gate": {
+    "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "semanticPass": "10/10",
+    "status": "PASS_READY_FOR_FINAL_POLICY_ASSEMBLY"
+  },
+  "model_bundle_semantic_supersession": {
+    "clarificationArtifact": "MODEL_SCORE_SEMANTICS_CLARIFICATION_V1.json",
+    "clarificationArtifactKeccak256": "0x7a845166ca6fed2d37cc2d3becf2ff86d09f70b661c4f1d3ccdf359bd3f7984a",
+    "modelChanged": false,
+    "newModelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "oldModelBundleHash": "0x5283badc2a43c964cda6f7a921117340f0b1928027e05c3f7aea0dcba9849466",
+    "supersedeRecord": "FINAL_MODEL_BUNDLE_SEMANTIC_PATCH1_COMMITMENT.json",
+    "supersedeRecordSHA256": "af4a80719dce4e14d1762d7807d9819f92c231c2c7ee357fca73dd143a95ae2e",
+    "thresholdChanged": false,
+    "type": "SEMANTIC_CLARIFICATION_ONLY"
+  },
+  "onchain_tradeid_preflight": {
+    "exactUnusedConfirmations": 3,
+    "file": "ONCHAIN_UNUSED_TRADE_ID_PREFLIGHT_V1.json",
+    "immediatePreTransactionRecheckRequired": true,
+    "observedBlockMax": 11878870,
+    "observedBlockMin": 11878870,
+    "runtimeCodeHash": "0x467fc5d214966b4ca7711eb9e9977d8bece096b78e4fe2046beb6acf5f46518c",
+    "sha256": "aaac05de87b909792346ff65b64c2d08257e82f57e0cdade9a6cc219a5af70e6",
+    "status": "PASS_UNUSED_TRADE_ID_AT_OBSERVED_BLOCKS"
+  },
+  "operational_policy_patch": {
+    "policyFile": "DEMO_OPERATIONAL_TERMS_POLICY_V1.json",
+    "policySHA256": "7abc06af0e5c6c1c9d0f2a91cff1273566d97c86fa80ad79bb47d16198e91926",
+    "productionSLAClaimed": false,
+    "profileId": "HACKATHON-LIVE-DEMO-OPERATIONAL-V1"
+  },
+  "project": "InspectEscrow",
+  "public_dataset_mvp_identity_clarification": {
+    "identifierVisibleOverviewImplemented": false,
+    "implementedBinding": [
+      "tradeId",
+      "datasetRelativePath",
+      "exactSourceImageDigest",
+      "captureSessionNonce",
+      "completeEvidenceFileList",
+      "canonicalSpecimenManifest"
+    ],
+    "meaning": "The MVP demonstrates cryptographic transaction-to-evidence binding for public-data simulation, not physical custody proof.",
+    "phase1Ideal": "Serialized specimen ID / QR visible in overview image",
+    "physicalCustodyProofClaim": false,
+    "publicDatasetMvpReality": "MVTec source images contain no InspectEscrow trade QR or serialized physical specimen identifier.",
+    "samePhysicalItemSupplierBuyerClaim": false
+  },
+  "resolved_global_policy": {
+    "calibrationManifestHash": "0x8efbac3c1fa9dfa7b557222714dc7765c6c5367ea45da55c96e7db505be5dfce",
+    "captureProfileHash": "0x3ea93a717cf8570d9b5c0662b1d27bb4a882651784342013786266b269db96da",
+    "contractVerdictRule": "score < threshold => PASS; score >= threshold => REVIEW_REQUIRED",
+    "defectScope": "DATASET_ANOMALY_DETECTION_FOR_REVIEW_ROUTING",
+    "evidencePackageHashRule": "ZERO_ATTESTATION_DIGEST_PREIMAGE_V1",
+    "identifierVisibleOverviewImplemented": false,
+    "maxBuyerRetries": 1,
+    "maxSupplierRetries": 1,
+    "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "operationalTermsPolicySHA256": "7abc06af0e5c6c1c9d0f2a91cff1273566d97c86fa80ad79bb47d16198e91926",
+    "physicalProductionSpecificationClaimed": false,
+    "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+    "policyHashRule": "ZERO_POLICY_HASH_PREIMAGE_V1",
+    "policyId": "0x94f9b3919df10d0bba367041f4c2bd2b69cf0a1c6a45417be4fe11f4d82b8337",
+    "policyIntegrationClarificationHash": "0xd3c64c3e2c6f6d5123b97a949e9b4b996494e6d8281194814ba4a45d027de76b",
+    "policySchemaVersion": "1.1.0",
+    "policyVersion": 1,
+    "productClass": "MVTec AD / metal_nut",
+    "productRevision": "PUBLIC_DATASET_SIMULATION_V1",
+    "productSpecHash": "0x68e3eb25a12d6521ae2aa37735ffad831810f6a05268d940b33a3bae6915d4e7",
+    "replayToleranceScaled": 222,
+    "requiredViewCount": 1,
+    "requiredViewSetHash": "0x5db9617738ccb9a0b2811e49716ad46cb24474d56a9cd55867df831a01c4abc3",
+    "scoreMaxScaled": 340282366920938463463374607431768211455,
+    "scoreMinScaled": 0,
+    "scoreScaleExponent": 6,
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "specimenIdentityScheme": "TRADE_SPECIFIC_SPECIMEN_MANIFEST",
+    "thresholdScaled": 57904037,
+    "windowsSeconds": {
+      "backupInspector": 3600,
+      "buyerAcceptance": 1800,
+      "buyerInspection": 3600,
+      "primaryInspector": 3600,
+      "supplierInspection": 3600
+    }
+  },
+  "role_address_registry": {
+    "actorStationCrossSetOverlap": false,
+    "allSevenUnique": true,
+    "file": "DEMO_ROLE_ADDRESS_REGISTRY_V1.json",
+    "sha256": "945aa8b0f8e22dd300507ac28d0b78f7038eea937aba8f09f4f456c94a57d737",
+    "status": "FINAL_FROZEN"
+  },
+  "safety": {
+    "blockchainTransaction": false,
+    "policyHashCreated": true,
+    "proposeTradeAllowed": true,
+    "reason": "Supplier attempt-1 public-dataset source bytes and trade-specific specimen manifest are now frozen. No station signature or evidencePackageHash has yet been created."
+  },
+  "schema": "inspectescrow.active-policy-trade-input-inventory/1.10.0",
+  "status": "SUPPLIER_SPECIMEN_MANIFEST_FROZEN_PENDING_EVIDENCE_PACKAGE",
+  "supplier_attempt_1": {
+    "datasetRelativePath": "demo/good/000.png",
+    "evidencePackageHash": null,
+    "onChainSubmitted": false,
+    "scenarioId": "DISPUTE_SUPPLIER_PASS_BUYER_REVIEW",
+    "sessionNonce": "0x80281e9f5a621511715d0e7f0637c1f0f0bf99a695ed790112187e7c3edc86b2",
+    "sourceImageKeccak256": "0x59b0f6d5be94067754f77108864b457a8e1a732410bcf5e344e8810645e891a0",
+    "sourceImageSHA256": "d7ca543f04733fb91ac02e18d0fbf06dcff554a1b1ad754173c42d10bb026bb6",
+    "specimenManifestCommitment": "SUPPLIER_SPECIMEN_MANIFEST_COMMITMENT_V1.json",
+    "specimenManifestCommitmentSHA256": "c47fbe56ee045588dd925a231bfd188f6e09483e925dccb3ca13f16ccb597228",
+    "specimenManifestFile": "SUPPLIER_SPECIMEN_MANIFEST_V1.json",
+    "specimenManifestHash": "0x0c39c0ad9a76fb194c92d9864fa64ce2afbfe00c979ec762bffaf2c8eb436557",
+    "stationAttestationDigest": null
+  },
+  "trade_id_record": {
+    "file": "MEANINGFUL_DEMO_TRADE_ID_V1.json",
+    "onChainUnusedCheck": "PENDING",
+    "sha256": "f239fd8289812ffe6d6ff4c84c98d592dbaef2694d46f073c1d8be47726b9b6a",
+    "status": "FROZEN_PENDING_ONCHAIN_UNUSED_ID_CHECK",
+    "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c"
+  },
+  "trade_specific_open": {
+    "backupInspector": "0xeE9652D5F77ffee10aFeb7854E88f7B83bDAF7dd",
+    "buyer": "0x5B52D3B71dD5B4637B828Fd2a0e8bC78346709eE",
+    "buyerStation": "0xD5acfa7301BD73FfcBb3f73705E4dA4a2548faab",
+    "escrowAmountWei": 5000000000000000,
+    "inspectorStation": "0x0d9B5d1caf10e7E66AE1F63A4085387F707d092d",
+    "maxBuyerRetries": 1,
+    "maxSupplierRetries": 1,
+    "primaryInspector": "0xb60F55bC142a078781199C6a1689Bd7a86d4f6a8",
+    "supplier": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
+    "supplierStation": "0x02883F2C472E6d82B88373448E54a209C27A6779",
+    "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+    "windows": {
+      "backupInspector": 3600,
+      "buyerAcceptance": 1800,
+      "buyerInspection": 3600,
+      "primaryInspector": 3600,
+      "supplierInspection": 3600
+    }
+  }
+}

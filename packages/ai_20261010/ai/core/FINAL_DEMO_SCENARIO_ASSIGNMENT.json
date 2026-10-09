@@ -1,0 +1,42 @@
+{
+  "demo_image_sha256": {
+    "demo/good/000.png": "d7ca543f04733fb91ac02e18d0fbf06dcff554a1b1ad754173c42d10bb026bb6",
+    "demo/good/002.png": "c915621335f2a306db55f3206c2a25c1ff31f4b1c6415b9717a5d5da9ec9ca78",
+    "demo/good/007.png": "857b68b699064f8ba4d88a25f55e4ce4a96808e4884a61ccf05913d9e037f2df",
+    "demo/good/014.png": "9e094532fd66ad52c59c2e7bbcf67eace77202d363aa5050a7d79f0356c53e62",
+    "demo/scratch/001.png": "9d0fb31fac7ab42ddce02f5d1fd27940b04dfb10e28a1ab76c7ce010ba7bd772",
+    "demo/scratch/010.png": "49b7f5e443fc22fb47ce7edf303623893e7791c2687213e98f9a2d80579e83ea",
+    "demo/scratch/022.png": "f88d2d084303ec537991d3f5263c4a9ba50eff042e4968ff8be2aebfe59e456a"
+  },
+  "demo_metrics_policy": "Demo images are excluded from training, validation, threshold calibration, and reported model performance metrics.",
+  "final_ai_freeze_manifest_sha256": "2c816c2916dca4fec7d26736e9329d0ab1421576957df6451125a53942b0e1e7",
+  "final_ai_model": "PatchCore_V2",
+  "model_core_sha256": "8ab4beeb37242a742bac75c8f697d4af625eaf5acda339c887d6c77c9f6bd36b",
+  "post_inference_model_change": "PROHIBITED",
+  "post_inference_threshold_change": "PROHIBITED",
+  "project": "InspectEscrow",
+  "reserve": {
+    "good": "demo/good/007.png",
+    "scratch": "demo/scratch/001.png"
+  },
+  "reserve_policy": "Reserve images must not silently replace a primary scenario image because of an unfavorable model score. Any later reserve use must be explicitly disclosed and is excluded from performance metrics.",
+  "scenarios": {
+    "DISPUTE_E2E": {
+      "buyer": "demo/scratch/022.png",
+      "intended_protocol_path": "Supplier PASS -> Buyer REVIEW_REQUIRED -> DISPUTED_PRIMARY",
+      "supplier": "demo/good/000.png"
+    },
+    "NORMAL_E2E": {
+      "buyer": "demo/good/002.png",
+      "intended_protocol_path": "Supplier PASS -> Buyer PASS -> ACCEPTANCE_PENDING -> RELEASE",
+      "supplier": "demo/good/014.png"
+    },
+    "PRE_SHIPMENT_REVIEW": {
+      "intended_protocol_path": "Supplier REVIEW_REQUIRED -> SUPPLIER_HOLD",
+      "supplier": "demo/scratch/010.png"
+    }
+  },
+  "selection_rule": "Use the existing frozen demo_pool.json list order exactly. No anomaly scores or model predictions were viewed before assignment.",
+  "status": "EXACT_DEMO_SCENARIOS_FROZEN_BEFORE_INFERENCE",
+  "threshold": 57.90403747558594
+}

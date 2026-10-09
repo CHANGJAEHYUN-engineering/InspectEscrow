@@ -1,0 +1,26 @@
+{
+  "captureProfileHash": "0x3ea93a717cf8570d9b5c0662b1d27bb4a882651784342013786266b269db96da",
+  "mapping": {
+    "blurPass": true,
+    "focusPass": true,
+    "inspectionValidity": "ADMISSIBLE",
+    "invalidReason": "NONE",
+    "profileConforming": true,
+    "requiredViewsPresent": true,
+    "saturationPass": true
+  },
+  "phase1EvidenceSchema": "inspectescrow.evidence-package/1.0.0",
+  "project": "InspectEscrow",
+  "requiredViewSetHash": "0x5db9617738ccb9a0b2811e49716ad46cb24474d56a9cd55867df831a01c4abc3",
+  "schema": "inspectescrow.evidence-qa-schema-compatibility/1.0.0",
+  "scope": "PUBLIC_DATASET_SIMULATION",
+  "semanticBoundary": {
+    "blurMeasuredIndependently": false,
+    "booleanMeaning": "NO_FAILURE_UNDER_FROZEN_PUBLIC_DATASET_DEMO_PROFILE",
+    "focusMeasuredIndependently": false,
+    "physicalCameraQaClaimed": false,
+    "productionOpticalQaClaimed": false,
+    "saturationMeasuredIndependently": false
+  },
+  "status": "FROZEN_FOR_PUBLIC_DATASET_SIMULATION"
+}

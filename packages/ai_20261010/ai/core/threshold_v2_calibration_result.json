@@ -1,0 +1,28 @@
+{
+  "project": "InspectEscrow",
+  "model_version": "V2",
+  "status": "THRESHOLD_FROZEN",
+  "model_core_sha256": "8ab4beeb37242a742bac75c8f697d4af625eaf5acda339c887d6c77c9f6bd36b",
+  "validation_raw_scores_sha256": "94a4a3582a02b529cb52566a0e028fb1ec93e8bf2ad1f6c9b6d15325c066ce70",
+  "threshold": 57.90403747558594,
+  "selection_rule": {
+    "primary": "maximize Youden J",
+    "tie_break_1": "higher anomaly recall",
+    "tie_break_2": "lower threshold"
+  },
+  "validation_result": {
+    "TP": 16,
+    "FP": 4,
+    "TN": 40,
+    "FN": 3,
+    "recall": 0.8421052631578947,
+    "FPR": 0.09090909090909091,
+    "precision": 0.8,
+    "F1": 0.8205128205128205,
+    "accuracy": 0.8888888888888888,
+    "youden_J": 0.7511961722488038
+  },
+  "final_test_used_for_v2_selection": false,
+  "demo_used": false,
+  "threshold_change_after_this_point": "PROHIBITED"
+}

@@ -1,0 +1,41 @@
+{
+  "balanceMayChangeBeforeFunding": true,
+  "blockchainTransaction": false,
+  "buyer": "0x5B52D3B71dD5B4637B828Fd2a0e8bC78346709eE",
+  "buyerBalanceAudit": {
+    "consensusBalanceETH": "0.02",
+    "consensusBalanceWei": 20000000000000000,
+    "file": "BUYER_SEPOLIA_BALANCE_AUDIT_V1.json",
+    "sha256": "2631af6a9ef3a9f85d69516bee4fdfe4c4afca70b2f9593bad8b1610842508b9"
+  },
+  "contractFundingRule": {
+    "doubleFundAllowed": false,
+    "overfundAllowed": false,
+    "requiredCondition": "msg.value == escrowAmount",
+    "underfundAllowed": false
+  },
+  "escrowAmount": {
+    "eth": "0.005",
+    "shareOfAuditedBuyerBalance": "0.25",
+    "wei": 5000000000000000
+  },
+  "network": {
+    "chainId": 11155111,
+    "name": "Ethereum Sepolia",
+    "settlementAsset": "NATIVE_SEPOLIA_ETH"
+  },
+  "postEscrowNominalBalanceMargin": {
+    "eth": "0.015",
+    "wei": 15000000000000000
+  },
+  "project": "InspectEscrow",
+  "rationale": {
+    "commercialSettlementValueClaim": false,
+    "economicMeaning": "This amount is a Sepolia hackathon demonstration denomination only.",
+    "primary": "Freeze only 25% of the audited Buyer testnet balance as demo escrow, leaving 75% as nominal gas/retry/operational margin.",
+    "productValuationClaim": false
+  },
+  "requiredPreFundCheck": "Re-check Buyer Sepolia balance and gas sufficiency immediately before the actual fund() transaction.",
+  "schema": "inspectescrow.demo-escrow-amount-policy/1.0.0",
+  "status": "FINAL_FROZEN_FOR_MEANINGFUL_SEPOLIA_DEMO"
+}

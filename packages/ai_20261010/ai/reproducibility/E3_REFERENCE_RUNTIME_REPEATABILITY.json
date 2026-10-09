@@ -1,0 +1,85 @@
+{
+  "decision": {
+    "all_decisions": [
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED"
+    ],
+    "consistent": true,
+    "threshold": 57.90403747558594
+  },
+  "experiment": "PHASE1_E3_REFERENCE_RUNTIME_REPEATABILITY",
+  "important_limit": "This experiment verifies repeated inference only on the current reference Colab/Tesla T4 runtime. It does not yet establish cross-machine or cross-runtime reproducibility.",
+  "latency_ms": {
+    "maximum": 89776.41898000002,
+    "mean": 70271.12594580022,
+    "minimum": 67830.66619800047
+  },
+  "model_changed": false,
+  "project": "InspectEscrow",
+  "reference_score": 60.1381721496582,
+  "result": "EXACT_REPEATABILITY_ON_REFERENCE_RUNTIME",
+  "runtime": {
+    "gpu": "Tesla T4",
+    "pytorch": "2.11.0+cu130",
+    "run_count": 20
+  },
+  "scope": "REFERENCE_RUNTIME_ONLY",
+  "scores": [
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582,
+    60.1381721496582
+  ],
+  "statistics": {
+    "max_abs_diff_from_reference": 0.0,
+    "maximum": 60.1381721496582,
+    "mean": 60.1381721496582,
+    "minimum": 60.1381721496582,
+    "population_std": 0.0,
+    "raw_score_range": 0.0,
+    "scaled_score_max": 60138172,
+    "scaled_score_min": 60138172,
+    "scaled_score_range": 0,
+    "unique_raw_scores": 1,
+    "unique_scaled_scores": 1
+  },
+  "target": {
+    "dataset_relative_path": "demo/scratch/022.png",
+    "input_image_sha256": "f88d2d084303ec537991d3f5263c4a9ba50eff042e4968ff8be2aebfe59e456a"
+  },
+  "threshold_changed": false
+}

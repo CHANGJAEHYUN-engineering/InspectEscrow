@@ -1,0 +1,24 @@
+{
+  "status": "ADDRESS_SET_VALIDATED",
+  "network": "sepolia",
+  "chainId": 11155111,
+  "supplier": {
+    "actor": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
+    "station": "0x02883F2C472E6d82B88373448E54a209C27A6779"
+  },
+  "buyer": {
+    "actor": "0x5B52D3B71dD5B4637B828Fd2a0e8bC78346709eE",
+    "station": "0xD5acfa7301BD73FfcBb3f73705E4dA4a2548faab"
+  },
+  "inspector": {
+    "primaryActor": "0xb60F55bC142a078781199C6a1689Bd7a86d4f6a8",
+    "backupActor": "0xeE9652D5F77ffee10aFeb7854E88f7B83bDAF7dd",
+    "station": "0x0d9B5d1caf10e7E66AE1F63A4085387F707d092d"
+  },
+  "validation": {
+    "validEthereumAddresses": true,
+    "uniqueAddressCount": 7,
+    "allDistinct": true,
+    "privateKeysIncluded": false
+  }
+}

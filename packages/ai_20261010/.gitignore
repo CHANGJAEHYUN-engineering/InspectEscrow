@@ -1,0 +1,25 @@
+# Large model/data artifacts
+*.pt
+*.pth
+*.ckpt
+*.tar
+*.tar.xz
+*.zip
+
+# Dataset / local runtime
+data/
+dataset/
+datasets/
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+.env.*
+*private_key*
+*mnemonic*
+*secret*
+
+# Local generated transient handoff
+FINAL_AI_BLOCKCHAIN_HANDOFF/

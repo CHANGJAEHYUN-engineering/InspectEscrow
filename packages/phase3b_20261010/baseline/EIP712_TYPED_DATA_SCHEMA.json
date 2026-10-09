@@ -1,0 +1,208 @@
+{
+  "domain": {
+    "name": "InspectEscrow",
+    "version": "1",
+    "chainId": 11155111,
+    "verifyingContract": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9"
+  },
+  "types": {
+    "StationAttestation": [
+      {
+        "name": "tradeId",
+        "type": "bytes32"
+      },
+      {
+        "name": "role",
+        "type": "uint8"
+      },
+      {
+        "name": "station",
+        "type": "address"
+      },
+      {
+        "name": "attempt",
+        "type": "uint32"
+      },
+      {
+        "name": "sessionNonce",
+        "type": "bytes32"
+      },
+      {
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "modelBundleHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "captureProfileHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "specimenManifestHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "evidencePackageHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "aggregateScoreScaled",
+        "type": "uint128"
+      },
+      {
+        "name": "scoreSchemaId",
+        "type": "bytes32"
+      },
+      {
+        "name": "inspectionValidity",
+        "type": "uint8"
+      },
+      {
+        "name": "invalidReason",
+        "type": "uint8"
+      },
+      {
+        "name": "issuedAt",
+        "type": "uint64"
+      },
+      {
+        "name": "validUntil",
+        "type": "uint64"
+      }
+    ],
+    "ReplayAttestation": [
+      {
+        "name": "tradeId",
+        "type": "bytes32"
+      },
+      {
+        "name": "stage",
+        "type": "uint8"
+      },
+      {
+        "name": "inspectorActor",
+        "type": "address"
+      },
+      {
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "supplierEvidenceHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "buyerEvidenceHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "replayReportHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "consistent",
+        "type": "bool"
+      },
+      {
+        "name": "nonce",
+        "type": "bytes32"
+      },
+      {
+        "name": "issuedAt",
+        "type": "uint64"
+      },
+      {
+        "name": "validUntil",
+        "type": "uint64"
+      }
+    ],
+    "InspectorDecisionAttestation": [
+      {
+        "name": "tradeId",
+        "type": "bytes32"
+      },
+      {
+        "name": "stage",
+        "type": "uint8"
+      },
+      {
+        "name": "inspectorActor",
+        "type": "address"
+      },
+      {
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "supplierEvidenceHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "buyerEvidenceHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "replayReportHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "decision",
+        "type": "uint8"
+      },
+      {
+        "name": "reasonCode",
+        "type": "bytes32"
+      },
+      {
+        "name": "nonce",
+        "type": "bytes32"
+      },
+      {
+        "name": "issuedAt",
+        "type": "uint64"
+      },
+      {
+        "name": "validUntil",
+        "type": "uint64"
+      }
+    ],
+    "MutualResolution": [
+      {
+        "name": "tradeId",
+        "type": "bytes32"
+      },
+      {
+        "name": "outcome",
+        "type": "uint8"
+      },
+      {
+        "name": "resolutionNonce",
+        "type": "bytes32"
+      },
+      {
+        "name": "deadline",
+        "type": "uint64"
+      }
+    ]
+  },
+  "solidityTypeStrings": {
+    "StationAttestation": "StationAttestation(bytes32 tradeId,uint8 role,address station,uint32 attempt,bytes32 sessionNonce,bytes32 policyHash,bytes32 modelBundleHash,bytes32 captureProfileHash,bytes32 specimenManifestHash,bytes32 evidencePackageHash,uint128 aggregateScoreScaled,bytes32 scoreSchemaId,uint8 inspectionValidity,uint8 invalidReason,uint64 issuedAt,uint64 validUntil)",
+    "ReplayAttestation": "ReplayAttestation(bytes32 tradeId,uint8 stage,address inspectorActor,bytes32 policyHash,bytes32 supplierEvidenceHash,bytes32 buyerEvidenceHash,bytes32 replayReportHash,bool consistent,bytes32 nonce,uint64 issuedAt,uint64 validUntil)",
+    "InspectorDecisionAttestation": "InspectorDecisionAttestation(bytes32 tradeId,uint8 stage,address inspectorActor,bytes32 policyHash,bytes32 supplierEvidenceHash,bytes32 buyerEvidenceHash,bytes32 replayReportHash,uint8 decision,bytes32 reasonCode,bytes32 nonce,uint64 issuedAt,uint64 validUntil)",
+    "MutualResolution": "MutualResolution(bytes32 tradeId,uint8 outcome,bytes32 resolutionNonce,uint64 deadline)"
+  },
+  "signatureActorRules": {
+    "StationAttestation": "Supplier/Buyer Station signs; respective Supplier/Buyer Actor sends transaction",
+    "ReplayAttestation": "Inspector Station signs; active Primary/Backup Inspector Actor sends transaction",
+    "InspectorDecisionAttestation": "Inspector Station signs; active Primary/Backup Inspector Actor sends transaction",
+    "MutualResolution": "Supplier actor AND Buyer actor sign same digest; any address may relay"
+  },
+  "warnings": [
+    "EIP-712 version is 1, NOT PHASE2-PATCH2",
+    "Use exact type names and field order; enums encoded uint8",
+    "All signature attestation numeric timestamps are unix seconds",
+    "No privately managed keys or secrets belong in this package"
+  ]
+}

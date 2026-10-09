@@ -1,0 +1,21 @@
+{
+  "status": "INPUTS_REQUIRED_BEFORE_MEANINGFUL_FUNDED_DEMO",
+  "owner_contract_wallet_frontend": "김지환",
+  "owner_ai_evidence_replay": "창재현",
+  "product_scope_and_version": null,
+  "defect_taxonomy_and_review_meaning": null,
+  "specimen_serial_qr_and_binding_procedure": null,
+  "approved_policy_file_and_hash_convention": null,
+  "frozen_model_bundle_and_preprocessing_manifest": null,
+  "capture_fixture_lighting_roi_qa_recipe": null,
+  "required_views_and_orientation": null,
+  "score_aggregation_scaling_schema": null,
+  "calibration_report_threshold_integer_range": null,
+  "replay_tolerance_and_independent_execution": null,
+  "evidence_retention_access_and_canonicalization": null,
+  "reviewed_timeout_and_retry_limits": null,
+  "seven_distinct_public_role_addresses": "FROZEN_IN_PHASE3B_ROLE_ADDRESSES.json",
+  "reviewed_minimal_sepolia_amount_wei": null,
+  "supplier_pass_before_shipment": null,
+  "approval_of_frozen_inputs": null
+}

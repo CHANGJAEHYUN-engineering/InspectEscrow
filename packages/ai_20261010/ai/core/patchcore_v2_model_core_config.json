@@ -1,0 +1,45 @@
+{
+  "project": "InspectEscrow",
+  "model_version": "V2",
+  "dataset": "MVTec AD metal_nut - InspectEscrow custom split",
+  "train_normal_images": 176,
+  "model": "PatchCore",
+  "backbone": "wide_resnet50_2",
+  "layers": [
+    "layer2",
+    "layer3"
+  ],
+  "pretrained": true,
+  "resize": [
+    320,
+    320
+  ],
+  "center_crop": [
+    280,
+    280
+  ],
+  "normalization_mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "normalization_std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "coreset_sampling_ratio": 0.1,
+  "memory_bank_shape": [
+    21560,
+    1536
+  ],
+  "num_neighbors": 9,
+  "precision": "float32",
+  "single_change_from_v1": "Spatial input resolution increased from 256->224 to 320->280.",
+  "threshold_status": "NOT_YET_CALIBRATED",
+  "validation_status": "NOT_YET_EVALUATED",
+  "demo_status": "UNTOUCHED",
+  "anomalib_version": "2.7.0",
+  "torch_version": "2.11.0+cu130",
+  "python_version": "3.13.15"
+}

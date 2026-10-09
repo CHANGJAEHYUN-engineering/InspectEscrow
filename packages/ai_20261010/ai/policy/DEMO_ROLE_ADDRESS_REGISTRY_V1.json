@@ -1,0 +1,40 @@
+{
+  "actors": {
+    "backupInspector": "0xeE9652D5F77ffee10aFeb7854E88f7B83bDAF7dd",
+    "buyer": "0x5B52D3B71dD5B4637B828Fd2a0e8bC78346709eE",
+    "primaryInspector": "0xb60F55bC142a078781199C6a1689Bd7a86d4f6a8",
+    "supplier": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE"
+  },
+  "blockchainTransaction": false,
+  "network": {
+    "chainId": 11155111,
+    "name": "Ethereum Sepolia",
+    "verifyingContract": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9"
+  },
+  "project": "InspectEscrow",
+  "schema": "inspectescrow.demo-role-address-registry/1.0.0",
+  "stations": {
+    "buyerStation": "0xD5acfa7301BD73FfcBb3f73705E4dA4a2548faab",
+    "inspectorStation": "0x0d9B5d1caf10e7E66AE1F63A4085387F707d092d",
+    "supplierStation": "0x02883F2C472E6d82B88373448E54a209C27A6779"
+  },
+  "status": "FINAL_FROZEN_FOR_MEANINGFUL_SEPOLIA_DEMO",
+  "stillOpen": {
+    "escrowAmountWei": true,
+    "policyHash": true,
+    "tradeId": true
+  },
+  "trustBoundary": {
+    "whatThisDoesNotProve": "Distinct addresses do not prove distinct legal organizations, distinct beneficial owners, or absence of off-chain collusion.",
+    "whatThisProves": "The meaningful demo uses seven distinct Ethereum addresses for the four actor roles and three station-signer roles."
+  },
+  "validation": {
+    "actorStationCrossSetOverlap": false,
+    "allEthereumAddressesValid": true,
+    "allNonZero": true,
+    "allSevenUnique": true,
+    "fourActorsUnique": true,
+    "phase2Patch2AddressSeparation": "PASS",
+    "threeStationsUnique": true
+  }
+}

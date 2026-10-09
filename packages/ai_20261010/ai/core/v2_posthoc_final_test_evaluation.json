@@ -1,0 +1,73 @@
+{
+  "project": "InspectEscrow",
+  "model_version": "V2",
+  "evaluation_type": "POST_HOC_COMPARATIVE_EVALUATION",
+  "warning": "This 89-image set was already analyzed during V1 development. These V2 results must not be described as an untouched held-out test.",
+  "threshold": 57.90403747558594,
+  "metrics": {
+    "AUROC": 0.9303599374021909,
+    "average_precision": 0.9826364846318573,
+    "recall": 0.8450704225352113,
+    "FPR": 0.05555555555555555,
+    "specificity": 0.9444444444444444,
+    "precision": 0.9836065573770492,
+    "F1": 0.9090909090909091,
+    "accuracy": 0.8651685393258427
+  },
+  "confusion_matrix": {
+    "TP": 60,
+    "FP": 1,
+    "TN": 17,
+    "FN": 11
+  },
+  "per_category": [
+    {
+      "category": "bent",
+      "count": 20,
+      "mean_score": 59.71795654296875,
+      "min_score": 55.63213348388672,
+      "max_score": 63.13398361206055,
+      "correct_rate": 0.8,
+      "review_rate": 0.8
+    },
+    {
+      "category": "color",
+      "count": 18,
+      "mean_score": 60.06354289584689,
+      "min_score": 54.12215042114258,
+      "max_score": 66.17947387695312,
+      "correct_rate": 0.7777777777777778,
+      "review_rate": 0.7777777777777778
+    },
+    {
+      "category": "flip",
+      "count": 18,
+      "mean_score": 65.38240199618869,
+      "min_score": 62.496883392333984,
+      "max_score": 69.5169677734375,
+      "correct_rate": 1.0,
+      "review_rate": 1.0
+    },
+    {
+      "category": "good",
+      "count": 18,
+      "mean_score": 56.176306830512154,
+      "min_score": 54.30562210083008,
+      "max_score": 59.68059158325195,
+      "correct_rate": 0.9444444444444444,
+      "review_rate": 0.05555555555555555
+    },
+    {
+      "category": "scratch",
+      "count": 15,
+      "mean_score": 59.266702524820964,
+      "min_score": 56.37237548828125,
+      "max_score": 67.28436279296875,
+      "correct_rate": 0.8,
+      "review_rate": 0.8
+    }
+  ],
+  "threshold_changed": false,
+  "model_changed": false,
+  "demo_used": false
+}

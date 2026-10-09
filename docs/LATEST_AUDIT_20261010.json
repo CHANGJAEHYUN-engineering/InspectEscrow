@@ -1,0 +1,69 @@
+{
+  "AI manifest": {
+    "total": 75,
+    "mismatches": []
+  },
+  "Blockchain manifest": {
+    "total": 26,
+    "mismatches": []
+  },
+  "abi_entries": 113,
+  "sol_sha256": "4effb1ee5a18f4c75ae6eb8eaa1ec051a03da9efb4799beffe8772439cf3e6da",
+  "terms": {
+    "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+    "policyVersion": 1,
+    "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+    "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "thresholdScaled": "57904037",
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8"
+  },
+  "live": {
+    "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+    "contract": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9",
+    "chainId": 11155111,
+    "currentState": {
+      "value": 1,
+      "name": "PROPOSED"
+    },
+    "nextRequiredStep": "buyer.acceptPolicy"
+  },
+  "local_e2e": {
+    "checks": 20,
+    "transactions": 44,
+    "failures": 0
+  },
+  "metrics_posthoc": {
+    "AUROC": 0.9303599374021909,
+    "average_precision": 0.9826364846318573,
+    "recall": 0.8450704225352113,
+    "FPR": 0.05555555555555555,
+    "specificity": 0.9444444444444444,
+    "precision": 0.9836065573770492,
+    "F1": 0.9090909090909091,
+    "accuracy": 0.8651685393258427
+  },
+  "metrics_validation": {
+    "TP": 16,
+    "FP": 4,
+    "TN": 40,
+    "FN": 3,
+    "recall": 0.8421052631578947,
+    "FPR": 0.09090909090909091,
+    "precision": 0.8,
+    "F1": 0.8205128205128205,
+    "accuracy": 0.8888888888888888,
+    "youden_J": 0.7511961722488038
+  },
+  "evaluation_warning": "This 89-image set was already analyzed during V1 development. These V2 results must not be described as an untouched held-out test.",
+  "threshold_scaled_verified": 57904037,
+  "ai_scenarios": [
+    "NORMAL_E2E",
+    "DISPUTE_E2E",
+    "PRE_SHIPMENT_REVIEW"
+  ],
+  "station_schema_fields": 16,
+  "historical_model_hash": "0x5283badc2a43c964cda6f7a921117340f0b1928027e05c3f7aea0dcba9849466",
+  "current_model_hash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+  "historical_hash_superseded": true,
+  "audit_failures": []
+}

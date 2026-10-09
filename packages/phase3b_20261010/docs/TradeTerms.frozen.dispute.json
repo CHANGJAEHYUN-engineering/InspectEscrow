@@ -1,0 +1,31 @@
+{
+  "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+  "supplier": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
+  "buyer": "0x5B52D3B71dD5B4637B828Fd2a0e8bC78346709eE",
+  "primaryInspector": "0xb60F55bC142a078781199C6a1689Bd7a86d4f6a8",
+  "backupInspector": "0xeE9652D5F77ffee10aFeb7854E88f7B83bDAF7dd",
+  "supplierStation": "0x02883F2C472E6d82B88373448E54a209C27A6779",
+  "buyerStation": "0xD5acfa7301BD73FfcBb3f73705E4dA4a2548faab",
+  "inspectorStation": "0x0d9B5d1caf10e7E66AE1F63A4085387F707d092d",
+  "escrowAmount": "5000000000000000",
+  "policyVersion": 1,
+  "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+  "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+  "captureProfileHash": "0x3ea93a717cf8570d9b5c0662b1d27bb4a882651784342013786266b269db96da",
+  "productSpecHash": "0x68e3eb25a12d6521ae2aa37735ffad831810f6a05268d940b33a3bae6915d4e7",
+  "requiredViewSetHash": "0x5db9617738ccb9a0b2811e49716ad46cb24474d56a9cd55867df831a01c4abc3",
+  "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+  "thresholdScaled": "57904037",
+  "scoreScaleExponent": 6,
+  "scoreMinScaled": "0",
+  "scoreMaxScaled": "340282366920938463463374607431768211455",
+  "maxSupplierRetries": 1,
+  "maxBuyerRetries": 1,
+  "windows": {
+    "supplierInspection": 3600,
+    "buyerInspection": 3600,
+    "buyerAcceptance": 1800,
+    "primaryInspector": 3600,
+    "backupInspector": 3600
+  }
+}

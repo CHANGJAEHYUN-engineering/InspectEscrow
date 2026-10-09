@@ -1,0 +1,18 @@
+{
+  "tradeId": null,
+  "role": null,
+  "station": null,
+  "attempt": null,
+  "sessionNonce": null,
+  "policyHash": null,
+  "modelBundleHash": null,
+  "captureProfileHash": null,
+  "specimenManifestHash": null,
+  "evidencePackageHash": null,
+  "aggregateScoreScaled": null,
+  "scoreSchemaId": null,
+  "inspectionValidity": null,
+  "invalidReason": null,
+  "issuedAt": null,
+  "validUntil": null
+}

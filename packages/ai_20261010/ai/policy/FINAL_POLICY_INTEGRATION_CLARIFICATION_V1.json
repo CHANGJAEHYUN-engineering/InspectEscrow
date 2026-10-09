@@ -1,0 +1,84 @@
+{
+  "blockchainTransaction": false,
+  "claimsBoundary": {
+    "blockchainProvesPhysicalTruth": false,
+    "hashProvesPhysicalOrigin": false,
+    "independentReplayStillRequired": true,
+    "publicDatasetSimulationClearlyDisclosed": true,
+    "stationSignatureProvesHonestAiExecution": false
+  },
+  "evidencePackageHashing": {
+    "canonicalization": "RFC8785-JCS",
+    "constructionOrder": [
+      "1_CREATE_EVIDENCE_MANIFEST_WITH_ZERO_ATTESTATION_DIGEST",
+      "2_CANONICALIZE_WITH_RFC8785_JCS",
+      "3_COMPUTE_EVIDENCE_PACKAGE_HASH_KECCAK256",
+      "4_BUILD_EIP712_STATION_ATTESTATION_USING_EVIDENCE_PACKAGE_HASH",
+      "5_COMPUTE_EIP712_ATTESTATION_DIGEST_AND_SIGNATURE",
+      "6_FILL_FINAL_MANIFEST_STATION_ATTESTATION_DIGEST",
+      "7_RETAIN_SIGNATURE_ENVELOPE_SEPARATELY",
+      "8_VERIFY_PACKAGE_BY_ZEROING_ATTESTATION_DIGEST_AND_RECOMPUTING_HASH"
+    ],
+    "contractCompatibility": "UNCHANGED — Contract still receives the same bytes32 evidencePackageHash field.",
+    "cryptographicLink": "The StationAttestation binds evidencePackageHash; the final evidence manifest records the resulting EIP-712 attestation digest. Verification therefore checks both the package preimage hash and the station signature without recursive hashing.",
+    "formula": "evidencePackageHash = keccak256(JCS(package with station.attestationDigest = 0x00..00))",
+    "hashAlgorithm": "keccak256",
+    "preimageRule": "Clone the schema-compatible Evidence Package manifest and set station.attestationDigest to ZERO_BYTES32 before RFC8785-JCS canonicalization and keccak256 hashing.",
+    "ruleId": "ZERO_ATTESTATION_DIGEST_PREIMAGE_V1",
+    "schema": "inspectescrow.evidence-package/1.0.0",
+    "signatureEnvelopeIncludedInHashPreimage": false,
+    "signatureEnvelopeRetainedOffChain": true,
+    "stationAttestationDigestIncludedInHashPreimage": false,
+    "stationAttestationDigestPresentInFinalManifest": true
+  },
+  "finalModelBundle": {
+    "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "modelExecutionChanged": false,
+    "semanticReaudit": "PASS_10_OF_10",
+    "thresholdChanged": false
+  },
+  "policyHashCreated": false,
+  "policyHashing": {
+    "canonicalization": "RFC8785-JCS",
+    "finalDocumentContainsComputedPolicyHash": true,
+    "formula": "policyHash = keccak256(JCS(policy with hashing.policyHash = 0x00..00))",
+    "hashAlgorithm": "keccak256",
+    "preimageRule": "Clone the final policy and set hashing.policyHash to ZERO_BYTES32 before RFC8785-JCS canonicalization and keccak256.",
+    "ruleId": "ZERO_POLICY_HASH_PREIMAGE_V1",
+    "verificationRule": "Read final policy, save declared policyHash, replace hashing.policyHash with ZERO_BYTES32, JCS-canonicalize, keccak256, and require equality with the declared policyHash."
+  },
+  "policyIdentity": {
+    "policyId": "0x94f9b3919df10d0bba367041f4c2bd2b69cf0a1c6a45417be4fe11f4d82b8337",
+    "policyIdEqualsPolicyHash": false,
+    "policyIdRule": "keccak256(UTF8(\"InspectEscrow|MeaningfulDemoPolicy|\" + tradeId + \"|v1\"))",
+    "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c"
+  },
+  "policySchemaIntegration": {
+    "finalMvpSchema": "inspectescrow.inspection-policy/1.1.0",
+    "intentionalSpecimenIdentityDeviationOnly": true,
+    "phase1BaseSchema": "inspectescrow.inspection-policy/1.0.0",
+    "phase1StructurePreserved": true,
+    "productionSchemaClaim": false,
+    "reasonForVersionIncrement": "The Phase-1 ideal specimen identity requires a serialized ID/QR visible in an overview image. The public MVTec dataset does not provide such transaction-specific physical identifiers, so the hackathon simulation must not claim them."
+  },
+  "project": "InspectEscrow",
+  "purpose": "Resolve public-dataset specimen-identity limits and non-circular commitment rules before constructing the final active Inspection Policy.",
+  "schema": "inspectescrow.final-policy-integration-clarification/1.0.0",
+  "specimenIdentity": {
+    "canonicalSpecimenManifestRequired": true,
+    "captureSessionNonceRequired": true,
+    "completeSessionFileListRequired": true,
+    "datasetRelativePathRequired": true,
+    "exactSourceImageDigestRequired": true,
+    "identifierVisibleOverviewRequired": false,
+    "physicalCustodyProofClaimed": false,
+    "physicalSubstitutionEliminatedClaim": false,
+    "productionRule": "A production deployment requires a new validated specimen-identity policy with physical identifier and custody controls.",
+    "samePhysicalItemSupplierBuyerClaimed": false,
+    "scheme": "PUBLIC_DATASET_SOURCE_FILE_BINDING",
+    "scope": "PUBLIC_DATASET_SIMULATION",
+    "serializedPhysicalQrClaimed": false,
+    "tradeIdBound": true
+  },
+  "status": "FINAL_FROZEN_BEFORE_POLICY_HASH"
+}

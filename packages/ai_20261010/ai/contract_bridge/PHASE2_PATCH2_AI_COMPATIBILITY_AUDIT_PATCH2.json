@@ -1,0 +1,133 @@
+{
+  "blockchain_transaction_allowed": false,
+  "checks": {
+    "all_demo_scores_uint128": true,
+    "contract_verdict_rule_match": true,
+    "modelBundleHash_bytes32": true,
+    "replay_tolerance_scaling": true,
+    "scoreScaleExponent_uint8": true,
+    "scoreSchemaId_bytes32": true,
+    "score_schema_bridge_defined": true,
+    "thresholdScaled_uint128": true,
+    "threshold_boundary_review": true
+  },
+  "contract_facts": {
+    "admissible_score_rule": "scoreMinScaled <= aggregateScoreScaled <= scoreMaxScaled",
+    "contract_version": "PHASE2-PATCH2",
+    "eip712_domain": {
+      "name": "InspectEscrow",
+      "version": "1"
+    },
+    "invalid_score_rule": "If inspectionValidity == INVALID, aggregateScoreScaled must equal 0",
+    "nonzero_evidence_anchors_required": [
+      "specimenManifestHash",
+      "evidencePackageHash"
+    ],
+    "station_commitments_must_equal_trade_terms": [
+      "policyHash",
+      "modelBundleHash",
+      "captureProfileHash",
+      "scoreSchemaId"
+    ],
+    "trade_terms_ai_fields": {
+      "modelBundleHash": "bytes32",
+      "scoreMaxScaled": "uint128",
+      "scoreMinScaled": "uint128",
+      "scoreScaleExponent": "uint8",
+      "scoreSchemaId": "bytes32",
+      "thresholdScaled": "uint128"
+    },
+    "verdict_rule": "aggregateScoreScaled < thresholdScaled => ADMISSIBLE_PASS; otherwise ADMISSIBLE_REVIEW"
+  },
+  "demo_contract_derivation": [
+    {
+      "aggregateScoreScaled": 56834435,
+      "contractDerivedDecision": "PASS",
+      "path": "demo/good/014.png"
+    },
+    {
+      "aggregateScoreScaled": 55724724,
+      "contractDerivedDecision": "PASS",
+      "path": "demo/good/002.png"
+    },
+    {
+      "aggregateScoreScaled": 55442036,
+      "contractDerivedDecision": "PASS",
+      "path": "demo/good/000.png"
+    },
+    {
+      "aggregateScoreScaled": 60138172,
+      "contractDerivedDecision": "REVIEW_REQUIRED",
+      "path": "demo/scratch/022.png"
+    },
+    {
+      "aggregateScoreScaled": 60733288,
+      "contractDerivedDecision": "REVIEW_REQUIRED",
+      "path": "demo/scratch/010.png"
+    }
+  ],
+  "frozen_ai_values": {
+    "modelBundleHash": "0x5283badc2a43c964cda6f7a921117340f0b1928027e05c3f7aea0dcba9849466",
+    "scoreScaleExponent": 6,
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "scoreSchemaName": "PATCHCORE_AGGREGATE_SCORE_V1",
+    "thresholdScaled": 57904037
+  },
+  "important_result": "Frozen AI score/model values remain PHASE2-PATCH2 compatible. Replay tolerance is NOT yet an active-policy frozen value. No meaningful trade may be proposed until all open policy fields are finalized.",
+  "open_fields": {
+    "captureProfileHash": {
+      "status": "NOT_YET_CONTRACT_FROZEN"
+    },
+    "evidencePackageHash": {
+      "status": "TRADE_AND_INSPECTION_SPECIFIC"
+    },
+    "policyHash": {
+      "status": "NOT_YET_CREATED"
+    },
+    "productSpecHash": {
+      "status": "NOT_YET_CONTRACT_FROZEN"
+    },
+    "requiredViewSetHash": {
+      "status": "NOT_YET_CONTRACT_FROZEN"
+    },
+    "scoreMaxScaled": {
+      "reason": "Must be explicitly defined by the active score policy before proposeTrade().",
+      "status": "NOT_YET_FROZEN"
+    },
+    "scoreMinScaled": {
+      "reason": "Must be explicitly defined by the active score policy before proposeTrade().",
+      "status": "NOT_YET_FROZEN"
+    },
+    "specimenManifestHash": {
+      "status": "TRADE_AND_CAPTURE_SPECIFIC"
+    },
+    "tradeId_and_wallets": {
+      "status": "TRADE_SPECIFIC"
+    },
+    "windows_and_retry_limits": {
+      "status": "TRADE_POLICY_SPECIFIC"
+    }
+  },
+  "patch_history": {
+    "modelBundleHash_changed": false,
+    "model_changed": false,
+    "patch": "PATCH2_FINAL_MVP_REPLAY_TOLERANCE",
+    "policy_sha256": "f885c2df71d9c1e328f3459b897338ccd4decd348764333af6c9023c901a0a2c",
+    "replayToleranceScaled": 222,
+    "supersedes_patch1_sha256": "7259d56ba489085a42752bd4f3de1602e0e327d39ea7d4e654462b2ccd8fed30",
+    "threshold_changed": false
+  },
+  "project": "InspectEscrow",
+  "replay_tolerance": {
+    "cross_machine_verified": false,
+    "cross_runtime_verified": true,
+    "decision_match_also_required": true,
+    "derivation": "2 * observed CPU/T4 max scaled difference (111)",
+    "policy_sha256": "f885c2df71d9c1e328f3459b897338ccd4decd348764333af6c9023c901a0a2c",
+    "raw_equivalent": 0.000222,
+    "replayToleranceScaled": 222,
+    "status": "FINAL_FROZEN_FOR_MVP"
+  },
+  "schema": "inspectescrow.ai-contract-compatibility-audit/1.0.2",
+  "status": "PASS_WITH_REPLAY_TOLERANCE_FROZEN_PATCH2"
+}

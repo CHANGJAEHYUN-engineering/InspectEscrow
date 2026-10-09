@@ -1,0 +1,97 @@
+{
+  "datasetLabelScope": {
+    "anomalyCategoryLabels": [
+      "bent",
+      "color",
+      "flip",
+      "scratch"
+    ],
+    "evaluationLabels": [
+      "good",
+      "bent",
+      "color",
+      "flip",
+      "scratch"
+    ],
+    "finalDemoLabels": [
+      "good",
+      "scratch"
+    ],
+    "normalReferenceLabel": "good",
+    "trainingLabels": [
+      "good"
+    ],
+    "validationLabels": [
+      "good",
+      "bent",
+      "color",
+      "flip",
+      "scratch"
+    ]
+  },
+  "defectScope": {
+    "automaticDefectFindingFromCategory": false,
+    "automaticPaymentDecisionFromAI": false,
+    "datasetAnomalyCategoriesInEvaluation": [
+      "bent",
+      "color",
+      "flip",
+      "scratch"
+    ],
+    "finalDisputeJudgment": "INDEPENDENT_INSPECTOR",
+    "physicalDefectDefinition": "NOT_ESTABLISHED_BY_THIS_PUBLIC_DATASET_MVP"
+  },
+  "product": {
+    "datasetCategory": "metal_nut",
+    "dimensionalSpecification": "UNKNOWN_NOT_ASSERTED",
+    "manufacturer": "UNKNOWN_NOT_ASSERTED",
+    "materialSpecification": "UNKNOWN_NOT_ASSERTED",
+    "partNumber": "UNKNOWN_NOT_ASSERTED",
+    "physicalRevision": "UNKNOWN_NOT_ASSERTED",
+    "productClass": "metal_nut",
+    "productionTolerance": "UNKNOWN_NOT_ASSERTED",
+    "sourceDataset": "MVTec AD"
+  },
+  "productSpecId": "MVTec-metal_nut-PUBLIC-DATASET-DEMO-V1",
+  "project": "InspectEscrow",
+  "qualitySemantics": {
+    "aiFinalPhysicalDefectAuthority": false,
+    "aiIsDefectTypeClassifier": false,
+    "aiTask": "ANOMALY_DETECTION",
+    "anomalyLabelMeaning": "Dataset anomaly category used for AI evaluation; not by itself a contractual or physical defect judgment.",
+    "contractRouting": {
+      "scoreAtOrAboveThreshold": "REVIEW_REQUIRED",
+      "scoreBelowThreshold": "PASS"
+    },
+    "goodLabelMeaning": "Normal-reference class provided by the public dataset for this experimental scope.",
+    "reviewRequiredMeaning": "Escalation for further transaction procedure or human/Inspector review; it does not independently prove that the physical product is defective."
+  },
+  "requiredViewPolicy": {
+    "reason": "Product identity/scope and required-view coverage are intentionally committed separately.",
+    "requiredViewSetHash": "SEPARATE_COMMITMENT_NOT_DEFINED_IN_THIS_STEP"
+  },
+  "schema": "inspectescrow.product-spec/1.0.0",
+  "scopeBoundary": {
+    "productionMigrationRule": "A real manufacturer part number, drawing revision, dimensional tolerance, defect catalogue and acceptance standard require a new product specification and new productSpecHash.",
+    "validFor": "InspectEscrow hackathon MVTec metal_nut MVP",
+    "validForRealFactoryAcceptanceSpecification": false
+  },
+  "simulationScope": {
+    "commercialAcceptanceSpecificationClaim": false,
+    "mode": "PUBLIC_DATASET_SIMULATION",
+    "productionSpecificationClaim": false,
+    "purpose": "Demonstrate InspectEscrow transaction logic for Supplier outgoing inspection and Buyer incoming inspection using public industrial anomaly-detection images."
+  },
+  "specimenIdentityScheme": {
+    "actualSpecimenManifestHash": "NOT_PART_OF_PRODUCT_SPEC_AND_CREATED_PER_INSPECTION",
+    "plannedBindings": [
+      "tradeId",
+      "datasetRelativePath",
+      "exactSourceImageSHA256",
+      "captureSessionNonce",
+      "evidenceFileList"
+    ],
+    "scheme": "TRADE_SPECIFIC_SPECIMEN_MANIFEST"
+  },
+  "status": "FINAL_FROZEN_FOR_HACKATHON_MVP"
+}

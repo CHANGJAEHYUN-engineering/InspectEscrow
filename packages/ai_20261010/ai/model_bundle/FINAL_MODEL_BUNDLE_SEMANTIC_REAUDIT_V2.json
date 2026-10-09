@@ -1,0 +1,130 @@
+{
+  "blockchainTransaction": false,
+  "executionChanged": false,
+  "failCount": 0,
+  "finalGate": "PASS_READY_FOR_FINAL_POLICY_ASSEMBLY",
+  "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+  "passCount": 10,
+  "policyHashCreated": false,
+  "project": "InspectEscrow",
+  "schema": "inspectescrow.model-bundle-semantic-reaudit/2.0.0",
+  "scoreSchemaChanged": false,
+  "selfHashRecomputation": "PASS",
+  "semanticChecks": {
+    "backbone_and_feature_layers": {
+      "evidence": {
+        "backbone": "wide_resnet50_2",
+        "featureLayers": [
+          "layer2",
+          "layer3"
+        ]
+      },
+      "status": "PASS"
+    },
+    "calibration_manifest_and_threshold_report": {
+      "evidence": {
+        "calibrationManifestHash": "0x8efbac3c1fa9dfa7b557222714dc7765c6c5367ea45da55c96e7db505be5dfce",
+        "rawThreshold": 57.90403747558594,
+        "thresholdScaled": 57904037
+      },
+      "status": "PASS"
+    },
+    "coreset_and_neighbor_configuration": {
+      "evidence": {
+        "coresetSamplingRatio": 0.1,
+        "numNeighbors": 9
+      },
+      "status": "PASS"
+    },
+    "patchcore_memory_bank": {
+      "evidence": {
+        "actual": "0x4761c52147167bcfb846dbf2362ab72dc94badb388bf054ec5e65ca609985b06",
+        "manifest": "0x4761c52147167bcfb846dbf2362ab72dc94badb388bf054ec5e65ca609985b06"
+      },
+      "status": "PASS"
+    },
+    "postprocessing": {
+      "evidence": {
+        "aiGeneratesContractVerdict": false,
+        "aiThresholdingChangesSubmittedScore": false,
+        "heatmapChangesAggregateScore": false,
+        "meaning": "No additional nonlinear transformation, probability mapping, score normalization or clipping is applied to the contract-facing raw score.",
+        "overlayChangesAggregateScore": false,
+        "scoreTransformingPostprocessing": "NONE"
+      },
+      "status": "PASS"
+    },
+    "precision_and_determinism_profile": {
+      "evidence": {
+        "determinismProfile": {
+          "artifactReloadReplay": "PASS",
+          "evaluationMode": true,
+          "gradientDisabled": true,
+          "referenceReplayAbsoluteDifference": "0.0",
+          "referenceReplayTolerance": "0.00001"
+        },
+        "precision": "float32"
+      },
+      "status": "PASS"
+    },
+    "preprocessing_and_roi": {
+      "evidence": {
+        "colorSpace": "RGB",
+        "crop": {
+          "size": [
+            280,
+            280
+          ],
+          "type": "CENTER_CROP"
+        },
+        "normalization": {
+          "mean": [
+            0.485,
+            0.456,
+            0.406
+          ],
+          "std": [
+            0.229,
+            0.224,
+            0.225
+          ]
+        },
+        "orientation": "SOURCE_ORIENTATION_PRESERVED",
+        "resize": [
+          320,
+          320
+        ],
+        "roiMaskArtifact": null
+      },
+      "status": "PASS"
+    },
+    "runtime_and_dependency_lock": {
+      "evidence": {
+        "dependencyLockArtifact": "dependency_lock",
+        "runtimeCommitment": "0xa4149885ae2f8fca76103cb0e6014b844d5b61f8de640aac5da17bdef49dcd03"
+      },
+      "status": "PASS"
+    },
+    "score_normalization": {
+      "evidence": {
+        "scoreNormalization": "NONE",
+        "scoreTransformBeforeContractEncoding": "NONE"
+      },
+      "status": "PASS"
+    },
+    "weights_or_pretrained_identifier": {
+      "evidence": {
+        "modelCoreExists": true,
+        "pretrained": true
+      },
+      "status": "PASS"
+    }
+  },
+  "semanticClarification": {
+    "commitmentMatch": true,
+    "file": "MODEL_SCORE_SEMANTICS_CLARIFICATION_V1.json",
+    "keccak256": "0x7a845166ca6fed2d37cc2d3becf2ff86d09f70b661c4f1d3ccdf359bd3f7984a"
+  },
+  "status": "PASS_READY_FOR_FINAL_POLICY_ASSEMBLY",
+  "thresholdChanged": false
+}

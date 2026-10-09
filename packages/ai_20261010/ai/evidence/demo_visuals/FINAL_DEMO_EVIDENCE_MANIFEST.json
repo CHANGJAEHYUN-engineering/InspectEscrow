@@ -1,0 +1,62 @@
+{
+  "evidence": {
+    "demo/good/000.png": {
+      "anomaly_score": 55.44203567504883,
+      "decision": "PASS",
+      "heatmap_file": "demo__good__000__heatmap.png",
+      "heatmap_sha256": "e2c9003000a70ed3534de007016278526ba641eee880de7309852f5629a38cc0",
+      "input_sha256": "d7ca543f04733fb91ac02e18d0fbf06dcff554a1b1ad754173c42d10bb026bb6",
+      "overlay_file": "demo__good__000__overlay.png",
+      "overlay_sha256": "e3fa4cca618c268317ca67c45da5e3eb8be856aaed2f44342ec0c6d046d771ea",
+      "threshold": 57.90403747558594
+    },
+    "demo/good/002.png": {
+      "anomaly_score": 55.72472381591797,
+      "decision": "PASS",
+      "heatmap_file": "demo__good__002__heatmap.png",
+      "heatmap_sha256": "13911639e45c68af51b877ac28f5ac3994e963baf164c7ae81847f0812fa8386",
+      "input_sha256": "c915621335f2a306db55f3206c2a25c1ff31f4b1c6415b9717a5d5da9ec9ca78",
+      "overlay_file": "demo__good__002__overlay.png",
+      "overlay_sha256": "2e99664d5668f04e4023d4d82d81f30ba781ddc65a3148e9e42cd4f645925fa7",
+      "threshold": 57.90403747558594
+    },
+    "demo/good/014.png": {
+      "anomaly_score": 56.834434509277344,
+      "decision": "PASS",
+      "heatmap_file": "demo__good__014__heatmap.png",
+      "heatmap_sha256": "b7788b74f450ad41db75e6ea792ecc33a95b6b294d51a7729d774dd1bf4c3c82",
+      "input_sha256": "9e094532fd66ad52c59c2e7bbcf67eace77202d363aa5050a7d79f0356c53e62",
+      "overlay_file": "demo__good__014__overlay.png",
+      "overlay_sha256": "3e9eada034c3343454b1b26bc7862a7f94ffb587f2baf3a3fab2af969af3d5cc",
+      "threshold": 57.90403747558594
+    },
+    "demo/scratch/010.png": {
+      "anomaly_score": 60.7332878112793,
+      "decision": "REVIEW_REQUIRED",
+      "heatmap_file": "demo__scratch__010__heatmap.png",
+      "heatmap_sha256": "e3255fabaa366e91a44c80d142df9c937c8ef66d6e2e7efefe42d159de2ba884",
+      "input_sha256": "49b7f5e443fc22fb47ce7edf303623893e7791c2687213e98f9a2d80579e83ea",
+      "overlay_file": "demo__scratch__010__overlay.png",
+      "overlay_sha256": "f128217d576cb35f6e03e87c7a9ffc8d8e8c64e3a91eb4a0ef1f8a80a0722f15",
+      "threshold": 57.90403747558594
+    },
+    "demo/scratch/022.png": {
+      "anomaly_score": 60.1381721496582,
+      "decision": "REVIEW_REQUIRED",
+      "heatmap_file": "demo__scratch__022__heatmap.png",
+      "heatmap_sha256": "d007b847c5719ce37efa57972069eec0f07ebee64e3665a82f32255f9db1fd02",
+      "input_sha256": "f88d2d084303ec537991d3f5263c4a9ba50eff042e4968ff8be2aebfe59e456a",
+      "overlay_file": "demo__scratch__022__overlay.png",
+      "overlay_sha256": "8bc184c4892c38a21e26bf0399703342707b9629bfed7ebc5202a4f871b34298",
+      "threshold": 57.90403747558594
+    }
+  },
+  "model": "PatchCore_V2",
+  "model_changed": false,
+  "model_core_sha256": "8ab4beeb37242a742bac75c8f697d4af625eaf5acda339c887d6c77c9f6bd36b",
+  "project": "InspectEscrow",
+  "scenario_assignment_changed": false,
+  "scenario_assignment_sha256": "e4adb480766b177a96cd641e99d3361484833db2eb9d0f61dbc273679db3a4c5",
+  "threshold": 57.90403747558594,
+  "threshold_changed": false
+}

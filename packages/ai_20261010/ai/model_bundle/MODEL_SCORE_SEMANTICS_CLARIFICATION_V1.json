@@ -1,0 +1,81 @@
+{
+  "aggregation": {
+    "multiImageAggregation": "NOT_USED_IN_THIS_MVP",
+    "requiredSourceViewsPerInspection": 1,
+    "rule": "The frozen demo required-view set contains one SOURCE_INSPECTION_IMAGE, therefore the aggregate raw score equals that image's raw PatchCore anomaly score."
+  },
+  "contractEncoding": {
+    "classification": "ENCODING_NOT_AI_POSTPROCESSING",
+    "contractDecisionRule": "aggregateScoreScaled < thresholdScaled => PASS; otherwise REVIEW_REQUIRED",
+    "formula": "aggregateScoreScaled = ROUND_HALF_UP(Decimal(str(rawScore)) * 10^6)",
+    "roundingRule": "ROUND_HALF_UP_FOR_NONNEGATIVE_SCORE",
+    "scale": 1000000,
+    "scoreScaleExponent": 6,
+    "scoreSchema": "PATCHCORE_AGGREGATE_SCORE_V1",
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "thresholdRaw": "57.90403747558594",
+    "thresholdScaled": 57904037
+  },
+  "contractFacingScore": {
+    "meaning": "The raw PatchCore image-level anomaly score is used directly as the floating-point contract-facing score before deterministic integer encoding.",
+    "minMaxNormalization": false,
+    "probabilityCalibration": "NONE",
+    "scoreClipping": false,
+    "scoreNormalization": "NONE",
+    "scoreTransformBeforeContractEncoding": "NONE",
+    "sigmoid": false,
+    "softmax": false,
+    "source": "PATCHCORE_RAW_IMAGE_LEVEL_ANOMALY_SCORE",
+    "zScoreNormalization": false
+  },
+  "evidenceBasis": [
+    "patchcore_v2_model_core_config.json",
+    "threshold_v2_calibration_result.json",
+    "FINAL_AI_FREEZE_MANIFEST.json",
+    "RUNTIME/FINAL_AI_RUNTIME_MANIFEST.json",
+    "CONTRACT_BRIDGE/AI_TO_CONTRACT_BRIDGE_SPEC.json",
+    "STEP_13U_A_RAW_SCORE_POSTPROCESSING_REALITY_AUDIT"
+  ],
+  "executionChange": {
+    "memoryBank": false,
+    "model": false,
+    "preprocessing": false,
+    "scoreSchema": false,
+    "threshold": false,
+    "weights": false
+  },
+  "inputPreprocessing": {
+    "classification": "IMAGE_PREPROCESSING",
+    "imageNormalizationApplied": true,
+    "importantDistinction": "ImageNet mean/std input normalization is image preprocessing and is not anomaly-score normalization.",
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  },
+  "postprocessing": {
+    "aiGeneratesContractVerdict": false,
+    "aiThresholdingChangesSubmittedScore": false,
+    "heatmapChangesAggregateScore": false,
+    "meaning": "No additional nonlinear transformation, probability mapping, score normalization or clipping is applied to the contract-facing raw score.",
+    "overlayChangesAggregateScore": false,
+    "scoreTransformingPostprocessing": "NONE"
+  },
+  "project": "InspectEscrow",
+  "purpose": "Explicitly commit score-normalization and postprocessing semantics that were already implemented but not explicitly stated in the previous model-bundle commitment.",
+  "replaySemantics": {
+    "consistencyRule": "abs(replayScaled - submittedScaled) <= 222 AND the contract-derived PASS/REVIEW decision must remain unchanged.",
+    "crossMachineGuarantee": false,
+    "replayToleranceScaled": 222
+  },
+  "schema": "inspectescrow.model-score-semantics-clarification/1.0.0",
+  "scopeBoundary": "This clarification applies only to the frozen InspectEscrow hackathon MVP model bundle.",
+  "status": "FINAL_INTEGRATION_CLARIFICATION",
+  "supersedesModelBundleHash": "0x5283badc2a43c964cda6f7a921117340f0b1928027e05c3f7aea0dcba9849466"
+}

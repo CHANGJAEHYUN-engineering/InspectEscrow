@@ -1,0 +1,52 @@
+{
+  "blockchain_transaction": false,
+  "claims_boundary": {
+    "all_hardware_verified": false,
+    "cross_machine_verified": false,
+    "cross_runtime_verified": true,
+    "production_certification": false,
+    "statistical_universal_bound": false,
+    "verified_for_current_mvp_runtime_pair": true
+  },
+  "consistency_rule": {
+    "decision_condition": "contractDecision(replayScaled) == contractDecision(submittedScaled)",
+    "decision_flip_inside_tolerance": "EXECUTION_INCONSISTENT",
+    "final_condition": "CONSISTENT only if BOTH numeric_condition and decision_condition are true",
+    "numeric_condition": "abs(replayScaled - submittedScaled) <= replayToleranceScaled",
+    "outside_tolerance": "EXECUTION_INCONSISTENT"
+  },
+  "derivation": {
+    "calculation": "2 * 111 = 222",
+    "engineering_safety_factor": 2,
+    "observed_max_raw_difference": 0.000110626220703125,
+    "observed_max_scaled_difference": 111,
+    "rule": "replayToleranceScaled = engineeringSafetyFactor * maxObservedCpuCudaScaledDifference"
+  },
+  "evidence": {
+    "cpu_repeatability_sha256": "c648a28f479d6da040fcfba412ff51a0a842474da0eb24c7594bb9269fb7ed88",
+    "execution_device_audit_sha256": "35f646ef44e7f2bcc7701f71953b537ba43bf593bd1ac46f61a5fcd5049374fb",
+    "full_demo_cpu_cuda_envelope_sha256": "f260069280dea3eeab76f65a7554706fb9adffe1db41ce6f031b4f658234671d",
+    "single_image_cpu_cuda_sha256": "9d98c36defbcab3e367b1fe22ed62cc834ba235766e8f4ad8dbd84d216a5f3ab"
+  },
+  "evidence_scope": {
+    "all_contract_decisions_stable": true,
+    "all_frozen_cpu_scores_reproduced": true,
+    "cpu_repeatability": "EXACT_IN_TESTED_RUNS",
+    "cuda_repeatability": "EXACT_IN_TESTED_RUNS",
+    "demo_images": 7,
+    "runs_per_runtime_per_image": 5,
+    "runtime_pair": "CPU <-> NVIDIA Tesla T4 CUDA"
+  },
+  "important_interpretation": "222 is an MVP engineering tolerance derived from the measured CPU/Tesla-T4 demo envelope with a 2x safety factor. It is not claimed to be a universal PatchCore reproducibility bound.",
+  "modelBundleHash": "0x5283badc2a43c964cda6f7a921117340f0b1928027e05c3f7aea0dcba9849466",
+  "model_changed": false,
+  "project": "InspectEscrow",
+  "replayToleranceRawEquivalent": 0.000222,
+  "replayToleranceScaled": 222,
+  "schema": "inspectescrow.ai-replay-tolerance-policy/1.0.0",
+  "scoreScaleExponent": 6,
+  "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+  "status": "FINAL_FROZEN_FOR_MVP",
+  "thresholdScaled": 57904037,
+  "threshold_changed": false
+}

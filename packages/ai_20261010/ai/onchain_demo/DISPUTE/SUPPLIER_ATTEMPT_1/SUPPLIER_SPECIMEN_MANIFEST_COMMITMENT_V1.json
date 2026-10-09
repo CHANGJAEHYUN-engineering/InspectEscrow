@@ -1,0 +1,36 @@
+{
+  "attempt": 1,
+  "blockchainTransaction": false,
+  "captureProfileHash": "0x3ea93a717cf8570d9b5c0662b1d27bb4a882651784342013786266b269db96da",
+  "evidencePackageHashCreated": false,
+  "inspectionRole": "SUPPLIER",
+  "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+  "physicalIdentityClaim": false,
+  "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+  "productSpecHash": "0x68e3eb25a12d6521ae2aa37735ffad831810f6a05268d940b33a3bae6915d4e7",
+  "project": "InspectEscrow",
+  "requiredViewSetHash": "0x5db9617738ccb9a0b2811e49716ad46cb24474d56a9cd55867df831a01c4abc3",
+  "scenarioId": "DISPUTE_SUPPLIER_PASS_BUYER_REVIEW",
+  "schema": "inspectescrow.specimen-manifest-commitment/1.0.0",
+  "sessionNonce": "0x80281e9f5a621511715d0e7f0637c1f0f0bf99a695ed790112187e7c3edc86b2",
+  "source": {
+    "byteLength": 508112,
+    "datasetRelativePath": "demo/good/000.png",
+    "exactOriginalBytesUsed": true,
+    "keccak256": "0x59b0f6d5be94067754f77108864b457a8e1a732410bcf5e344e8810645e891a0",
+    "resavedOrTranscoded": false,
+    "sha256": "d7ca543f04733fb91ac02e18d0fbf06dcff554a1b1ad754173c42d10bb026bb6",
+    "zipMember": "InspectEscrow_metal_nut_FINAL_DATASET/demo/good/000.png"
+  },
+  "specimenManifest": {
+    "canonicalFile": "SUPPLIER_SPECIMEN_MANIFEST_V1.jcs.json",
+    "canonicalization": "RFC8785-JCS",
+    "hashAlgorithm": "keccak256",
+    "readableFile": "SUPPLIER_SPECIMEN_MANIFEST_V1.json",
+    "selfRecomputation": "PASS",
+    "specimenManifestHash": "0x0c39c0ad9a76fb194c92d9864fa64ce2afbfe00c979ec762bffaf2c8eb436557"
+  },
+  "stationSignatureCreated": false,
+  "status": "FINAL_FROZEN",
+  "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c"
+}

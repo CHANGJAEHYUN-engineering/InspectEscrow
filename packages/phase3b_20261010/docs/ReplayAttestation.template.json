@@ -1,0 +1,13 @@
+{
+  "tradeId": null,
+  "stage": null,
+  "inspectorActor": null,
+  "policyHash": null,
+  "supplierEvidenceHash": null,
+  "buyerEvidenceHash": null,
+  "replayReportHash": null,
+  "consistent": null,
+  "nonce": null,
+  "issuedAt": null,
+  "validUntil": null
+}

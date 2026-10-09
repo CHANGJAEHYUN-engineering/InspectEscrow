@@ -1,0 +1,70 @@
+{
+  "captureContext": {
+    "category": "metal_nut",
+    "dataset": "MVTec AD",
+    "important_statement": "Supplier and Buyer demo images simulate inspection events. They are not claimed to be photographs of the same physical nut before and after shipment.",
+    "mode": "PUBLIC_DATASET_SIMULATION",
+    "physical_same_specimen_claim": false,
+    "purpose": "Reproduce Supplier outgoing-inspection and Buyer incoming-inspection transaction scenarios using public industrial anomaly-detection images."
+  },
+  "captureQualityPolicy": {
+    "failureMeaning": "A violation of a required digital-input check makes the inspection evidence nonconforming; it is not itself a product defect judgment.",
+    "notClaimedChecks": [
+      "PHYSICAL_CAMERA_IDENTITY",
+      "PHYSICAL_FIXTURE_COMPLIANCE",
+      "LIGHTING_LUX_COMPLIANCE",
+      "EXPOSURE_COMPLIANCE",
+      "WHITE_BALANCE_COMPLIANCE",
+      "CAMERA_DISTANCE_COMPLIANCE"
+    ],
+    "requiredChecks": [
+      "FILE_EXISTS",
+      "PNG_FORMAT",
+      "RGB_COLOR_MODE",
+      "WIDTH_700",
+      "HEIGHT_700",
+      "EXACT_SOURCE_BYTES_HASHED"
+    ]
+  },
+  "modelPreprocessingBoundary": {
+    "note": "Resize 320 -> center crop 280 and ImageNet normalization belong to the committed model bundle, not to the physical/source capture profile."
+  },
+  "physicalCaptureMetadata": {
+    "acquisitionDevice": "UNKNOWN_NOT_ASSERTED",
+    "camera": "UNKNOWN_NOT_ASSERTED",
+    "cameraToObjectDistance": "UNKNOWN_NOT_ASSERTED",
+    "exposure": "UNKNOWN_NOT_ASSERTED",
+    "fixture": "UNKNOWN_NOT_ASSERTED",
+    "illuminanceLux": "UNKNOWN_NOT_ASSERTED",
+    "lens": "UNKNOWN_NOT_ASSERTED",
+    "lightingRecipe": "UNKNOWN_NOT_ASSERTED",
+    "whiteBalance": "UNKNOWN_NOT_ASSERTED"
+  },
+  "profileId": "MVTec-metal_nut-PUBLIC-DATASET-SIMULATION-V1",
+  "project": "InspectEscrow",
+  "schema": "inspectescrow.capture-profile/1.0.0",
+  "scopeBoundary": {
+    "productionMigrationRule": "A real factory camera/lighting/fixture deployment requires a new validated capture profile and a new captureProfileHash.",
+    "validFor": "InspectEscrow hackathon public-dataset MVP",
+    "validForProductionCameraCapture": false
+  },
+  "sessionRules": {
+    "derivedHeatmapMayBeSeparateArtifact": true,
+    "originalFileBytes": "IMMUTABLE_FOR_SESSION",
+    "reserveImageSubstitutionForFavorableScore": "PROHIBITED",
+    "sameBytesForEvidenceAndInference": true,
+    "sourceImageOverwrite": "PROHIBITED"
+  },
+  "sourceImageRequirements": {
+    "colorMode": "RGB",
+    "containerFormat": "PNG",
+    "exactSourceBytesRequired": true,
+    "heightPixels": 700,
+    "preInferenceFileTransformation": "NONE",
+    "resaveBeforeEvidenceHash": false,
+    "sourceOrientation": "PRESERVED",
+    "transcodeBeforeInference": false,
+    "widthPixels": 700
+  },
+  "status": "FINAL_FROZEN_FOR_HACKATHON_MVP"
+}

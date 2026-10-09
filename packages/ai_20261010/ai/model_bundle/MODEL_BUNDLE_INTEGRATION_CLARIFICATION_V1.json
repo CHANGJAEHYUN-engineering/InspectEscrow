@@ -1,0 +1,55 @@
+{
+  "ai_integrity": {
+    "model_changed": false,
+    "replay_result_changed": false,
+    "scores_changed": false,
+    "threshold_changed": false
+  },
+  "detected_phase1_ambiguity": {
+    "issue": "The frozen model-bundle schema requires bundleHash inside the manifest, but does not define how bundleHash is treated when computing the hash of that same manifest.",
+    "risk": "Naively hashing the final manifest creates a self-reference and cannot produce a stable fixed commitment."
+  },
+  "integration_resolution": {
+    "canonicalization_rule": "Canonicalize that preimage using RFC8785-JCS.",
+    "digest_rule": "modelBundleHash = keccak256(canonical preimage bytes).",
+    "final_manifest_rule": "After computing modelBundleHash, write that value into bundleHash for the human-readable/final manifest.",
+    "name": "ZERO_BUNDLE_HASH_PREIMAGE_V1",
+    "preimage_rule": "Construct the complete Phase-1-compatible manifest with bundleHash set to 0x followed by 64 zero hex characters.",
+    "reason": "Removes self-reference while keeping bundleHash visible inside the final off-chain manifest.",
+    "verification_rule": "A verifier MUST replace bundleHash with zero bytes32, RFC8785-canonicalize the manifest, then recompute keccak256."
+  },
+  "obsolete_model_bundle_hashes": [
+    {
+      "reason": "Used SHA-256 instead of the Phase-1 keccak256 contract commitment policy.",
+      "value": "0x43efe9d5d71c937655d3594b1040e4e350180ae517bb50e83d646881c80c5e8e"
+    },
+    {
+      "reason": "Outer JCS+keccak was corrected, but the manifest itself does not conform to the frozen Phase-1 model-bundle schema; child artifact digests and required fields are incomplete.",
+      "value": "0x2814783f0db7a8e54d8199192e2d59c3c8f9e88c466a9a53abc9292f6c2e2ae7"
+    }
+  ],
+  "on_chain_use": {
+    "blockchain_transaction_allowed": false,
+    "current_modelBundleHash_status": "NOT_YET_FINAL"
+  },
+  "project": "InspectEscrow",
+  "runtime_digest_resolution": {
+    "algorithm": "keccak256(RFC8785-JCS(runtime manifest))",
+    "claim_limit": "This is an MVP runtime-environment commitment, not proof that inference executed inside an OCI container.",
+    "rule": "For the hackathon MVP, runtime.containerDigest will commit to the canonical FINAL_AI_RUNTIME_MANIFEST rather than claim an OCI/container-image digest."
+  },
+  "schema": "inspectescrow.model-bundle-integration-clarification/1.0.0",
+  "score_schema_encoding": {
+    "contract_bytes32_rule": "keccak256(UTF-8 bytes of human_identifier)",
+    "human_identifier": "PATCHCORE_AGGREGATE_SCORE_V1",
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8"
+  },
+  "source_constraints": {
+    "canonicalization": "RFC8785-JCS",
+    "child_artifact_digest_algorithm": "keccak256",
+    "contract_commitment_algorithm": "keccak256",
+    "contract_modelBundleHash_type": "bytes32",
+    "manifest_schema": "inspectescrow.model-bundle-manifest/1.0.0"
+  },
+  "status": "PRE_MODEL_BUNDLE_FINALIZATION"
+}

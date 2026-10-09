@@ -1,0 +1,109 @@
+{
+  "artifact_integrity": {
+    "model_weights_changed": false,
+    "original_model_moved": false,
+    "threshold_changed": false
+  },
+  "claims_boundary": {
+    "cross_machine_verified": false,
+    "cross_runtime_verified": true,
+    "general_all_hardware_reproducibility": false,
+    "verified_pair": "CPU vs NVIDIA Tesla T4 CUDA"
+  },
+  "classification": "CPU_CUDA_NUMERIC_DIFFERENCE_DECISION_STABLE",
+  "cpu_reference": {
+    "device": "cpu",
+    "device_audit_sha256": "35f646ef44e7f2bcc7701f71953b537ba43bf593bd1ac46f61a5fcd5049374fb",
+    "repeatability_evidence_sha256": "c648a28f479d6da040fcfba412ff51a0a842474da0eb24c7594bb9269fb7ed88",
+    "scaled_score": 60138172,
+    "score": 60.1381721496582
+  },
+  "cross_runtime_difference": {
+    "max_abs_raw_difference": 2.288818359375e-05,
+    "max_abs_scaled_difference": 23,
+    "mean_abs_raw_difference": 2.288818359375e-05
+  },
+  "cuda_runtime": {
+    "batch_image_device": "cuda:0",
+    "buffer_devices": [
+      "cuda:0"
+    ],
+    "device": "cuda:0",
+    "gpu": "Tesla T4",
+    "memory_bank_device": "cuda:0",
+    "memory_bank_shape": [
+      21560,
+      1536
+    ],
+    "parameter_devices": [
+      "cuda:0"
+    ],
+    "pytorch": "2.11.0+cu130",
+    "run_count": 20
+  },
+  "cuda_scores": [
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461,
+    60.13814926147461
+  ],
+  "cuda_statistics": {
+    "maximum": 60.13814926147461,
+    "mean": 60.13814926147461,
+    "minimum": 60.13814926147461,
+    "population_std": 0.0,
+    "raw_range": 0.0,
+    "unique_raw_scores": 1,
+    "unique_scaled_scores": 1
+  },
+  "decision": {
+    "consistent": true,
+    "cpu": "REVIEW_REQUIRED",
+    "cuda": [
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED",
+      "REVIEW_REQUIRED"
+    ]
+  },
+  "experiment": "PHASE1_E3_CPU_VS_CUDA_CROSS_RUNTIME_REPLAY",
+  "latency_ms": {
+    "maximum": 1552.8093799985072,
+    "mean": 1536.2203695502103,
+    "minimum": 1514.525180002238
+  },
+  "project": "InspectEscrow",
+  "target": "demo/scratch/022.png"
+}

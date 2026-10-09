@@ -1,0 +1,384 @@
+{
+  "blockchain_transaction": false,
+  "claims_boundary": {
+    "all_demo_images_verified": true,
+    "all_possible_hardware_verified": false,
+    "cpu_cuda_cross_runtime_verified": true,
+    "cross_machine_verified": false
+  },
+  "coverage": {
+    "image_count": 7,
+    "images": [
+      "demo/good/000.png",
+      "demo/good/002.png",
+      "demo/good/007.png",
+      "demo/good/014.png",
+      "demo/scratch/001.png",
+      "demo/scratch/010.png",
+      "demo/scratch/022.png"
+    ],
+    "includes_primary_demo": true,
+    "includes_reserve_demo": true,
+    "runs_per_runtime_per_image": 5
+  },
+  "experiment": "PHASE1_E3_FULL_DEMO_CPU_CUDA_ENVELOPE",
+  "global_cross_runtime_envelope": {
+    "max_abs_raw_difference": 0.000110626220703125,
+    "max_abs_scaled_difference": 111,
+    "mean_abs_raw_difference": 5.558558872767857e-05,
+    "mean_abs_scaled_difference": 55.714285714285715
+  },
+  "integrity": {
+    "all_contract_decisions_stable": true,
+    "all_frozen_cpu_scaled_scores_reproduced": true
+  },
+  "model_changed": false,
+  "per_image": {
+    "demo/good/000.png": {
+      "cpu": {
+        "expected_frozen_scaled": 55442036,
+        "frozen_reference_match": true,
+        "scaled_scores": [
+          55442036,
+          55442036,
+          55442036,
+          55442036,
+          55442036
+        ],
+        "scores": [
+          55.44203567504883,
+          55.44203567504883,
+          55.44203567504883,
+          55.44203567504883,
+          55.44203567504883
+        ],
+        "unique_scores": [
+          55.44203567504883
+        ]
+      },
+      "cross_runtime": {
+        "decision_stable": true,
+        "max_abs_raw_difference": 6.866455078125e-05,
+        "max_abs_scaled_difference": 69
+      },
+      "cuda": {
+        "scaled_scores": [
+          55441967,
+          55441967,
+          55441967,
+          55441967,
+          55441967
+        ],
+        "scores": [
+          55.44196701049805,
+          55.44196701049805,
+          55.44196701049805,
+          55.44196701049805,
+          55.44196701049805
+        ],
+        "unique_scores": [
+          55.44196701049805
+        ]
+      }
+    },
+    "demo/good/002.png": {
+      "cpu": {
+        "expected_frozen_scaled": 55724724,
+        "frozen_reference_match": true,
+        "scaled_scores": [
+          55724724,
+          55724724,
+          55724724,
+          55724724,
+          55724724
+        ],
+        "scores": [
+          55.72472381591797,
+          55.72472381591797,
+          55.72472381591797,
+          55.72472381591797,
+          55.72472381591797
+        ],
+        "unique_scores": [
+          55.72472381591797
+        ]
+      },
+      "cross_runtime": {
+        "decision_stable": true,
+        "max_abs_raw_difference": 3.814697265625e-05,
+        "max_abs_scaled_difference": 38
+      },
+      "cuda": {
+        "scaled_scores": [
+          55724762,
+          55724762,
+          55724762,
+          55724762,
+          55724762
+        ],
+        "scores": [
+          55.724761962890625,
+          55.724761962890625,
+          55.724761962890625,
+          55.724761962890625,
+          55.724761962890625
+        ],
+        "unique_scores": [
+          55.724761962890625
+        ]
+      }
+    },
+    "demo/good/007.png": {
+      "cpu": {
+        "expected_frozen_scaled": 58254711,
+        "frozen_reference_match": true,
+        "scaled_scores": [
+          58254711,
+          58254711,
+          58254711,
+          58254711,
+          58254711
+        ],
+        "scores": [
+          58.25471115112305,
+          58.25471115112305,
+          58.25471115112305,
+          58.25471115112305,
+          58.25471115112305
+        ],
+        "unique_scores": [
+          58.25471115112305
+        ]
+      },
+      "cross_runtime": {
+        "decision_stable": true,
+        "max_abs_raw_difference": 1.52587890625e-05,
+        "max_abs_scaled_difference": 15
+      },
+      "cuda": {
+        "scaled_scores": [
+          58254726,
+          58254726,
+          58254726,
+          58254726,
+          58254726
+        ],
+        "scores": [
+          58.25472640991211,
+          58.25472640991211,
+          58.25472640991211,
+          58.25472640991211,
+          58.25472640991211
+        ],
+        "unique_scores": [
+          58.25472640991211
+        ]
+      }
+    },
+    "demo/good/014.png": {
+      "cpu": {
+        "expected_frozen_scaled": 56834435,
+        "frozen_reference_match": true,
+        "scaled_scores": [
+          56834435,
+          56834435,
+          56834435,
+          56834435,
+          56834435
+        ],
+        "scores": [
+          56.834434509277344,
+          56.834434509277344,
+          56.834434509277344,
+          56.834434509277344,
+          56.834434509277344
+        ],
+        "unique_scores": [
+          56.834434509277344
+        ]
+      },
+      "cross_runtime": {
+        "decision_stable": true,
+        "max_abs_raw_difference": 7.62939453125e-05,
+        "max_abs_scaled_difference": 77
+      },
+      "cuda": {
+        "scaled_scores": [
+          56834358,
+          56834358,
+          56834358,
+          56834358,
+          56834358
+        ],
+        "scores": [
+          56.83435821533203,
+          56.83435821533203,
+          56.83435821533203,
+          56.83435821533203,
+          56.83435821533203
+        ],
+        "unique_scores": [
+          56.83435821533203
+        ]
+      }
+    },
+    "demo/scratch/001.png": {
+      "cpu": {
+        "expected_frozen_scaled": 58676605,
+        "frozen_reference_match": true,
+        "scaled_scores": [
+          58676605,
+          58676605,
+          58676605,
+          58676605,
+          58676605
+        ],
+        "scores": [
+          58.676605224609375,
+          58.676605224609375,
+          58.676605224609375,
+          58.676605224609375,
+          58.676605224609375
+        ],
+        "unique_scores": [
+          58.676605224609375
+        ]
+      },
+      "cross_runtime": {
+        "decision_stable": true,
+        "max_abs_raw_difference": 5.7220458984375e-05,
+        "max_abs_scaled_difference": 57
+      },
+      "cuda": {
+        "scaled_scores": [
+          58676548,
+          58676548,
+          58676548,
+          58676548,
+          58676548
+        ],
+        "scores": [
+          58.67654800415039,
+          58.67654800415039,
+          58.67654800415039,
+          58.67654800415039,
+          58.67654800415039
+        ],
+        "unique_scores": [
+          58.67654800415039
+        ]
+      }
+    },
+    "demo/scratch/010.png": {
+      "cpu": {
+        "expected_frozen_scaled": 60733288,
+        "frozen_reference_match": true,
+        "scaled_scores": [
+          60733288,
+          60733288,
+          60733288,
+          60733288,
+          60733288
+        ],
+        "scores": [
+          60.7332878112793,
+          60.7332878112793,
+          60.7332878112793,
+          60.7332878112793,
+          60.7332878112793
+        ],
+        "unique_scores": [
+          60.7332878112793
+        ]
+      },
+      "cross_runtime": {
+        "decision_stable": true,
+        "max_abs_raw_difference": 0.000110626220703125,
+        "max_abs_scaled_difference": 111
+      },
+      "cuda": {
+        "scaled_scores": [
+          60733177,
+          60733177,
+          60733177,
+          60733177,
+          60733177
+        ],
+        "scores": [
+          60.733177185058594,
+          60.733177185058594,
+          60.733177185058594,
+          60.733177185058594,
+          60.733177185058594
+        ],
+        "unique_scores": [
+          60.733177185058594
+        ]
+      }
+    },
+    "demo/scratch/022.png": {
+      "cpu": {
+        "expected_frozen_scaled": 60138172,
+        "frozen_reference_match": true,
+        "scaled_scores": [
+          60138172,
+          60138172,
+          60138172,
+          60138172,
+          60138172
+        ],
+        "scores": [
+          60.1381721496582,
+          60.1381721496582,
+          60.1381721496582,
+          60.1381721496582,
+          60.1381721496582
+        ],
+        "unique_scores": [
+          60.1381721496582
+        ]
+      },
+      "cross_runtime": {
+        "decision_stable": true,
+        "max_abs_raw_difference": 2.288818359375e-05,
+        "max_abs_scaled_difference": 23
+      },
+      "cuda": {
+        "scaled_scores": [
+          60138149,
+          60138149,
+          60138149,
+          60138149,
+          60138149
+        ],
+        "scores": [
+          60.13814926147461,
+          60.13814926147461,
+          60.13814926147461,
+          60.13814926147461,
+          60.13814926147461
+        ],
+        "unique_scores": [
+          60.13814926147461
+        ]
+      }
+    }
+  },
+  "policy_status": {
+    "observed_cross_runtime_scaled_envelope": 111,
+    "replayToleranceScaled": "NOT_YET_FROZEN"
+  },
+  "project": "InspectEscrow",
+  "runtime_pair": {
+    "cpu": {
+      "model_memory_bank_device": "cpu",
+      "runtime_role": "frozen reference artifact reload"
+    },
+    "cuda": {
+      "device": "cuda:0",
+      "gpu": "Tesla T4",
+      "model_memory_bank_device": "cuda:0"
+    }
+  },
+  "threshold_changed": false
+}

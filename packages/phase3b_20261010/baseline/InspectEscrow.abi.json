@@ -1,0 +1,2385 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "fallback",
+    "stateMutability": "payable"
+  },
+  {
+    "type": "receive",
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "CONTRACT_VERSION",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "INSPECTOR_DECISION_TYPEHASH",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "MUTUAL_RESOLUTION_TYPEHASH",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "NAME",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "REPLAY_ATTESTATION_TYPEHASH",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "STATION_ATTESTATION_TYPEHASH",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "VERSION",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "abandonSupplierHold",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "acceptAndRelease",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "acceptInspectorAssignment",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "acceptPolicy",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "accountingConserved",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "activate",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "activateBackupInspector",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "cancelBeforeActivation",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claimable",
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "amount",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "consumedDigest",
+    "inputs": [
+      {
+        "name": "digest",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "consumed",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "consumedNonce",
+    "inputs": [
+      {
+        "name": "scopedNonceKey",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "consumed",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "eip712Domain",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "fields",
+        "type": "bytes1",
+        "internalType": "bytes1"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "version",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "chainId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "verifyingContract",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "salt",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "extensions",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "escalateAfterBackupTimeout",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "fund",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "getActionDeadline",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint64",
+        "internalType": "uint64"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getInspection",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "role",
+        "type": "uint8",
+        "internalType": "enum InspectEscrow.InspectionRole"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.InspectionRecord",
+        "components": [
+          {
+            "name": "outcome",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InspectionOutcome"
+          },
+          {
+            "name": "aggregateScoreScaled",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "evidencePackageHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "specimenManifestHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "attempt",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "submittedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "station",
+            "type": "address",
+            "internalType": "address"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getReplay",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum InspectEscrow.ReplayStatus"
+      },
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTradeState",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8",
+        "internalType": "enum InspectEscrow.TradeState"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTradeTerms",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.TradeTerms",
+        "components": [
+          {
+            "name": "tradeId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "supplier",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "buyer",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "primaryInspector",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "backupInspector",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "supplierStation",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "buyerStation",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "inspectorStation",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "escrowAmount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "policyVersion",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "policyHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "modelBundleHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "captureProfileHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "productSpecHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "requiredViewSetHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "scoreSchemaId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "thresholdScaled",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "scoreScaleExponent",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "scoreMinScaled",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "scoreMaxScaled",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "maxSupplierRetries",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "maxBuyerRetries",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "windows",
+            "type": "tuple",
+            "internalType": "struct InspectEscrow.Windows",
+            "components": [
+              {
+                "name": "supplierInspection",
+                "type": "uint64",
+                "internalType": "uint64"
+              },
+              {
+                "name": "buyerInspection",
+                "type": "uint64",
+                "internalType": "uint64"
+              },
+              {
+                "name": "buyerAcceptance",
+                "type": "uint64",
+                "internalType": "uint64"
+              },
+              {
+                "name": "primaryInspector",
+                "type": "uint64",
+                "internalType": "uint64"
+              },
+              {
+                "name": "backupInspector",
+                "type": "uint64",
+                "internalType": "uint64"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hashInspectorDecision",
+    "inputs": [
+      {
+        "name": "a",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.InspectorDecisionAttestation",
+        "components": [
+          {
+            "name": "tradeId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "stage",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InspectorStage"
+          },
+          {
+            "name": "inspectorActor",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "policyHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "supplierEvidenceHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "buyerEvidenceHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "replayReportHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "decision",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.SettlementOutcome"
+          },
+          {
+            "name": "reasonCode",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "nonce",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "issuedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "validUntil",
+            "type": "uint64",
+            "internalType": "uint64"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hashMutualResolution",
+    "inputs": [
+      {
+        "name": "r",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.MutualResolution",
+        "components": [
+          {
+            "name": "tradeId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "outcome",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.SettlementOutcome"
+          },
+          {
+            "name": "resolutionNonce",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "deadline",
+            "type": "uint64",
+            "internalType": "uint64"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hashReplayAttestation",
+    "inputs": [
+      {
+        "name": "a",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.ReplayAttestation",
+        "components": [
+          {
+            "name": "tradeId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "stage",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InspectorStage"
+          },
+          {
+            "name": "inspectorActor",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "policyHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "supplierEvidenceHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "buyerEvidenceHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "replayReportHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "consistent",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "nonce",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "issuedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "validUntil",
+            "type": "uint64",
+            "internalType": "uint64"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hashStationAttestation",
+    "inputs": [
+      {
+        "name": "a",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.StationAttestation",
+        "components": [
+          {
+            "name": "tradeId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "role",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InspectionRole"
+          },
+          {
+            "name": "station",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "attempt",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "sessionNonce",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "policyHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "modelBundleHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "captureProfileHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "specimenManifestHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "evidencePackageHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "aggregateScoreScaled",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "scoreSchemaId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "inspectionValidity",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InspectionValidity"
+          },
+          {
+            "name": "invalidReason",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InvalidReason"
+          },
+          {
+            "name": "issuedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "validUntil",
+            "type": "uint64",
+            "internalType": "uint64"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "invokeAcceptanceTimeout",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "invokeBuyerInspectionTimeout",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "invokeReinspectionTimeout",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "invokeSupplierHoldTimeout",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "invokeSupplierInspectionTimeout",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "isSettled",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "mutualResolve",
+    "inputs": [
+      {
+        "name": "resolution",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.MutualResolution",
+        "components": [
+          {
+            "name": "tradeId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "outcome",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.SettlementOutcome"
+          },
+          {
+            "name": "resolutionNonce",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "deadline",
+            "type": "uint64",
+            "internalType": "uint64"
+          }
+        ]
+      },
+      {
+        "name": "supplierSignature",
+        "type": "bytes",
+        "internalType": "bytes"
+      },
+      {
+        "name": "buyerSignature",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "outstandingClaimable",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "proposeTrade",
+    "inputs": [
+      {
+        "name": "terms",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.TradeTerms",
+        "components": [
+          {
+            "name": "tradeId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "supplier",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "buyer",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "primaryInspector",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "backupInspector",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "supplierStation",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "buyerStation",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "inspectorStation",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "escrowAmount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "policyVersion",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "policyHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "modelBundleHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "captureProfileHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "productSpecHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "requiredViewSetHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "scoreSchemaId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "thresholdScaled",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "scoreScaleExponent",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "scoreMinScaled",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "scoreMaxScaled",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "maxSupplierRetries",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "maxBuyerRetries",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "windows",
+            "type": "tuple",
+            "internalType": "struct InspectEscrow.Windows",
+            "components": [
+              {
+                "name": "supplierInspection",
+                "type": "uint64",
+                "internalType": "uint64"
+              },
+              {
+                "name": "buyerInspection",
+                "type": "uint64",
+                "internalType": "uint64"
+              },
+              {
+                "name": "buyerAcceptance",
+                "type": "uint64",
+                "internalType": "uint64"
+              },
+              {
+                "name": "primaryInspector",
+                "type": "uint64",
+                "internalType": "uint64"
+              },
+              {
+                "name": "backupInspector",
+                "type": "uint64",
+                "internalType": "uint64"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "recordReplayResult",
+    "inputs": [
+      {
+        "name": "attestation",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.ReplayAttestation",
+        "components": [
+          {
+            "name": "tradeId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "stage",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InspectorStage"
+          },
+          {
+            "name": "inspectorActor",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "policyHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "supplierEvidenceHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "buyerEvidenceHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "replayReportHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "consistent",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "nonce",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "issuedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "validUntil",
+            "type": "uint64",
+            "internalType": "uint64"
+          }
+        ]
+      },
+      {
+        "name": "signature",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "requestSupplierReinspection",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "submitInspection",
+    "inputs": [
+      {
+        "name": "attestation",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.StationAttestation",
+        "components": [
+          {
+            "name": "tradeId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "role",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InspectionRole"
+          },
+          {
+            "name": "station",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "attempt",
+            "type": "uint32",
+            "internalType": "uint32"
+          },
+          {
+            "name": "sessionNonce",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "policyHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "modelBundleHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "captureProfileHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "specimenManifestHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "evidencePackageHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "aggregateScoreScaled",
+            "type": "uint128",
+            "internalType": "uint128"
+          },
+          {
+            "name": "scoreSchemaId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "inspectionValidity",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InspectionValidity"
+          },
+          {
+            "name": "invalidReason",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InvalidReason"
+          },
+          {
+            "name": "issuedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "validUntil",
+            "type": "uint64",
+            "internalType": "uint64"
+          }
+        ]
+      },
+      {
+        "name": "signature",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "submitInspectorDecision",
+    "inputs": [
+      {
+        "name": "attestation",
+        "type": "tuple",
+        "internalType": "struct InspectEscrow.InspectorDecisionAttestation",
+        "components": [
+          {
+            "name": "tradeId",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "stage",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.InspectorStage"
+          },
+          {
+            "name": "inspectorActor",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "policyHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "supplierEvidenceHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "buyerEvidenceHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "replayReportHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "decision",
+            "type": "uint8",
+            "internalType": "enum InspectEscrow.SettlementOutcome"
+          },
+          {
+            "name": "reasonCode",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "nonce",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "issuedAt",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "validUntil",
+            "type": "uint64",
+            "internalType": "uint64"
+          }
+        ]
+      },
+      {
+        "name": "signature",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "totalFunded",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "totalWithdrawn",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "unsettledEscrow",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "usedResolutionNonce",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "nonce",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "used",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "withdraw",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "BackupInspectorActivated",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "backupInspectorDeadline",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "BuyerInspectionTimeoutEntered",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DisputeOpened",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "primaryInspectorDeadline",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "EIP712DomainChanged",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Escalated",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "EvidenceHoldEntered",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "role",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum InspectEscrow.InspectionRole"
+      },
+      {
+        "name": "reason",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "InspectionInvalidRecorded",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "role",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum InspectEscrow.InspectionRole"
+      },
+      {
+        "name": "attempt",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "reason",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum InspectEscrow.InvalidReason"
+      },
+      {
+        "name": "specimenManifestHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "evidencePackageHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "station",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "InspectionOutcomeDerived",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "role",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum InspectEscrow.InspectionRole"
+      },
+      {
+        "name": "attempt",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "aggregateScoreScaled",
+        "type": "uint128",
+        "indexed": false,
+        "internalType": "uint128"
+      },
+      {
+        "name": "outcome",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum InspectEscrow.InspectionOutcome"
+      },
+      {
+        "name": "specimenManifestHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "evidencePackageHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "station",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "InspectorAssignmentAccepted",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "inspector",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "policyHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "InspectorDecisionRecorded",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "stage",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum InspectEscrow.InspectorStage"
+      },
+      {
+        "name": "decision",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum InspectEscrow.SettlementOutcome"
+      },
+      {
+        "name": "reasonCode",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "replayReportHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MutualResolutionRecorded",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "outcome",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum InspectEscrow.SettlementOutcome"
+      },
+      {
+        "name": "resolutionNonce",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PolicyAccepted",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "party",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "policyHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ReinspectionOpened",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "role",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum InspectEscrow.InspectionRole"
+      },
+      {
+        "name": "nextAttempt",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "deadline",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ReplayResultRecorded",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "stage",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum InspectEscrow.InspectorStage"
+      },
+      {
+        "name": "replayReportHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "consistent",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SettlementCredited",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "outcome",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum InspectEscrow.SettlementOutcome"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SupplierHoldEntered",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "attempt",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "score",
+        "type": "uint128",
+        "indexed": false,
+        "internalType": "uint128"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SupplierInspectionTimeoutRefundCredited",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "buyer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "SupplierPreShipmentTerminated",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "buyer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "reason",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TradeActivated",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "supplierDeadline",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TradeCancelled",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "caller",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TradeFunded",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "buyer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TradeProposed",
+    "inputs": [
+      {
+        "name": "tradeId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "supplier",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "buyer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "policyHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Withdrawal",
+    "inputs": [
+      {
+        "name": "recipient",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "AlreadyFunded",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "AlreadySettled",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "AttemptNumberMismatch",
+    "inputs": [
+      {
+        "name": "expected",
+        "type": "uint32",
+        "internalType": "uint32"
+      },
+      {
+        "name": "actual",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "AttestationExpired",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "AttestationFromFuture",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "CaptureProfileHashMismatch",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "DeadlineNotReached",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "DeadlinePassed",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "DirectEtherDisabled",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "EvidenceHashMismatch",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ForbiddenDuplicateSubmission",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "FundingMismatch",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidAttestationSignature",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidAttestationWindow",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidInspectionReason",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidMutualSignatures",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidScoreSentinel",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidSettlementOutcome",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidShortString",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidState",
+    "inputs": [
+      {
+        "name": "expected",
+        "type": "uint8",
+        "internalType": "enum InspectEscrow.TradeState"
+      },
+      {
+        "name": "actual",
+        "type": "uint8",
+        "internalType": "enum InspectEscrow.TradeState"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidStateSet",
+    "inputs": [
+      {
+        "name": "actual",
+        "type": "uint8",
+        "internalType": "enum InspectEscrow.TradeState"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidTerms",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ModelBundleHashMismatch",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NativeTransferFailed",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NoClaimableBalance",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NonceAlreadyUsed",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "PolicyHashMismatch",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ReentrancyGuardReentrantCall",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ReplayRequired",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "RetryLimitReached",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ScoreOutOfRange",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ScoreSchemaMismatch",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "StringTooLong",
+    "inputs": [
+      {
+        "name": "str",
+        "type": "string",
+        "internalType": "string"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "TradeAlreadyExists",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "TradeNotFound",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "UnauthorizedCaller",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "UnauthorizedStation",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "WrongRole",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ZeroAddress",
+    "inputs": []
+  }
+]

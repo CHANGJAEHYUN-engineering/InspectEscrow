@@ -1,0 +1,69 @@
+{
+  "ai_status": "FINAL_MODEL_FROZEN",
+  "artifact_sha256": {
+    "model_config": "a4bb1c37f5794ecf2dabcdafe269d885f28f26674383406b22a95a29d7b9c149",
+    "model_core": "8ab4beeb37242a742bac75c8f697d4af625eaf5acda339c887d6c77c9f6bd36b",
+    "threshold_result": "c6538c538f723e94d8db64a91354055ca6ad77146a04b320603445f1dd04feb3",
+    "v2_experiment_plan": "52f098bb065195e16c3f28724a7a98e20f850555ae62d12f0df2d03e5b1b773b",
+    "validation_raw_scores": "94a4a3582a02b529cb52566a0e028fb1ec93e8bf2ad1f6c9b6d15325c066ce70"
+  },
+  "decision_policy": {
+    "PASS": "anomaly_score < threshold",
+    "REVIEW_REQUIRED": "anomaly_score >= threshold",
+    "threshold": 57.90403747558594
+  },
+  "demo_status": "UNTOUCHED",
+  "evaluation_note": {
+    "v1_original_heldout_test": "89 images",
+    "v2_89_image_evaluation": "POST_HOC_COMPARATIVE_EVALUATION",
+    "v2_posthoc_AUROC": 0.9303599374021909,
+    "v2_posthoc_F1": 0.9090909090909091,
+    "v2_posthoc_FPR": 0.05555555555555555,
+    "v2_posthoc_recall": 0.8450704225352113,
+    "v2_posthoc_scratch_recall": 0.8
+  },
+  "freeze_policy": {
+    "demo_based_tuning": "PROHIBITED",
+    "model_change": "PROHIBITED",
+    "threshold_change": "PROHIBITED"
+  },
+  "model": {
+    "architecture": "PatchCore",
+    "backbone": "wide_resnet50_2",
+    "center_crop": [
+      280,
+      280
+    ],
+    "coreset_sampling_ratio": 0.1,
+    "layers": [
+      "layer2",
+      "layer3"
+    ],
+    "memory_bank_shape": [
+      21560,
+      1536
+    ],
+    "num_neighbors": 9,
+    "resize": [
+      320,
+      320
+    ],
+    "train_normal_images": 176
+  },
+  "model_selection": {
+    "selection_dataset": "Validation 63 images",
+    "threshold_rule": "Maximize Youden J; tie -> higher recall; tie -> lower threshold",
+    "validation_F1": 0.8205128205128205,
+    "validation_FPR": 0.09090909090909091,
+    "validation_accuracy": 0.8888888888888888,
+    "validation_recall": 0.8421052631578947,
+    "validation_scratch_recall": 0.8
+  },
+  "model_version": "PatchCore_V2",
+  "project": "InspectEscrow",
+  "reproducibility": {
+    "independent_reload": "PASS",
+    "memory_bank_exact_equality": true,
+    "memory_bank_max_abs_diff": 0.0
+  }
+}

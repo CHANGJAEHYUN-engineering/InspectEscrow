@@ -1,0 +1,104 @@
+{
+  "blockchainTransaction": false,
+  "canonicalization": "RFC8785-JCS",
+  "companionCommitments": {
+    "captureProfileHash": "0x3ea93a717cf8570d9b5c0662b1d27bb4a882651784342013786266b269db96da",
+    "note": "Shown for integration audit only. They are NOT part of the view-set hash preimage.",
+    "productSpecHash": "0x68e3eb25a12d6521ae2aa37735ffad831810f6a05268d940b33a3bae6915d4e7"
+  },
+  "currentDemoPoolCompliance": {
+    "allPassed": true,
+    "checkedImageCount": 7,
+    "images": [
+      {
+        "colorMode": "RGB",
+        "compliant": true,
+        "datasetRelativePath": "demo/good/000.png",
+        "format": "PNG",
+        "resolution": [
+          700,
+          700
+        ],
+        "sourceSHA256": "d7ca543f04733fb91ac02e18d0fbf06dcff554a1b1ad754173c42d10bb026bb6"
+      },
+      {
+        "colorMode": "RGB",
+        "compliant": true,
+        "datasetRelativePath": "demo/good/002.png",
+        "format": "PNG",
+        "resolution": [
+          700,
+          700
+        ],
+        "sourceSHA256": "c915621335f2a306db55f3206c2a25c1ff31f4b1c6415b9717a5d5da9ec9ca78"
+      },
+      {
+        "colorMode": "RGB",
+        "compliant": true,
+        "datasetRelativePath": "demo/good/007.png",
+        "format": "PNG",
+        "resolution": [
+          700,
+          700
+        ],
+        "sourceSHA256": "857b68b699064f8ba4d88a25f55e4ce4a96808e4884a61ccf05913d9e037f2df"
+      },
+      {
+        "colorMode": "RGB",
+        "compliant": true,
+        "datasetRelativePath": "demo/good/014.png",
+        "format": "PNG",
+        "resolution": [
+          700,
+          700
+        ],
+        "sourceSHA256": "9e094532fd66ad52c59c2e7bbcf67eace77202d363aa5050a7d79f0356c53e62"
+      },
+      {
+        "colorMode": "RGB",
+        "compliant": true,
+        "datasetRelativePath": "demo/scratch/001.png",
+        "format": "PNG",
+        "resolution": [
+          700,
+          700
+        ],
+        "sourceSHA256": "9d0fb31fac7ab42ddce02f5d1fd27940b04dfb10e28a1ab76c7ce010ba7bd772"
+      },
+      {
+        "colorMode": "RGB",
+        "compliant": true,
+        "datasetRelativePath": "demo/scratch/010.png",
+        "format": "PNG",
+        "resolution": [
+          700,
+          700
+        ],
+        "sourceSHA256": "49b7f5e443fc22fb47ce7edf303623893e7791c2687213e98f9a2d80579e83ea"
+      },
+      {
+        "colorMode": "RGB",
+        "compliant": true,
+        "datasetRelativePath": "demo/scratch/022.png",
+        "format": "PNG",
+        "resolution": [
+          700,
+          700
+        ],
+        "sourceSHA256": "f88d2d084303ec537991d3f5263c4a9ba50eff042e4968ff8be2aebfe59e456a"
+      }
+    ]
+  },
+  "digestAlgorithm": "keccak256",
+  "phase1IdentifierVisibleOverviewImplemented": false,
+  "policyHashCreated": false,
+  "productionMultiViewClaim": false,
+  "project": "InspectEscrow",
+  "requiredViewCount": 1,
+  "requiredViewId": "SOURCE_INSPECTION_IMAGE",
+  "requiredViewSetHash": "0x5db9617738ccb9a0b2811e49716ad46cb24474d56a9cd55867df831a01c4abc3",
+  "schema": "inspectescrow.required-view-set-commitment/1.0.0",
+  "specimenManifestHashCreated": false,
+  "status": "FINAL_CONTRACT_FACING",
+  "viewSetId": "MVTec-metal_nut-SINGLE-SOURCE-INSPECTION-V1"
+}

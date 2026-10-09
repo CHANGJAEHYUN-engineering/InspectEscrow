@@ -1,0 +1,24 @@
+{
+  "project": "InspectEscrow",
+  "generatedFor": "GitHub sync package",
+  "auditType": "SEPOLIA_UNUSED_TRADE_ID_PREFLIGHT",
+  "contract": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9",
+  "chainId": 11155111,
+  "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+  "observed": {
+    "exactTradeNotFoundConfirmations": 3,
+    "usedConfirmations": 0,
+    "confirmedBlockRange": [
+      11879078,
+      11879080
+    ],
+    "rpcConfirmations": [
+      "https://gateway.tenderly.co/public/sepolia",
+      "https://ethereum-sepolia-rpc.publicnode.com",
+      "https://rpc.sepolia.ethpandaops.io"
+    ]
+  },
+  "result": "IMMEDIATE_PREFLIGHT_PASS",
+  "scope": "POINT_IN_TIME_ONLY",
+  "blockchainTxSentByAudit": false
+}

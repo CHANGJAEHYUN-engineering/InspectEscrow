@@ -1,0 +1,23 @@
+{
+  "project": "InspectEscrow",
+  "generatedFor": "GitHub sync package",
+  "auditType": "FINAL_MODEL_BUNDLE_CHILD_INTEGRITY",
+  "results": {
+    "artifactCount": 10,
+    "exactUniqueMatches": 10,
+    "missing": 0,
+    "ambiguousDuplicates": 0,
+    "calibrationInternalLink": "PASS",
+    "bundleSelfHash": "PASS",
+    "currentModelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "oldHashOccurrence": {
+      "count": 1,
+      "jsonPath": "$.supersedesModelBundleHash",
+      "classification": "EXPECTED_HISTORICAL_SUPERSESSION_LINEAGE"
+    },
+    "finalGate": "PASS_MODEL_BUNDLE_CHILD_INTEGRITY"
+  },
+  "modelChanged": false,
+  "policyChanged": false,
+  "blockchainTxSentByAudit": false
+}

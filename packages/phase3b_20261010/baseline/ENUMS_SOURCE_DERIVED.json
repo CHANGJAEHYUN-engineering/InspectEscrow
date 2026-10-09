@@ -1,0 +1,62 @@
+{
+  "TradeState": {
+    "NONE": 0,
+    "PROPOSED": 1,
+    "PARTIES_ACCEPTED": 2,
+    "INSPECTORS_ACCEPTED": 3,
+    "FUNDED": 4,
+    "AWAIT_SUPPLIER": 5,
+    "SUPPLIER_REINSPECTION": 6,
+    "SUPPLIER_HOLD": 7,
+    "AWAIT_BUYER": 8,
+    "BUYER_REINSPECTION": 9,
+    "BUYER_INSPECTION_TIMEOUT": 10,
+    "ACCEPTANCE_PENDING": 11,
+    "DISPUTED_PRIMARY": 12,
+    "DISPUTED_BACKUP": 13,
+    "EXECUTION_HOLD": 14,
+    "EVIDENCE_HOLD": 15,
+    "ESCALATED": 16,
+    "RELEASED": 17,
+    "REFUNDED": 18,
+    "CANCELLED": 19
+  },
+  "InspectionRole": {
+    "SUPPLIER": 0,
+    "BUYER": 1
+  },
+  "InspectionValidity": {
+    "ADMISSIBLE": 0,
+    "INVALID": 1
+  },
+  "InspectionOutcome": {
+    "NONE": 0,
+    "INSPECTION_INVALID": 1,
+    "ADMISSIBLE_PASS": 2,
+    "ADMISSIBLE_REVIEW": 3
+  },
+  "InvalidReason": {
+    "NONE": 0,
+    "REQUIRED_VIEW_MISSING": 1,
+    "IMAGE_QA_FAILED": 2,
+    "CAPTURE_PROFILE_NONCONFORMING": 3,
+    "SPECIMEN_EVIDENCE_INSUFFICIENT": 4,
+    "RECAPTURE_RULE_VIOLATION": 5,
+    "EVIDENCE_PACKAGE_INCOMPLETE": 6,
+    "OTHER_POLICY_DEFINED": 7
+  },
+  "InspectorStage": {
+    "PRIMARY": 0,
+    "BACKUP": 1
+  },
+  "SettlementOutcome": {
+    "NONE": 0,
+    "RELEASE_TO_SUPPLIER": 1,
+    "REFUND_TO_BUYER": 2
+  },
+  "ReplayStatus": {
+    "NONE": 0,
+    "CONSISTENT": 1,
+    "INCONSISTENT": 2
+  }
+}

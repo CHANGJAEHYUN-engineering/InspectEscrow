@@ -1,0 +1,66 @@
+{
+  "claims_boundary": {
+    "score_domain_is_empirical_quality_range": false,
+    "score_domain_proves_ai_correctness": false,
+    "threshold_is_quality_routing_boundary": true
+  },
+  "contract_domain": {
+    "meaning": "Protocol encoding domain for an admissible aggregateScoreScaled value. This is NOT a learned or empirical quality range.",
+    "scoreMaxScaled": 340282366920938463463374607431768211455,
+    "scoreMaxScaled_decimal": "340282366920938463463374607431768211455",
+    "scoreMinScaled": 0
+  },
+  "design_decision": {
+    "observed_max_used_as_scoreMaxScaled": false,
+    "observed_min_used_as_scoreMinScaled": false,
+    "reason": "Empirical extrema are dataset observations, not mathematical validity bounds. Using the observed maximum as a protocol limit could reject a legitimate future PatchCore inference merely because its anomaly score exceeds the current dataset maximum.",
+    "separation_of_concerns": {
+      "inspectionValidity": "capture/evidence admissibility",
+      "scoreMinScaled_scoreMaxScaled": "encoding/protocol validity",
+      "thresholdScaled": "contract quality routing"
+    }
+  },
+  "frozen_values": {
+    "modelBundleHash": "0x5283badc2a43c964cda6f7a921117340f0b1928027e05c3f7aea0dcba9849466",
+    "scoreMaxScaled": 340282366920938463463374607431768211455,
+    "scoreMinScaled": 0,
+    "scoreScaleExponent": 6,
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "thresholdScaled": 57904037
+  },
+  "invalid_inspection_sentinel": {
+    "aggregateScoreScaled": 0,
+    "inspectionValidity": "INVALID",
+    "note": "PHASE2-PATCH2 uses zero score as the mandatory sentinel for an INVALID inspection; it is not interpreted as a PASS because the INVALID branch is processed separately."
+  },
+  "observed_evidence": {
+    "extracted_score_occurrences": 188,
+    "observed_raw_max": 69.5169677734375,
+    "observed_raw_min": 53.77705001831055,
+    "observed_scaled_max": 69516968,
+    "observed_scaled_min": 53777050,
+    "source_scope": "Frozen V2 validation, post-hoc final evaluation, demo and replay artifacts discovered in STEP 13J-A"
+  },
+  "project": "InspectEscrow",
+  "quality_decision": {
+    "rule": "aggregateScoreScaled < thresholdScaled => ADMISSIBLE_PASS; aggregateScoreScaled >= thresholdScaled => ADMISSIBLE_REVIEW",
+    "score_equal_threshold": "ADMISSIBLE_REVIEW",
+    "thresholdScaled": 57904037
+  },
+  "replay_tolerance": {
+    "cross_runtime_verified": false,
+    "note": "Replay tolerance is intentionally NOT frozen by this score-domain policy.",
+    "reference_runtime_observed_scaled_range": 0,
+    "status": "OPEN"
+  },
+  "schema": "inspectescrow.ai-score-domain-policy/1.0.0",
+  "score_schema": {
+    "human_identifier": "PATCHCORE_AGGREGATE_SCORE_V1",
+    "raw_score_semantics": "Non-negative PatchCore image-level anomaly score.",
+    "rounding": "ROUND_HALF_UP",
+    "scale": 1000000,
+    "scoreScaleExponent": 6,
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8"
+  },
+  "status": "FINAL_FROZEN"
+}

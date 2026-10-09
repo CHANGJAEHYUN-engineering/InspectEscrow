@@ -1,0 +1,87 @@
+{
+  "artifact_commitments": {
+    "ai_contract_bridge_spec_sha256": "b8cc317ab0c2ab61e16b3611761f3abf46a65b763e18508740d0edbe82c7b599",
+    "final_ai_freeze_manifest_sha256": "2c816c2916dca4fec7d26736e9329d0ab1421576957df6451125a53942b0e1e7",
+    "model_config_sha256": "a4bb1c37f5794ecf2dabcdafe269d885f28f26674383406b22a95a29d7b9c149",
+    "model_core_sha256": "8ab4beeb37242a742bac75c8f697d4af625eaf5acda339c887d6c77c9f6bd36b",
+    "replay_result_sha256": "514d1a5e1e39605924bb38dbcd047f0c739a2c43e8d047869da8ebd2449f3efc",
+    "threshold_calibration_result_sha256": "c6538c538f723e94d8db64a91354055ca6ad77146a04b320603445f1dd04feb3"
+  },
+  "claims_boundary": {
+    "artifact_reload_replay_supports_reproducibility": true,
+    "blockchain_proves_physical_truth": false,
+    "model_hash_proves_execution": false,
+    "station_signature_proves_execution": false
+  },
+  "freeze": {
+    "model_change": "PROHIBITED",
+    "score_scaling_change": "PROHIBITED",
+    "threshold_change": "PROHIBITED"
+  },
+  "model_runtime": {
+    "algorithm": "PatchCore",
+    "backbone": "wide_resnet50_2",
+    "center_crop": [
+      280,
+      280
+    ],
+    "coreset_sampling_ratio": 0.1,
+    "feature_layers": [
+      "layer2",
+      "layer3"
+    ],
+    "memory_bank_shape": [
+      21560,
+      1536
+    ],
+    "normalization": {
+      "mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "std": [
+        0.229,
+        0.224,
+        0.225
+      ]
+    },
+    "num_neighbors": 9,
+    "precision": "float32",
+    "pretrained_backbone": true,
+    "resize": [
+      320,
+      320
+    ]
+  },
+  "project": "InspectEscrow",
+  "replay_semantics": {
+    "absolute_difference": "0.0",
+    "artifact_reload_replay": "PASS",
+    "reference_image": "demo/scratch/022.png",
+    "reference_score": "60.1381721496582",
+    "replay_score": "60.1381721496582",
+    "score_tolerance": "0.00001",
+    "separate_machine_verified": false
+  },
+  "schema": "inspectescrow.ai-runtime/1.0.0",
+  "score_runtime": {
+    "contract_decision_rule": "aggregateScoreScaled < thresholdScaled => ADMISSIBLE_PASS; otherwise ADMISSIBLE_REVIEW",
+    "integer_rounding": "ROUND_HALF_UP",
+    "integer_scaling": "Decimal(score) * 10^6",
+    "scoreScaleExponent": 6,
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "score_schema": "PATCHCORE_AGGREGATE_SCORE_V1",
+    "thresholdScaled": 57904037,
+    "threshold_raw": "57.90403747558594"
+  },
+  "software_environment": {
+    "anomalib": "2.7.0",
+    "cuda_available": true,
+    "python": "3.13.15",
+    "pytorch": "2.11.0+cu130",
+    "reference_gpu": "Tesla T4",
+    "torchvision": "0.26.0+cu130"
+  },
+  "status": "FINAL_FROZEN"
+}

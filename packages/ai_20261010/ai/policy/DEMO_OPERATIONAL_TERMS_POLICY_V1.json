@@ -1,0 +1,52 @@
+{
+  "blockchainTransaction": false,
+  "importantSemantics": {
+    "buyerFailure": "Buyer-side unresolved timeout/retry conditions retain the Contract's neutral-hold semantics because physical delivery state is unknown.",
+    "supplierFailure": "If Supplier fails to achieve ADMISSIBLE_PASS within the agreed retry/deadline budget, the pre-shipment transaction terminates and Buyer refund entitlement is credited. This is not a physical-defect judgment."
+  },
+  "profileId": "HACKATHON-LIVE-DEMO-OPERATIONAL-V1",
+  "project": "InspectEscrow",
+  "retryPolicy": {
+    "contractSemantic": "Each value is the number of additional submissions allowed after the initial submission.",
+    "effectiveMaximumBuyerSubmissions": 2,
+    "effectiveMaximumSupplierSubmissions": 2,
+    "maxBuyerRetries": 1,
+    "maxSupplierRetries": 1,
+    "rationale": "One retry demonstrates the reinspection path without unnecessarily expanding live-demo state space or permitting repeated indefinite resubmission."
+  },
+  "schema": "inspectescrow.demo-operational-terms/1.0.0",
+  "scope": {
+    "commercialContractSLA": false,
+    "environment": "Ethereum Sepolia",
+    "productionSLA": false,
+    "purpose": "Meaningful funded InspectEscrow hackathon end-to-end demonstration."
+  },
+  "status": "FINAL_FROZEN_FOR_MEANINGFUL_DEMO_TRADE",
+  "stillOpen": {
+    "actorAddresses": true,
+    "escrowAmountWei": true,
+    "policyHash": true,
+    "stationAddresses": true,
+    "tradeId": true
+  },
+  "windowRationale": {
+    "buyerAcceptanceWindow": "Thirty minutes is shorter because Buyer has already submitted an admissible PASS inspection; this stage only awaits the explicit release action.",
+    "inspectionAndInspectorWindows": "One hour provides operational margin for wallet signing, Sepolia confirmation, frontend interaction, AI evidence generation and presentation delays.",
+    "mainDemoTimeoutIntent": "The primary meaningful demo is designed NOT to accidentally timeout.",
+    "timeoutBranchEvidence": "Timeout behavior is demonstrated by existing Contract tests/evidence rather than by waiting for live-demo wall-clock expiration."
+  },
+  "windowsHumanReadable": {
+    "backupInspector": "60 minutes",
+    "buyerAcceptance": "30 minutes",
+    "buyerInspection": "60 minutes",
+    "primaryInspector": "60 minutes",
+    "supplierInspection": "60 minutes"
+  },
+  "windowsSeconds": {
+    "backupInspector": 3600,
+    "buyerAcceptance": 1800,
+    "buyerInspection": 3600,
+    "primaryInspector": 3600,
+    "supplierInspection": 3600
+  }
+}

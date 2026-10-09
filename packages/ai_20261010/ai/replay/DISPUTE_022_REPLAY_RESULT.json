@@ -1,0 +1,46 @@
+{
+  "decision_policy": {
+    "rule": "PASS if anomaly_score < threshold; REVIEW_REQUIRED otherwise",
+    "threshold": 57.90403747558594
+  },
+  "execution_scope": {
+    "description": "Fresh PatchCore object reconstructed from the frozen saved V2 artifact within the current Colab environment.",
+    "separate_machine_verified": false,
+    "type": "ARTIFACT_RELOAD_REPLAY"
+  },
+  "model": {
+    "memory_bank_shape": [
+      21560,
+      1536
+    ],
+    "model_core_sha256": "8ab4beeb37242a742bac75c8f697d4af625eaf5acda339c887d6c77c9f6bd36b",
+    "name": "PatchCore",
+    "version": "V2"
+  },
+  "model_changed": false,
+  "project": "InspectEscrow",
+  "reference": {
+    "anomaly_score": 60.1381721496582,
+    "canonical_evidence_sha256": "037382c89d92155ccfe33091810a08dfa9f19ac0ed01d723977562ba2a850ba0",
+    "decision": "REVIEW_REQUIRED"
+  },
+  "replay": {
+    "anomaly_score": 60.1381721496582,
+    "decision": "REVIEW_REQUIRED",
+    "score_absolute_difference": 0.0,
+    "score_tolerance": 1e-05
+  },
+  "replay_target": {
+    "dataset_relative_path": "demo/scratch/022.png",
+    "input_image_sha256": "f88d2d084303ec537991d3f5263c4a9ba50eff042e4968ff8be2aebfe59e456a"
+  },
+  "schema": "InspectEscrow.ReplayResult.v1",
+  "threshold_changed": false,
+  "verification": {
+    "decision_match": true,
+    "input_image_integrity": true,
+    "model_state_loaded_strictly": true,
+    "overall_replay_match": true,
+    "score_match": true
+  }
+}

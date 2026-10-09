@@ -1,0 +1,39 @@
+{
+  "batch": {
+    "image_device": "cpu",
+    "image_shape": [
+      7,
+      3,
+      700,
+      700
+    ]
+  },
+  "cuda_environment": {
+    "cuda_available": true,
+    "visible_gpu": "Tesla T4"
+  },
+  "e3_interpretation": "STEP 13H must NOT be described as Tesla T4 execution merely because CUDA was available. The PatchCore memory bank is CPU-resident; E3 should be relabeled as a CPU/current-runtime repeatability result unless other model state proves otherwise.",
+  "execution_classification": "CPU_MEMORY_BANK",
+  "important_rule": "CUDA availability or visible GPU name alone is not evidence that inference executed on CUDA.",
+  "inference_executed_in_this_step": false,
+  "model_changed": false,
+  "model_state": {
+    "all_model_device_candidates": [
+      "cpu"
+    ],
+    "memory_bank_device": "cpu",
+    "memory_bank_shape": [
+      21560,
+      1536
+    ],
+    "unique_buffer_devices": [
+      "cpu"
+    ],
+    "unique_parameter_devices": [
+      "cpu"
+    ]
+  },
+  "project": "InspectEscrow",
+  "schema": "inspectescrow.execution-device-audit/1.0.0",
+  "threshold_changed": false
+}

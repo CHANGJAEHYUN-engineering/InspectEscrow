@@ -1,0 +1,68 @@
+{
+  "blockchainTransaction": false,
+  "files": {
+    "canonicalFinalPolicy": {
+      "path": "INSPECTION_POLICY_V1_1_FINAL.jcs.json",
+      "sha256": "d1875d1a98b78e81657140476aa1bc9c8418c8b051d625bb7067f39466a11572"
+    },
+    "hashPreimage": {
+      "path": "INSPECTION_POLICY_V1_1_HASH_PREIMAGE.jcs.json",
+      "sha256": "88ec37f35b5c50f30bd05e7b52472bd419e9d4dacca3772ee7aacfbf6f8c0283"
+    },
+    "readablePolicy": {
+      "path": "INSPECTION_POLICY_V1_1_FINAL.json",
+      "sha256": "0cd6c80b505bd247e0a6656866d55c3bbe9ee94568434fd99fc14cb2b5a13924"
+    },
+    "schema": {
+      "path": "inspection-policy-v1.1.schema.json",
+      "sha256": "15fa44da5f3c9149c5821ac27d781873d5cd074b5a3c23689ae40d7563abd6a7"
+    }
+  },
+  "frozenContractInputs": {
+    "captureProfileHash": "0x3ea93a717cf8570d9b5c0662b1d27bb4a882651784342013786266b269db96da",
+    "escrowAmountWei": 5000000000000000,
+    "maxBuyerRetries": 1,
+    "maxSupplierRetries": 1,
+    "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "productSpecHash": "0x68e3eb25a12d6521ae2aa37735ffad831810f6a05268d940b33a3bae6915d4e7",
+    "replayToleranceScaled": 222,
+    "requiredViewSetHash": "0x5db9617738ccb9a0b2811e49716ad46cb24474d56a9cd55867df831a01c4abc3",
+    "scoreMaxScaled": 340282366920938463463374607431768211455,
+    "scoreMinScaled": 0,
+    "scoreScaleExponent": 6,
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "thresholdScaled": 57904037,
+    "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+    "windows": {
+      "backupInspector": 3600,
+      "buyerAcceptance": 1800,
+      "buyerInspection": 3600,
+      "primaryInspector": 3600,
+      "supplierInspection": 3600
+    }
+  },
+  "hashing": {
+    "canonicalization": "RFC8785-JCS",
+    "hashAlgorithm": "keccak256",
+    "largeIntegerEncodingRule": "Solidity uint128 values outside RFC8785 safe JSON integer domain are represented as exact decimal strings in the Policy JSON and parsed back to uint128 for Contract TradeTerms.",
+    "selfHashRecomputation": "PASS",
+    "selfHashRule": "ZERO_POLICY_HASH_PREIMAGE_V1"
+  },
+  "modelExecutionChanged": false,
+  "onChainUnusedTradeIdCheck": "PENDING",
+  "policy": {
+    "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+    "policyId": "0x94f9b3919df10d0bba367041f4c2bd2b69cf0a1c6a45417be4fe11f4d82b8337",
+    "policyVersion": 1,
+    "schema": "inspectescrow.inspection-policy",
+    "schemaVersion": "1.1.0"
+  },
+  "project": "InspectEscrow",
+  "proposeTradeAllowed": false,
+  "schema": "inspectescrow.final-policy-commitment/1.0.0",
+  "scoreMaxPolicyJsonRepresentation": "340282366920938463463374607431768211455",
+  "scoreMaxSemanticEquality": true,
+  "scoreMaxSolidityUint128": 340282366920938463463374607431768211455,
+  "status": "FINAL_POLICY_HASH_FROZEN",
+  "thresholdChanged": false
+}

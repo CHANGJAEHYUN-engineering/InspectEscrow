@@ -1,0 +1,68 @@
+{
+  "admissibilityRule": {
+    "missingRequiredSourceImage": "INSPECTION_INVALID",
+    "moreThanOneFileRequired": false,
+    "silentReserveSubstitution": "PROHIBITED",
+    "sourceBytesMustBeBoundInSpecimenManifest": true,
+    "sourceBytesMustMatchInferenceInput": true
+  },
+  "derivedArtifacts": {
+    "heatmapCountsAsRequiredView": false,
+    "overlayCountsAsRequiredView": false,
+    "scoreReportCountsAsRequiredView": false
+  },
+  "productionMigrationRule": {
+    "statement": "A production inspection requiring multiple poses, identifier-visible overview images, dimensional views or camera-specific coverage requires a new validated view set and a new requiredViewSetHash."
+  },
+  "project": "InspectEscrow",
+  "requiredViewCount": 1,
+  "roleApplication": {
+    "buyerInspection": "ONE_SOURCE_INSPECTION_IMAGE",
+    "sameImageRequiredBetweenSupplierAndBuyer": false,
+    "samePhysicalSpecimenProven": false,
+    "supplierInspection": "ONE_SOURCE_INSPECTION_IMAGE"
+  },
+  "schema": "inspectescrow.required-view-set/1.0.0",
+  "scope": {
+    "mode": "PUBLIC_DATASET_SIMULATION",
+    "physicalPoseCoverageClaim": false,
+    "productClass": "MVTec AD / metal_nut",
+    "productionMultiViewCoverageClaim": false
+  },
+  "separationOfCommitments": {
+    "captureProfileHashIncludedInsideViewSetHash": false,
+    "modelBundleHashIncludedInsideViewSetHash": false,
+    "productSpecHashIncludedInsideViewSetHash": false,
+    "reason": "These are independently typed commitments in TradeTerms and are intentionally not duplicated inside the required-view-set preimage."
+  },
+  "specimenBindingLimit": {
+    "identifierVisibleOverviewRequired": false,
+    "mvpCompensation": "The later inspection-specific specimen manifest will bind tradeId, dataset-relative source path, exact source-image digest, capture-session nonce and evidence file list.",
+    "phase1IdealBindingFullyImplemented": false,
+    "physicalCustodyProofClaim": false,
+    "reason": "The public MVTec source images do not contain InspectEscrow trade QR/specimen identifiers."
+  },
+  "status": "FINAL_FROZEN_FOR_HACKATHON_MVP",
+  "viewSetId": "MVTec-metal_nut-SINGLE-SOURCE-INSPECTION-V1",
+  "views": [
+    {
+      "cameraAngle": "UNKNOWN_NOT_ASSERTED",
+      "cardinality": 1,
+      "digitalRequirements": {
+        "colorMode": "RGB",
+        "containerFormat": "PNG",
+        "exactSourceBytesRequired": true,
+        "heightPixels": 700,
+        "resaveBeforeEvidenceHash": false,
+        "transcodeBeforeInference": false,
+        "widthPixels": 700
+      },
+      "identifierVisible": false,
+      "physicalPose": "UNKNOWN_NOT_ASSERTED",
+      "required": true,
+      "role": "AI_INPUT_AND_PRIMARY_VISUAL_EVIDENCE",
+      "source": "ORIGINAL_PUBLIC_DATASET_IMAGE",
+      "viewId": "SOURCE_INSPECTION_IMAGE"
+    }
+  ]
+}

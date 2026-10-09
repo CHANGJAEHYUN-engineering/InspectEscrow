@@ -1,0 +1,38 @@
+{
+  "blockchainTransaction": false,
+  "clarificationArtifact": {
+    "byteLength": 3428,
+    "file": "MODEL_SCORE_SEMANTICS_CLARIFICATION_V1.json",
+    "hashAlgorithm": "keccak256",
+    "keccak256": "0x7a845166ca6fed2d37cc2d3becf2ff86d09f70b661c4f1d3ccdf359bd3f7984a",
+    "mediaType": "application/json",
+    "sha256": "d25f527f0df173902dbfc2f5ff6d0912bf575ae562dcca327da3ccbddfcb8717"
+  },
+  "newManifest": {
+    "canonicalFile": "FINAL_MODEL_BUNDLE_PHASE1_SEMANTIC_PATCH1.jcs.json",
+    "readableFile": "FINAL_MODEL_BUNDLE_PHASE1_SEMANTIC_PATCH1.json",
+    "selfHashRecomputation": "PASS",
+    "selfHashRule": "ZERO_BUNDLE_HASH_PREIMAGE_V1"
+  },
+  "newModelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+  "oldModelBundleHash": "0x5283badc2a43c964cda6f7a921117340f0b1928027e05c3f7aea0dcba9849466",
+  "policyHashCreated": false,
+  "project": "InspectEscrow",
+  "reason": "Previous bundle did not explicitly commit NONE semantics for anomaly-score normalization and score-transforming postprocessing.",
+  "schema": "inspectescrow.model-bundle-supersede-record/1.0.0",
+  "status": "FINAL_SUPERSEDING_MODEL_BUNDLE",
+  "supersessionType": "SEMANTIC_CLARIFICATION_ONLY",
+  "unchanged": {
+    "backbone": true,
+    "featureLayers": true,
+    "memoryBank": true,
+    "modelCore": true,
+    "modelWeights": true,
+    "preprocessing": true,
+    "rawInferenceScores": true,
+    "replayToleranceScaled": 222,
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "thresholdRaw": "57.90403747558594",
+    "thresholdScaled": 57904037
+  }
+}

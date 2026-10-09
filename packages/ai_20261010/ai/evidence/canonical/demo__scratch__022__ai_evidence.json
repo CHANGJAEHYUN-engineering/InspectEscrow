@@ -1,0 +1,30 @@
+{
+  "evidence_sha256": "037382c89d92155ccfe33091810a08dfa9f19ac0ed01d723977562ba2a850ba0",
+  "inference_policy": {
+    "rule": "PASS if anomaly_score < threshold; REVIEW_REQUIRED otherwise",
+    "threshold": "57.904037475585938"
+  },
+  "inspection": {
+    "anomaly_score": "60.138172149658203",
+    "anomaly_score_float32_sha256": "2803790a5d3930c0f8ef79b3747ce59b3dd0a124f848665c1d1e997df8bc3b9d",
+    "dataset_relative_path": "demo/scratch/022.png",
+    "decision": "REVIEW_REQUIRED",
+    "heatmap_sha256": "d007b847c5719ce37efa57972069eec0f07ebee64e3665a82f32255f9db1fd02",
+    "input_image_sha256": "f88d2d084303ec537991d3f5263c4a9ba50eff042e4968ff8be2aebfe59e456a",
+    "overlay_sha256": "8bc184c4892c38a21e26bf0399703342707b9629bfed7ebc5202a4f871b34298"
+  },
+  "model": {
+    "final_ai_freeze_manifest_sha256": "2c816c2916dca4fec7d26736e9329d0ab1421576957df6451125a53942b0e1e7",
+    "model_core_sha256": "8ab4beeb37242a742bac75c8f697d4af625eaf5acda339c887d6c77c9f6bd36b",
+    "name": "PatchCore",
+    "version": "V2"
+  },
+  "provenance": {
+    "demo_used_for_threshold": false,
+    "demo_used_for_training": false,
+    "model_changed_after_demo": false,
+    "scenario_assignment_sha256": "e4adb480766b177a96cd641e99d3361484833db2eb9d0f61dbc273679db3a4c5",
+    "threshold_changed_after_demo": false
+  },
+  "schema": "InspectEscrow.AIEvidence.v1"
+}

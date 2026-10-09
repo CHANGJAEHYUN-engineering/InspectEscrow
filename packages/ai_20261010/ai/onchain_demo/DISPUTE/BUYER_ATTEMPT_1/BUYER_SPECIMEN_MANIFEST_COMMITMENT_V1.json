@@ -1,0 +1,31 @@
+{
+  "attempt": 1,
+  "blockchainTransaction": false,
+  "evidencePackageHashCreated": false,
+  "inspectionRole": "BUYER",
+  "physicalIdentityClaim": false,
+  "project": "InspectEscrow",
+  "scenarioId": "DISPUTE_SUPPLIER_PASS_BUYER_REVIEW",
+  "schema": "inspectescrow.specimen-manifest-commitment/1.0.0",
+  "sessionNonce": "0x2bfe775f16ed23789e64a9296c9458cc7ffbd041d58d1542635489605477f802",
+  "source": {
+    "byteLength": 488703,
+    "datasetRelativePath": "demo/scratch/022.png",
+    "exactOriginalBytesUsed": true,
+    "keccak256": "0xf856ef7e2effae857d3a84c8980f95ce221a14bcbfff76b2802bbea63b3acc67",
+    "resavedOrTranscoded": false,
+    "sha256": "f88d2d084303ec537991d3f5263c4a9ba50eff042e4968ff8be2aebfe59e456a",
+    "zipMember": "InspectEscrow_metal_nut_FINAL_DATASET/demo/scratch/022.png"
+  },
+  "specimenManifest": {
+    "canonicalFile": "BUYER_SPECIMEN_MANIFEST_V1.jcs.json",
+    "canonicalization": "RFC8785-JCS",
+    "hashAlgorithm": "keccak256",
+    "readableFile": "BUYER_SPECIMEN_MANIFEST_V1.json",
+    "selfRecomputation": "PASS",
+    "specimenManifestHash": "0xd0984a0be8c6aade75843d9808ddd9e60db026b139939d4838264266adb3334f"
+  },
+  "stationSignatureCreated": false,
+  "status": "FINAL_FROZEN",
+  "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c"
+}
