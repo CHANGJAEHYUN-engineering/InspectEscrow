@@ -1,14 +1,14 @@
-# Implementation audit — 2026-10-10
+# Implementation audit — source intake update 2026-10-10
 
-Define **A** = independently visible artifact in the public repo; **B** = prior project execution record outside this repo; **C** = team-reported work in progress; **D** = design/acceptance test not demonstrated.
+| Part | Evidence from user-provided source ZIPs | GitHub import |
+|---|---|---|
+| Legacy static UI / hash demo | Existing public files | Completed |
+| Frozen PatchCore V2 | Colab notebook + score/heatmap/replay/manifest sources, AI manifest 75/75 | Full source pending |
+| Model metrics | Validation N=63 F1=0.8205 / recall=84.21%. Additional 89-image V2 post-hoc AUROC=0.93036, not independent untouched test | Evidence summary published; source pending |
+| Phase3B Web3 frontend | Real EIP-1193/ethers integration code and 4 typed EIP-712 sets | Full source pending |
+| Contract/ABI | Frozen Solidity SHA-256 4effb1ee5a18f4c75ae6eb8eaa1ec051a03da9efb4799beffe8772439cf3e6da, ABI 113 entries | Full source pending |
+| Local E2E | Archived 20 PASS / 44 tx tagged LOCAL_SYNTHETIC_ONLY; no fresh Anvil execution | Full record pending |
+| Sepolia | Archived 2 success receipts, proposed trade and Supplier acceptance, PROPOSED state | Full receipt import pending |
+| Funded AI→chain dispute/settlement | Not demonstrated | Incomplete |
 
-| Component | Level | What is currently supportable | Missing artifact to reach A |
-|---|---|---|---|
-| Legacy browser UI, SHA-256 sample, SVG | A | Static/simulated demo and example JSON | Label is already in README |
-| Smart-contract Phase 2 freeze | B | PHASE2-PATCH2 development, previous Foundry/Anvil history | Actual `.sol`, tests, compiler settings and raw logs |
-| Sepolia contract deployment | B | Previously recorded contract address and successful deployment history | ABI, Etherscan verification, tx/receipt, runtime provenance |
-| PatchCore metal_nut Colab | C | 창재현 is implementing real model, evidence and independent replay | Notebook/runner, bundle SHA, real inference outputs, measured metrics |
-| Web transactions | C | 김지환 is implementing the website and wallet/transactions | UI repository source, network IDs, actual receipts |
-| Single-trade real AI → chain → settle | D | Intended final PoC | One trade with cross-linked hashes, receipts and independent replay proof |
-
-**No claim of E2E pass, metric numbers, on-chain role flows, verified ABI or live funded inspection is made here.** The 16-page upgraded project proposal is design evidence, not executable test evidence. Do not turn unknowns into fake PASS values.
+See [full source intake audit](source-intake-audit-20261010.md). Do not confuse a prior unused tradeId preflight with the now-proposed trade.

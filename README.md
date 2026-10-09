@@ -2,21 +2,26 @@
 
 > 2026 AI × BLOCKCHAIN Hackathon · TRACK 4 · Team **창지환**
 >
-> **Public-repo status: 2026-10-10.** The legacy browser demo remains available. The team's newer Colab AI, frozen Solidity, and live-web work is being prepared separately; its full source and a single-trade E2E proof have **not yet been imported and independently reproduced from this repository**.
+> **Evidence snapshot: 2026-10-10.** Both the AI Colab package and Phase3B Web/Solidity package have been received and integrity-audited outside this GitHub repository. Their **complete source ZIPs are not yet committed here**. The public root site remains the legacy browser demo; the uploaded Phase3B frontend is separate. Live Sepolia contains a proposed trade and Supplier policy acceptance only, not a funded end-to-end settlement.
 
 InspectEscrow addresses disagreement between **Supplier outbound** and **Buyer inbound** AI-supported manufacturing inspections. Pre-agreed model, threshold, capture protocol, signed evidence, independent replay, inspector authority and blockchain escrow aim to prevent unilateral changes and unsafe settlement.
 
-## What the repository actually contains
+## Implementation evidence as of 2026-10-10
 
-| Area | Status in this public repository |
-|---|---|
-| `index.html`, `app.js`, `style.css`, SVG | **Legacy interactive prototype, simulated transaction flow** |
-| Browser-generated manifest and SHA-256 demo | **Prototype**, not Station or physical authenticity proof |
-| Colab PatchCore inference code / checkpoints / measured metrics | **Pending import** |
-| Frozen Solidity, Foundry tests, ABI / Sepolia deployment manifests | **Pending import** |
-| Live wallet → AI evidence → trade dispute → withdraw proof | **Pending verification** |
+| Component | Latest examined source package | Visible in current GitHub? |
+|---|---|---|
+| Legacy static site / sample manifest | Older interactive browser simulation | **Yes** |
+| PatchCore V2 / Colab inference, evidence and replay | Received, 75/75 SHA manifest files verified. Validation F1 **0.8205**; 89-image V2 post-hoc AUROC **0.93036** (not untouched test) | **Source import pending** |
+| Frozen Phase3B Web + Solidity / ABI | Received, 26/26 SHA manifest files verified; source digest checked; 113 ABI entries | **Source import pending** |
+| Local synthetic Anvil E2E | Archived record: **20 PASS / 44 tx**. No fresh Anvil re-execution | **Evidence import pending** |
+| Sepolia DISPUTE trade | Archived receipts: `proposeTrade` and Supplier `acceptPolicy` status 1, state `PROPOSED` at provided snapshot | **Evidence import pending** |
+| Funded AI → signed Station evidence → dispute/replay → withdraw | **Not demonstrated yet** | **No** |
 
-The live legacy website must **not** be treated as evidence that real AI or blockchain integration has passed.
+**Current frozen handoff:** `policyVersion=1`, `thresholdScaled=57904037`, `scoreScaleExponent=6`, `modelBundleHash=0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e`. AI scores are scaled with ROUND_HALF_UP; frozen StationAttestation has 16 ABI-matching fields.
+
+The provided chain state snapshot dated 2026-10-09 22:41:46Z lists `tradeId=0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c` as **PROPOSED**. Older AI `UNUSED` preflight records predate the proposal. **Do not re-propose the same tradeId.**
+
+[Detailed intake audit and outstanding gates](docs/source-intake-audit-20261010.md)
 
 ## Five-layer design
 
