@@ -1,0 +1,26 @@
+# Credentials / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+# Dependencies / caches
+node_modules/
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+# Large model/data artifacts and private evidence
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.safetensors
+*.npz
+*.npy
+datasets/
+raw_images/
+secrets/
