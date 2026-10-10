@@ -1,12 +1,164 @@
 <!doctype html>
-<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>InspectEscrow · Sepolia Integration</title>
-<style>body{margin:0;background:#0c1422;color:#e8eef8;font:15px system-ui}main{max-width:1120px;margin:40px auto;padding:0 24px}header{display:flex;justify-content:space-between;align-items:center}h1{font-size:34px;letter-spacing:-1px}h2{font-size:20px}small,.muted{color:#9cacbf}section{background:#152238;border:1px solid #293952;border-radius:14px;padding:24px;margin:20px 0}button{background:#5be0bd;color:#08251f;border:0;padding:12px 18px;border-radius:8px;font-weight:700;cursor:pointer;margin:5px 6px 5px 0}button:disabled{opacity:.35;cursor:default}input,select,textarea{box-sizing:border-box;width:100%;background:#0c1422;color:#e8eef8;border:1px solid #40536f;border-radius:7px;padding:12px;margin:8px 0;font:14px monospace}textarea{min-height:140px;resize:vertical}pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:460px;overflow:auto;background:#0c1422;border-radius:8px;padding:16px;font-size:12px}label{display:block;margin-top:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.notice{color:#e8c682}.addr{overflow-wrap:anywhere}a{color:#5be0bd}@media(max-width:760px){.grid{grid-template-columns:1fr}header{display:block}}</style>
-<main><header><div><small>PHASE 3B · WALLET INTEGRATION</small><h1>InspectEscrow</h1></div><button id="connect">Sepolia 지갑 연결</button></header>
-<p class="addr muted">11155111 · 0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9</p>
-<p id="status" role="status">지갑 연결 대기 · 실제 체인 확인 전</p>
-<section><h2>거래 기준 입력</h2><p class="notice">실제 테스트 거래에는 확정된 AI 모델·촬영 조건·보정 임계값·7개 역할 주소가 필요합니다.</p><label>TradeTerms JSON 파일<input type="file" id="termsFile" accept=".json"></label><textarea id="terms" placeholder="확정된 TradeTerms JSON을 불러오세요. 모든 큰 정수는 10진 문자열로 입력합니다."></textarea><label>tradeId<input id="tradeId" placeholder="0x + 64자리 hex"></label><button id="refresh">상태 조회</button><pre id="state">조회 결과가 여기에 표시됩니다.</pre></section>
-<div class="grid"><section><h2>1. Station / 합의 서명</h2><p class="muted">검사·replay·판정 데이터를 확인한 서명자가 서명합니다.</p><select id="type"><option>StationAttestation</option><option>ReplayAttestation</option><option>InspectorDecisionAttestation</option><option>MutualResolution</option></select><label>message JSON<textarea id="message" placeholder="EIP712_TYPED_DATA_SCHEMA.json 필드와 순서 기준"></textarea></label><button id="sign">지갑에서 서명</button><button id="signatureExport" disabled>서명 JSON 저장</button><pre id="signed">서명 결과</pre></section>
-<section><h2>2. Actor 거래 실행</h2><p class="muted">Station 서명 파일을 Actor 지갑에서 불러와 제출합니다.</p><select id="action"></select><p id="inputs" class="muted"></p><label>함수 인자 JSON 배열<textarea id="args" placeholder='["0x…tradeId"]'>[]</textarea></label><label>서명 JSON 불러오기<input type="file" id="envelopeFile" accept=".json"></label><button id="useTerms">TradeTerms → proposeTrade 인자</button><button id="prepare">거래 미리보기</button><button id="send" disabled>지갑에서 거래 승인</button><pre id="preview">발신자 · 함수 · 금액 · calldata · 현재 상태</pre></section></div>
-<section><h2>실행 증거</h2><p class="muted">2 confirmations 이후 receipt·이벤트·상태·회계 기록을 저장합니다. 전송 중 실패하면 표시된 TX를 확인하세요.</p><button id="export" disabled>증거 JSON 저장</button><pre id="evidence">아직 실행된 거래가 없습니다.</pre></section>
-<p class="muted">컨트랙트는 서명·해시·상태·자금을 검증합니다. 실물 동일성이나 AI 판정 정확성을 증명하지 않습니다.</p></main>
-<script src="./vendor/ethers.umd.min.js"></script><script type="module" src="./src/app.mjs"></script></html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InspectEscrow · Funded Sepolia E2E</title>
+<style>
+:root{--bg:#07111e;--panel:#0f1c2e;--panel2:#13243a;--line:#263a55;--text:#edf4ff;--muted:#91a5bd;--mint:#5be0bd;--blue:#7ab8ff;--amber:#f4c96b;--red:#ff8f8f;--ok:#7ce2a5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0,#13233b 0,transparent 32%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:1180px;margin:0 auto;padding:28px 22px 72px}header{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:26px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.13em;color:var(--mint)}h1{font-size:40px;line-height:1.05;letter-spacing:-1.5px;margin:8px 0}h2{font-size:22px;margin:0 0 12px}h3{font-size:16px;margin:0 0 8px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid #275d53;background:#0d2a28;border-radius:999px;color:#99f1d9;font-weight:800;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 16px var(--mint)}
+section,.panel{background:linear-gradient(180deg,rgba(19,36,58,.96),rgba(13,27,45,.96));border:1px solid var(--line);border-radius:16px;padding:22px;margin:18px 0}
+.hero{display:grid;grid-template-columns:1.35fr .9fr;gap:20px;align-items:stretch}.hero-copy{padding:26px}.hero h2{font-size:32px;letter-spacing:-.8px}.lead{font-size:17px;color:#c3d0df;max-width:720px}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.stat{padding:16px;background:#0a1728;border:1px solid #213650;border-radius:12px}.stat strong{display:block;font-size:20px;margin-top:5px}.stat small{color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+button,.button{display:inline-flex;align-items:center;justify-content:center;background:var(--mint);color:#06221d;border:0;padding:11px 16px;border-radius:9px;font-weight:800;cursor:pointer;text-decoration:none;margin:5px 6px 5px 0}button.secondary,.button.secondary{background:#162942;color:#dce9f8;border:1px solid #36506f}button:disabled{opacity:.35;cursor:default}
+.muted{color:var(--muted)}.notice{color:var(--amber)}.ok{color:var(--ok)}.mono,code,pre,input,textarea,select{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:460px;overflow:auto;background:#071321;border:1px solid #20344d;border-radius:10px;padding:14px;font-size:12px}
+input,select,textarea{width:100%;background:#081524;color:var(--text);border:1px solid #38506d;border-radius:8px;padding:11px;margin:7px 0;font-size:13px}textarea{min-height:125px;resize:vertical}label{display:block;margin-top:10px}
+.ai-card{overflow:hidden;padding:0}.ai-card .body{padding:18px}.ai-card img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;background:#06101b}.score-row{display:flex;justify-content:space-between;gap:12px;align-items:end}.score{font-size:28px;font-weight:900}.pass{color:var(--ok)}.review{color:var(--amber)}
+.bar{height:8px;background:#071321;border-radius:999px;overflow:hidden;margin-top:10px}.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--amber));border-radius:999px}
+.hash{font-size:11px;color:#aabbd0;overflow-wrap:anywhere;margin-top:10px}
+.timeline{position:relative;margin-top:12px}.step{display:grid;grid-template-columns:38px 1fr;gap:12px;padding:10px 0}.step:not(:last-child) .node:after{content:"";display:block;width:2px;height:calc(100% + 20px);background:#2b405c;margin:8px auto}.node span{display:flex;width:28px;height:28px;align-items:center;justify-content:center;border-radius:50%;background:#11362f;border:1px solid #2f7868;color:#9af0d8;font-weight:900}.step-title{font-weight:850}.step-meta{color:var(--muted);font-size:13px}.txlink{color:var(--blue);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px}.txlink:hover{text-decoration:underline}
+.anchor{padding:14px;background:#091727;border:1px solid #213650;border-radius:10px}.anchor b{display:block;margin-bottom:6px}.anchor code{font-size:11px;color:#aec0d5;overflow-wrap:anywhere}
+.boundary{display:grid;grid-template-columns:1fr 1fr;gap:14px}.boundary div{padding:15px;border-radius:12px}.proves{background:#0c241f;border:1px solid #285e51}.limits{background:#251c14;border:1px solid #614b2d}
+details>summary{cursor:pointer;font-weight:850;font-size:18px;padding:4px 0}.operator{margin-top:28px}.addr{overflow-wrap:anywhere}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+@media(max-width:820px){.hero,.grid2,.grid3,.boundary{grid-template-columns:1fr}h1{font-size:32px}header{align-items:flex-start;flex-direction:column}.statgrid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div>
+    <div class="eyebrow">INSPECTESCROW · REAL AI × REAL SEPOLIA</div>
+    <h1>검사 결과를 거래 가능한 증거로</h1>
+    <div class="badge"><span class="dot"></span>FUNDED E2E COMPLETE · REFUNDED</div>
+  </div>
+  <div>
+    <button id="connect">Sepolia 지갑 연결</button>
+    <button id="verifyLive" class="secondary">온체인 최종상태 재검증</button>
+  </div>
+</header>
+
+<div id="status" class="muted">저장된 최종 E2E 증거를 불러오는 중…</div>
+
+<div class="hero">
+  <section class="hero-copy">
+    <div class="eyebrow">FINAL DISPUTE DEMO</div>
+    <h2>AI가 돈을 결정하지 않는다.</h2>
+    <p class="lead">Supplier와 Buyer의 검사 결과가 충돌하면 Escrow를 잠그고, Independent Replay는 실행 일관성만 확인합니다. 최종 정산은 권한이 분리된 Inspector가 결정하며, Smart Contract는 그 절차와 자금 이동을 강제합니다.</p>
+    <a class="button" id="finalJsonLink" href="./results/FINAL_SEPOLIA_E2E_20261011.json" target="_blank" rel="noopener">최종 E2E JSON</a>
+    <a class="button secondary" id="contractLink" target="_blank" rel="noopener">Sepolia Contract</a>
+  </section>
+  <section>
+    <h2>Final on-chain state</h2>
+    <div class="statgrid">
+      <div class="stat"><small>Trade state</small><strong id="finalState">—</strong></div>
+      <div class="stat"><small>Escrow</small><strong id="escrow">—</strong></div>
+      <div class="stat"><small>Withdrawn</small><strong id="withdrawn">—</strong></div>
+      <div class="stat"><small>Accounting</small><strong id="accounting">—</strong></div>
+    </div>
+    <pre id="liveVerification">지갑 연결 후 “온체인 최종상태 재검증”을 누르면 현재 Sepolia 상태를 다시 읽습니다.</pre>
+  </section>
+</div>
+
+<section>
+  <div class="eyebrow">REAL AI EVIDENCE</div>
+  <h2>같은 정책, 다른 검사 결과</h2>
+  <p class="muted">동일한 frozen model/policy/threshold를 사용하고 Contract가 score와 threshold를 비교해 PASS/REVIEW를 파생합니다.</p>
+  <div class="grid2">
+    <article class="panel ai-card">
+      <img src="../ai_20261010/ai/evidence/demo_visuals/demo__good__000__overlay.png" alt="Supplier good/000 PatchCore overlay">
+      <div class="body">
+        <h3>Supplier · good/000</h3>
+        <div class="score-row"><div><div class="score pass" id="supplierScore">—</div><div class="muted">scaled anomaly score</div></div><strong class="pass">ADMISSIBLE_PASS</strong></div>
+        <div class="bar"><span id="supplierBar" style="width:0%"></span></div>
+        <div class="hash" id="supplierHash"></div>
+      </div>
+    </article>
+    <article class="panel ai-card">
+      <img src="../ai_20261010/ai/evidence/demo_visuals/demo__scratch__022__overlay.png" alt="Buyer scratch/022 PatchCore overlay">
+      <div class="body">
+        <h3>Buyer · scratch/022</h3>
+        <div class="score-row"><div><div class="score review" id="buyerScore">—</div><div class="muted">scaled anomaly score</div></div><strong class="review">ADMISSIBLE_REVIEW</strong></div>
+        <div class="bar"><span id="buyerBar" style="width:0%"></span></div>
+        <div class="hash" id="buyerHash"></div>
+      </div>
+    </article>
+  </div>
+  <p class="muted mono" id="thresholdText"></p>
+</section>
+
+<section>
+  <div class="eyebrow">ON-CHAIN STORY</div>
+  <h2>실제 Sepolia 상태 전이</h2>
+  <div id="timeline" class="timeline"></div>
+</section>
+
+<section>
+  <div class="eyebrow">FROZEN TRUST ANCHORS</div>
+  <h2>Outcome 전에 Rule을 Commit</h2>
+  <div class="grid3" id="anchors"></div>
+</section>
+
+<section>
+  <div class="eyebrow">TRUST BOUNDARY</div>
+  <h2>블록체인이 증명하는 것과 증명하지 않는 것</h2>
+  <div class="boundary">
+    <div class="proves"><h3>이 PoC가 실제로 검증한 것</h3><div id="proves"></div></div>
+    <div class="limits"><h3>의도적으로 주장하지 않는 것</h3><div id="limits"></div></div>
+  </div>
+</section>
+
+<details class="operator">
+<summary>Operator / Transaction Console 열기</summary>
+<section>
+  <h2>거래 기준 입력</h2>
+  <p class="notice">아래 콘솔은 신규 테스트 거래나 attestation 제출을 위한 운영 도구입니다. 완료된 E2E 거래에는 추가 write transaction을 보내지 마세요.</p>
+  <label>TradeTerms JSON 파일<input type="file" id="termsFile" accept=".json"></label>
+  <textarea id="terms" placeholder="확정된 TradeTerms JSON을 불러오세요. 모든 큰 정수는 10진 문자열로 입력합니다."></textarea>
+  <label>tradeId<input id="tradeId" placeholder="0x + 64자리 hex"></label>
+  <button id="refresh">상태 조회</button>
+  <pre id="state">조회 결과가 여기에 표시됩니다.</pre>
+</section>
+<div class="grid2">
+<section>
+  <h2>1. Station / 합의 서명</h2>
+  <p class="muted">검사·replay·판정 데이터를 확인한 서명자가 서명합니다.</p>
+  <select id="type"><option>StationAttestation</option><option>ReplayAttestation</option><option>InspectorDecisionAttestation</option><option>MutualResolution</option></select>
+  <label>message JSON<textarea id="message" placeholder="EIP712_TYPED_DATA_SCHEMA.json 필드와 순서 기준"></textarea></label>
+  <button id="sign">지갑에서 서명</button>
+  <button id="signatureExport" disabled>서명 JSON 저장</button>
+  <pre id="signed">서명 결과</pre>
+</section>
+<section>
+  <h2>2. Actor 거래 실행</h2>
+  <p class="muted">Station 서명 파일을 Actor 지갑에서 불러와 제출합니다.</p>
+  <select id="action"></select>
+  <p id="inputs" class="muted"></p>
+  <label>함수 인자 JSON 배열<textarea id="args" placeholder='["0x…tradeId"]'>[]</textarea></label>
+  <label>서명 JSON 불러오기<input type="file" id="envelopeFile" accept=".json"></label>
+  <button id="useTerms">TradeTerms → proposeTrade 인자</button>
+  <button id="prepare">거래 미리보기</button>
+  <button id="send" disabled>지갑에서 거래 승인</button>
+  <pre id="preview">발신자 · 함수 · 금액 · calldata · 현재 상태</pre>
+</section>
+</div>
+<section>
+  <h2>실행 증거</h2>
+  <p class="muted">2 confirmations 이후 receipt·이벤트·상태·회계 기록을 저장합니다.</p>
+  <button id="export" disabled>증거 JSON 저장</button>
+  <pre id="evidence">아직 이 세션에서 실행된 거래가 없습니다.</pre>
+</section>
+</details>
+
+<p class="muted">컨트랙트는 합의된 해시·권한·상태·자금을 검증합니다. 실물 동일성이나 AI 정확성 자체를 블록체인이 증명한다고 주장하지 않습니다.</p>
+</main>
+<script src="./vendor/ethers.umd.min.js"></script>
+<script type="module" src="./src/app.mjs"></script>
+</body>
+</html>
