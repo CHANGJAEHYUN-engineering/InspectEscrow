@@ -1,0 +1,159 @@
+{
+  "snapshotDate": "2026-10-11",
+  "project": "InspectEscrow",
+  "status": "FUNDED_SEPOLIA_E2E_COMPLETED",
+  "chainId": 11155111,
+  "contract": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9",
+  "contractVersion": "PHASE2-PATCH2",
+  "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+  "scenario": "DISPUTE_REFUND_WITH_PRIMARY_TIMEOUT_BACKUP_FAILOVER",
+  "escrowWei": "5000000000000000",
+  "frozen": {
+    "policyVersion": 1,
+    "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+    "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "thresholdScaled": "57904037",
+    "scoreScaleExponent": 6
+  },
+  "aiEvidence": {
+    "supplier": {
+      "source": "demo/good/000.png",
+      "scoreScaled": "55442036",
+      "outcome": "ADMISSIBLE_PASS",
+      "evidencePackageHash": "0x73f141e55ac41d24eb81574ae6ffcaf406bd331f14abe49081dd439f0be5d986"
+    },
+    "buyer": {
+      "source": "demo/scratch/022.png",
+      "scoreScaled": "60138172",
+      "outcome": "ADMISSIBLE_REVIEW",
+      "evidencePackageHash": "0x59a8b83d7674fbce7e776fc341d7fc06c8cd13d34deb3223146b341a73af1d43"
+    }
+  },
+  "replay": {
+    "stage": 1,
+    "stageName": "BACKUP",
+    "replayReportHash": "0x18cb6feb5af67a5907a1c9f4fc3dcfaf7dcc19b1063da337174daca752d0bd1d",
+    "consistent": true,
+    "separateMachineVerified": false,
+    "claimBoundary": "controlled artifact-reload consistency evidence; not a universal cross-machine guarantee"
+  },
+  "inspectorDecision": {
+    "stage": 1,
+    "stageName": "BACKUP",
+    "decision": 2,
+    "decisionName": "REFUND_TO_BUYER",
+    "reasonCode": "0x99e0e65dbe63aa3496211a3f03055e0e6767783e557bb0e34ff5cd907dc9c629",
+    "humanOwnedDecision": true,
+    "aiDecidesMoney": false
+  },
+  "transactions": [
+    {
+      "step": "proposeTrade",
+      "txHash": "0xa9116ec4f58803f1985924665e6bfb46a455c2d732c7ec531092c779c40e889c",
+      "status": "success"
+    },
+    {
+      "step": "supplier.acceptPolicy",
+      "txHash": "0xad8d3e74de6b5675003854d2d1561780a4d0ec0832ce171017593d74abf8cceb",
+      "status": "success"
+    },
+    {
+      "step": "activate",
+      "txHash": "0xe8df43a483e336133d2083987a8584e78005edb8d389d889823d58fa080d9150",
+      "status": "success",
+      "stateAfter": {
+        "value": 5,
+        "name": "AWAIT_SUPPLIER"
+      }
+    },
+    {
+      "step": "supplier.submitInspection",
+      "txHash": "0x29d71a9fccb4a062ea4fb627d07d2724ad91287f370c2b10fbc5ee3b3b33e98e",
+      "status": "success",
+      "outcome": "ADMISSIBLE_PASS",
+      "scoreScaled": "55442036",
+      "stateAfter": {
+        "value": 8,
+        "name": "AWAIT_BUYER"
+      }
+    },
+    {
+      "step": "buyer.submitInspection",
+      "txHash": "0x8cf9fa20824d588a1896f4f3d43eb98a0c0b536bc64debf9a06f685f4763a994",
+      "status": "success",
+      "outcome": "ADMISSIBLE_REVIEW",
+      "scoreScaled": "60138172",
+      "stateAfter": {
+        "value": 12,
+        "name": "DISPUTED_PRIMARY"
+      }
+    },
+    {
+      "step": "primaryInspector.timeout",
+      "transactionSent": false,
+      "primaryDeadlineKst": "2026-10-10 23:24:36 KST"
+    },
+    {
+      "step": "activateBackupInspector",
+      "txHash": "0x8d26b9669fe8ee41db0353b20e456908dc41c5703c8f61c2d7456fda6540a823",
+      "status": "success",
+      "backupInspectorDeadlineUnix": 1791650568,
+      "backupInspectorDeadlineKst": "2026-10-11 01:42:48 KST",
+      "stateAfter": {
+        "value": 13,
+        "name": "DISPUTED_BACKUP"
+      }
+    },
+    {
+      "step": "backup.recordReplayResult",
+      "txHash": "0x5a018554bac8ca8876c6ef84f8732436b0ef9db0d922a8c017cedfb16c6a2be0",
+      "status": "success",
+      "stage": 1,
+      "replayReportHash": "0x18cb6feb5af67a5907a1c9f4fc3dcfaf7dcc19b1063da337174daca752d0bd1d",
+      "consistent": true,
+      "stateAfter": {
+        "value": 13,
+        "name": "DISPUTED_BACKUP"
+      }
+    },
+    {
+      "step": "backup.submitInspectorDecision",
+      "txHash": "0x3a94aa420901aa1d061c23e5cf40f669eb8f89e88e760a214aba8fa62be48674",
+      "status": "success",
+      "decision": 2,
+      "decisionName": "REFUND_TO_BUYER",
+      "stateAfter": {
+        "value": 18,
+        "name": "REFUNDED"
+      },
+      "buyerClaimableWeiAfter": "5000000000000000"
+    },
+    {
+      "step": "buyer.withdraw",
+      "txHash": "0x5183318aafe01643879771af8d66820dc3e2bfeb206ec9881323d7735c168bd2",
+      "status": "success",
+      "stateAfter": {
+        "value": 18,
+        "name": "REFUNDED"
+      }
+    }
+  ],
+  "finalAccounting": {
+    "state": {
+      "value": 18,
+      "name": "REFUNDED"
+    },
+    "buyerClaimableWei": "0",
+    "totalWithdrawnWei": "5000000000000000",
+    "outstandingClaimableWei": "0",
+    "accountingConserved": true
+  },
+  "evidenceScope": {
+    "publicDatasetSimulation": true,
+    "samePhysicalSpecimenProven": false,
+    "physicalCustodyProven": false,
+    "stationSignatureProvesAiExecution": false,
+    "replayCrossMachineUniversalGuarantee": false
+  }
+}

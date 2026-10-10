@@ -1,0 +1,53 @@
+{
+  "snapshotDate": "2026-10-11",
+  "auditStatus": "FUNDED_SEPOLIA_E2E_COMPLETE",
+  "packageIntegrity": {
+    "aiManifest": {
+      "total": 75,
+      "mismatches": []
+    },
+    "blockchainManifest": {
+      "total": 26,
+      "mismatches": []
+    },
+    "abiEntries": 113,
+    "soliditySha256": "4effb1ee5a18f4c75ae6eb8eaa1ec051a03da9efb4799beffe8772439cf3e6da"
+  },
+  "frozenTerms": {
+    "policyVersion": 1,
+    "policyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+    "modelBundleHash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e",
+    "scoreSchemaId": "0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8",
+    "thresholdScaled": "57904037",
+    "scoreScaleExponent": 6
+  },
+  "liveFinal": {
+    "chainId": 11155111,
+    "contract": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9",
+    "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
+    "state": {
+      "value": 18,
+      "name": "REFUNDED"
+    },
+    "buyerClaimableWei": "0",
+    "totalWithdrawnWei": "5000000000000000",
+    "outstandingClaimableWei": "0",
+    "accountingConserved": true
+  },
+  "keyEvidence": {
+    "supplierEvidencePackageHash": "0x73f141e55ac41d24eb81574ae6ffcaf406bd331f14abe49081dd439f0be5d986",
+    "buyerEvidencePackageHash": "0x59a8b83d7674fbce7e776fc341d7fc06c8cd13d34deb3223146b341a73af1d43",
+    "replayReportHash": "0x18cb6feb5af67a5907a1c9f4fc3dcfaf7dcc19b1063da337174daca752d0bd1d",
+    "replayConsistent": true,
+    "inspectorDecision": "REFUND_TO_BUYER",
+    "withdrawTx": "0x5183318aafe01643879771af8d66820dc3e2bfeb206ec9881323d7735c168bd2"
+  },
+  "claimBoundary": {
+    "publicDatasetSimulation": true,
+    "samePhysicalSpecimenProven": false,
+    "physicalCustodyProven": false,
+    "stationSignatureProvesAiExecution": false,
+    "replayCrossMachineUniversalGuarantee": false
+  },
+  "auditFailures": []
+}

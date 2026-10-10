@@ -1,44 +1,31 @@
 {
-  "snapshotAt": "2026-10-09T22:41:46Z",
+  "snapshotAt": "2026-10-11",
   "chainId": 11155111,
   "contract": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9",
   "contractVersion": "PHASE2-PATCH2",
   "tradeId": "0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c",
   "scenario": "DISPUTE",
-  "frozenTermsFile": "docs/TradeTerms.frozen.dispute.json",
   "currentState": {
-    "value": 1,
-    "name": "PROPOSED"
+    "value": 18,
+    "name": "REFUNDED"
   },
-  "completedTransactions": [
-    {
-      "step": "proposeTrade",
-      "txHash": "0xa9116ec4f58803f1985924665e6bfb46a455c2d732c7ec531092c779c40e889c",
-      "status": 1,
-      "blockNumber": 11879324,
-      "from": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
-      "outerTo": "0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3",
-      "executionTarget": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9",
-      "gasUsed": "2639464",
-      "effectiveGasPriceWei": "1500000014",
-      "feeWei": "3959196036952496",
-      "inspectEscrowEvent": "TradeProposed"
-    },
-    {
-      "step": "supplier.acceptPolicy",
-      "txHash": "0xad8d3e74de6b5675003854d2d1561780a4d0ec0832ce171017593d74abf8cceb",
-      "status": 1,
-      "blockNumber": 11879364,
-      "from": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
-      "outerTo": "0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3",
-      "executionTarget": "0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9",
-      "gasUsed": "214118",
-      "effectiveGasPriceWei": "1500000014",
-      "feeWei": "321177002997652",
-      "inspectEscrowEvent": "PolicyAccepted"
-    }
-  ],
-  "nextRequiredStep": "buyer.acceptPolicy",
-  "inspectionSubmissionAllowed": false,
-  "stopCondition": "Stop after activate when getTradeState(tradeId) == AWAIT_SUPPLIER"
+  "e2eStatus": "COMPLETED_WITH_WITHDRAW",
+  "finalEvidenceFile": "FINAL_SEPOLIA_E2E_20261011.json",
+  "finalAccounting": {
+    "buyerClaimableWei": "0",
+    "totalWithdrawnWei": "5000000000000000",
+    "outstandingClaimableWei": "0",
+    "accountingConserved": true
+  },
+  "keyTransactions": {
+    "activate": "0xe8df43a483e336133d2083987a8584e78005edb8d389d889823d58fa080d9150",
+    "supplierSubmitInspection": "0x29d71a9fccb4a062ea4fb627d07d2724ad91287f370c2b10fbc5ee3b3b33e98e",
+    "buyerSubmitInspection": "0x8cf9fa20824d588a1896f4f3d43eb98a0c0b536bc64debf9a06f685f4763a994",
+    "activateBackupInspector": "0x8d26b9669fe8ee41db0353b20e456908dc41c5703c8f61c2d7456fda6540a823",
+    "backupReplay": "0x5a018554bac8ca8876c6ef84f8732436b0ef9db0d922a8c017cedfb16c6a2be0",
+    "inspectorRefundDecision": "0x3a94aa420901aa1d061c23e5cf40f669eb8f89e88e760a214aba8fa62be48674",
+    "buyerWithdraw": "0x5183318aafe01643879771af8d66820dc3e2bfeb206ec9881323d7735c168bd2"
+  },
+  "nextRequiredStep": null,
+  "stopCondition": "E2E complete. No additional transaction required for this trade."
 }
