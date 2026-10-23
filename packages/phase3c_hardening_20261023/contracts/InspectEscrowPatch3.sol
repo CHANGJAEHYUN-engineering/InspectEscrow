@@ -419,6 +419,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         onlyCredentialAuthority
     {
         if (credential == address(0)) revert ZeroAddress();
+        if (credential == credentialAuthority) revert InvalidTerms();
         CredentialRecord storage record = credentials[credential];
         if (record.status != CredentialStatus.UNKNOWN) revert InvalidCredentialState();
         _setCredentialStatus(credential, record, CredentialStatus.ACTIVE, reasonCode);
@@ -458,6 +459,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     /// @notice Creates immutable business terms. Credential status remains independently revocable.
     function proposeTrade(TradeTerms calldata terms) external {
         _validateTerms(terms);
+        _validateAuthoritySeparation(terms);
         _validateTradeCredentialsActive(terms);
         if (_trades[terms.tradeId].state != TradeState.NONE) revert TradeAlreadyExists();
         if (msg.sender != terms.supplier && msg.sender != terms.buyer) revert UnauthorizedCaller();
@@ -1311,6 +1313,20 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
 
     function _enterMutualResolutionState(Trade storage trade, TradeState state) internal {
         _enterState(trade, state, _deadlineFromNow(trade.terms.windows.mutualResolution));
+    }
+
+    function _validateAuthoritySeparation(TradeTerms calldata t) internal view {
+        if (
+            credentialAuthority == t.supplier || credentialAuthority == t.buyer
+                || credentialAuthority == t.primaryInspector
+                || credentialAuthority == t.backupInspector
+                || credentialAuthority == t.externalArbitrator
+                || credentialAuthority == t.supplierStation
+                || credentialAuthority == t.buyerStation
+                || credentialAuthority == t.primaryInspectorStation
+                || credentialAuthority == t.backupInspectorStation
+                || credentialAuthority == t.externalArbitratorStation
+        ) revert InvalidTerms();
     }
 
     function _validateTradeCredentialsActive(TradeTerms calldata t) internal view {
