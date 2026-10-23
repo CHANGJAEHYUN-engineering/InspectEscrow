@@ -1,0 +1,79 @@
+name: PATCH3 Solidity CI
+
+on:
+  push:
+    branches:
+      - patch3-mentor-hardening
+    paths:
+      - 'packages/phase3c_hardening_20261023/**'
+      - '.github/workflows/patch3-solidity-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout candidate branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pinned Solidity compiler and OpenZeppelin
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save solc@0.8.26 @openzeppelin/contracts@5.0.2
+
+      - name: Compile PATCH3 candidate
+        run: |
+          mkdir -p .patch3-build
+          npx solcjs \
+            --base-path packages/phase3c_hardening_20261023 \
+            --include-path node_modules \
+            --bin \
+            --abi \
+            -o .patch3-build \
+            packages/phase3c_hardening_20261023/contracts/InspectEscrowPatch3.sol
+
+      - name: Structural hardening assertions
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC=packages/phase3c_hardening_20261023/contracts/InspectEscrowPatch3.sol
+          grep -q 'PHASE2-PATCH3-CANDIDATE' "$SRC"
+          grep -q 'primaryInspectorStation' "$SRC"
+          grep -q 'backupInspectorStation' "$SRC"
+          grep -q 'externalArbitratorStation' "$SRC"
+          grep -q 'escalateToExternalArbitration' "$SRC"
+          grep -q 'submitArbitrationDecision' "$SRC"
+          grep -q 'executeFinalFallback' "$SRC"
+          grep -q 'windows.mutualResolution' "$SRC"
+          if grep -q 'address inspectorStation;' "$SRC"; then
+            echo 'FAIL: shared inspectorStation remains in TradeTerms'
+            exit 1
+          fi
+
+      - name: Candidate bytecode size report
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          bins=list(Path('.patch3-build').glob('*InspectEscrowPatch3*.bin'))
+          if not bins:
+              raise SystemExit('No candidate bytecode output found')
+          for p in bins:
+              h=p.read_text().strip()
+              print(f'{p.name}: {len(h)//2} bytes creation bytecode')
+          PY
+
+      - name: Upload compile outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: patch3-solidity-compile
+          path: .patch3-build/
+          retention-days: 14
