@@ -1,0 +1,36 @@
+name: AI Baseline Comparison CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/ai_20261010/ai/baseline/**'
+      - '.github/workflows/ai-baseline-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python syntax
+        run: python -m py_compile packages/ai_20261010/ai/baseline/compare_baselines.py
+      - name: Claim-boundary assertions
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC=packages/ai_20261010/ai/baseline/compare_baselines.py
+          grep -q 'PATCHCORE_THRESHOLD = 57.90403747558594' "$SRC"
+          grep -q 'FINAL89_POST_HOC_COMPARATIVE' "$SRC"
+          grep -q 'NOT untouched held-out' "$SRC"
+          grep -q 'patchcoreModelChanged.*False' "$SRC"
+          grep -q 'patchcoreThresholdChanged.*False' "$SRC"
+          grep -q 'maximize Youden J' "$SRC"
