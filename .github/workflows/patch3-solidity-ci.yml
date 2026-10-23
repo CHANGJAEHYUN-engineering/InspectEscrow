@@ -32,17 +32,7 @@ jobs:
 
       - name: Compile PATCH3 candidate
         run: |
-          mkdir -p .patch3-build
-          npx solcjs \
-            --base-path packages/phase3c_hardening_20261023 \
-            --include-path node_modules \
-            --optimize \
-            --optimize-runs 200 \
-            --bin \
-            --abi \
-            -o .patch3-build \
-            packages/phase3c_hardening_20261023/contracts/InspectEscrowPatch3.sol \
-            packages/phase3c_hardening_20261023/contracts/CredentialRegistryPatch3.sol
+          node packages/phase3c_hardening_20261023/scripts/compile-patch3.mjs
 
       - name: Install Foundry 1.8.5
         uses: foundry-rs/foundry-toolchain@v1
@@ -94,19 +84,7 @@ jobs:
           fi
 
       - name: Candidate bytecode size report
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          bins=list(Path('.patch3-build').glob('*.bin'))
-          if not bins:
-              raise SystemExit('No candidate bytecode output found')
-          for p in bins:
-              h=p.read_text().strip()
-              size=len(h)//2
-              print(f'{p.name}: {size} bytes creation bytecode')
-              if size > 49152:
-                  raise SystemExit(f'Initcode exceeds Shanghai EIP-3860 limit: {size} bytes')
-          PY
+        run: cat .patch3-build/PATCH3_COMPILE_MANIFEST.json
 
       - name: Upload compile outputs
         uses: actions/upload-artifact@v4
