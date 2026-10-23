@@ -28,7 +28,7 @@ jobs:
       - name: Install pinned Solidity compiler and OpenZeppelin
         run: |
           npm init -y >/dev/null 2>&1
-          npm install --no-save solc@0.8.26 @openzeppelin/contracts@5.5.0
+          npm install --no-save solc@0.8.26 @openzeppelin/contracts@5.5.0 ethers@6.15.0
 
       - name: Compile PATCH3 candidate
         run: |
@@ -36,6 +36,8 @@ jobs:
           npx solcjs \
             --base-path packages/phase3c_hardening_20261023 \
             --include-path node_modules \
+            --optimize \
+            --optimize-runs 200 \
             --bin \
             --abi \
             -o .patch3-build \
@@ -94,7 +96,10 @@ jobs:
               raise SystemExit('No candidate bytecode output found')
           for p in bins:
               h=p.read_text().strip()
-              print(f'{p.name}: {len(h)//2} bytes creation bytecode')
+              size=len(h)//2
+              print(f'{p.name}: {size} bytes creation bytecode')
+              if size > 49152:
+                  raise SystemExit(f'Initcode exceeds Shanghai EIP-3860 limit: {size} bytes')
           PY
 
       - name: Upload compile outputs
