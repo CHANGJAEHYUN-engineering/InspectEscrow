@@ -41,6 +41,32 @@ jobs:
             -o .patch3-build \
             packages/phase3c_hardening_20261023/contracts/InspectEscrowPatch3.sol
 
+      - name: Install Foundry 1.8.5
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.8.5
+
+      - name: Run hostile local-chain red-team
+        shell: bash
+        run: |
+          set -euo pipefail
+          anvil --host 127.0.0.1 --port 18546 --chain-id 31338 --accounts 20 --silent > /tmp/patch3-anvil.log 2>&1 &
+          ANVIL_PID=$!
+          trap 'kill $ANVIL_PID 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl -s -X POST http://127.0.0.1:18546 \
+              -H 'content-type: application/json' \
+              --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
+              | grep -q '"result"'; then
+              break
+            fi
+            sleep 1
+          done
+          curl -fsS -X POST http://127.0.0.1:18546 \
+            -H 'content-type: application/json' \
+            --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}'
+          node packages/phase3c_hardening_20261023/test/red-team-smoke.mjs
+
       - name: Structural hardening assertions
         shell: bash
         run: |
