@@ -1,10 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import {createRequire} from 'node:module';
-
-const require=createRequire(import.meta.url);
-const E=require('../../phase3b_20261010/vendor/ethers.umd.min.js');
+import * as E from 'ethers';
 
 const BUILD='.patch3-build';
 const files=fs.readdirSync(BUILD);
