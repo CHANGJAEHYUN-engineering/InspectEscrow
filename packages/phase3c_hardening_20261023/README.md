@@ -37,7 +37,39 @@ This is still a **candidate**, not a replacement for the proven PHASE2-PATCH2 Se
 7. add arbitration decision typed data
 8. test every funded nonterminal state for finite exit
 9. test authority abuse and accounting invariants
-10. regenerate ABI / EIP-712 schema only after source freeze
+10. regenerate ABI / EIP712 schema only after source freeze
 
 Design source:
 `docs/PATCH3_MENTOR_HARDENING_SPEC_KO.md`
+
+## Sepolia finalization tooling
+
+Pre-broadcast tooling now exists for the last deployment layer:
+
+- `scripts/validate-patch3-role-plan.mjs`
+  - validates all Actor / Station / Credential Authority public addresses
+  - rejects cross-role collisions
+- `scripts/deploy-patch3-sepolia.mjs`
+  - Sepolia-only deployment
+  - deploys `CredentialRegistryPatch3`
+  - registers five Station credentials ACTIVE
+  - deploys `InspectEscrowPatch3`
+  - performs contract/registry read-back checks
+  - writes a secret-free deployment manifest
+- `scripts/verify-patch3-deployment.mjs`
+  - repeatable read-only verification of the deployed pair
+- `scripts/build-patch3-policy-input.mjs`
+  - binds actual deployment addresses + role plan + fresh tradeId into policy-v1.2 input
+- `PATCH3_FINALIZATION_RUNBOOK_KO.md`
+  - exact execution order and GO/NO-GO boundary
+- `PATCH3_ENV.example`
+  - environment-variable names only; never commit real secrets
+
+The four still-required new public addresses are:
+
+- External Arbitrator actor
+- Backup Inspector Station
+- External Arbitrator Station
+- Credential Registry Authority
+
+No PATCH3 broadcast is authorized merely because these scripts exist. The existing deployment precheck remains the hard gate.
