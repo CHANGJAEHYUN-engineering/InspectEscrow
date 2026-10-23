@@ -1,15 +1,16 @@
 {
-  "schema": "inspectescrow.patch3-hardening-checklist/1.1.0",
+  "schema": "inspectescrow.patch3-hardening-checklist/1.2.0",
   "baselineVersion": "PHASE2-PATCH2",
   "candidateVersion": "PHASE2-PATCH3-CANDIDATE",
   "deployedBaselineMustRemainUnchanged": true,
   "latestLocalEvidence": {
-    "githubActionsRunId": 39893169652,
+    "githubActionsRunId": 39894071288,
     "chainId": 31338,
-    "redTeamChecksPassed": 25,
+    "redTeamChecksPassed": 35,
     "redTeamChecksFailed": 0,
-    "inspectEscrowCreationBytes": 23944,
-    "inspectEscrowRuntimeBytes": 22573,
+    "interoperability": "PASS_PYTHON_JAVASCRIPT_SOLIDITY",
+    "inspectEscrowCreationBytes": 24556,
+    "inspectEscrowRuntimeBytes": 23185,
     "credentialRegistryCreationBytes": 1668,
     "credentialRegistryRuntimeBytes": 1494,
     "compiler": "solc 0.8.26",
@@ -18,7 +19,7 @@
       "runs": 200,
       "viaIR": true
     },
-    "note": "Local synthetic security/liveness evidence only; not an independent audit or production certification."
+    "note": "Local synthetic protocol evidence only; not an independent audit or production certification."
   },
   "phases": [
     {
@@ -44,12 +45,12 @@
     {
       "id": "H5",
       "name": "Interop golden vector",
-      "status": "IN_PROGRESS"
+      "status": "PASS_GOLDEN_VECTOR_PY_JS_SOLIDITY"
     },
     {
       "id": "H6",
       "name": "Red-team + accounting invariants",
-      "status": "CORE_25_PASS_MORE_NEGATIVE_TESTS_PENDING"
+      "status": "CORE_35_PASS_STATIC_ANALYSIS_AND_FULL_AUDIT_PENDING"
     },
     {
       "id": "H7",
