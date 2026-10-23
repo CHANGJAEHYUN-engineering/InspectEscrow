@@ -65,11 +65,25 @@
     "durableInterfaceManifest": "packages/phase3c_hardening_20261023/PATCH3_INTERFACE_FREEZE_CANDIDATE.json",
     "deploymentHardGate": "packages/phase3c_hardening_20261023/PATCH3_SEPOLIA_DEPLOYMENT_PRECHECK_KO.md",
     "blockers": [
-      "PATCH3-specific policy document/hash must commit new arbitration/fallback/role semantics",
+      "actual Credential Registry Authority governance/address required",
       "external arbitrator actor address required",
       "distinct primary/backup/arbitrator station addresses required",
-      "credential-registry authority address/governance required",
+      "deploy Registry + Escrow and verify runtime/interface",
+      "fresh tradeId required after deployment",
+      "generate PATCH3 policy v1.2 / policyVersion 2 using actual deployment + role addresses",
+      "Supplier/Buyer must accept exact generated policyHash before funding",
       "explicit Sepolia GO required before any broadcast"
     ]
+  },
+  "latestPolicyGate": {
+    "githubActionsRunId": 39930784063,
+    "conclusion": "SUCCESS",
+    "artifactId": 12491212324,
+    "artifactDigest": "sha256:e5e3630a5ead620906d722d9fba1a7a0eb10282383380b9e05958e1cd02b3c0b",
+    "smokeFixturePolicyHash": "0x346f4a07eef65e5595a36f3a5bf730852237b1d96e818a789f545d2e3b605445",
+    "parentPatch2PolicyHash": "0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11",
+    "selfHashRecomputation": true,
+    "newPolicyHashDistinctFromPatch2": true,
+    "warning": "smokeFixturePolicyHash is LOCAL TEST FIXTURE ONLY; final Sepolia policyHash must be regenerated from actual deployment/trade/role addresses."
   }
 }
