@@ -8,6 +8,7 @@ on:
       - 'packages/phase3c_hardening_20261023/contracts/**'
       - 'packages/phase3c_hardening_20261023/scripts/**'
       - 'packages/phase3c_hardening_20261023/test/**'
+      - 'packages/phase3c_hardening_20261023/policy/**'
       - '.github/workflows/patch3-solidity-ci.yml'
   workflow_dispatch:
 
@@ -65,6 +66,7 @@ jobs:
           python3 -m pip install --disable-pip-version-check --quiet pycryptodome==3.23.0
           python3 packages/phase3c_hardening_20261023/test/interop-golden.py
           node packages/phase3c_hardening_20261023/test/interface-freeze.mjs
+          node packages/phase3c_hardening_20261023/test/policy-freeze-smoke.mjs
 
       - name: Structural hardening assertions
         shell: bash
