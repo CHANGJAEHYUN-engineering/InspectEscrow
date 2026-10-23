@@ -1,16 +1,18 @@
 {
-  "schema": "inspectescrow.patch3-hardening-checklist/1.2.0",
+  "schema": "inspectescrow.patch3-hardening-checklist/1.3.0",
   "baselineVersion": "PHASE2-PATCH2",
   "candidateVersion": "PHASE2-PATCH3-CANDIDATE",
   "deployedBaselineMustRemainUnchanged": true,
   "latestLocalEvidence": {
-    "githubActionsRunId": 39894071288,
+    "githubActionsRunId": 39929665212,
+    "staticAnalysisRunId": 39929609993,
     "chainId": 31338,
-    "redTeamChecksPassed": 35,
+    "redTeamChecksPassed": 36,
     "redTeamChecksFailed": 0,
     "interoperability": "PASS_PYTHON_JAVASCRIPT_SOLIDITY",
-    "inspectEscrowCreationBytes": 24556,
-    "inspectEscrowRuntimeBytes": 23185,
+    "slitherProjectHighMediumBlocking": 0,
+    "inspectEscrowCreationBytes": 24033,
+    "inspectEscrowRuntimeBytes": 22669,
     "credentialRegistryCreationBytes": 1668,
     "credentialRegistryRuntimeBytes": 1494,
     "compiler": "solc 0.8.26",
@@ -19,7 +21,7 @@
       "runs": 200,
       "viaIR": true
     },
-    "note": "Local synthetic protocol evidence only; not an independent audit or production certification."
+    "note": "Local synthetic protocol evidence + automated Slither gate. Not an independent audit, formal verification, or production certification."
   },
   "phases": [
     {
@@ -50,12 +52,12 @@
     {
       "id": "H6",
       "name": "Red-team + accounting invariants",
-      "status": "CORE_35_PASS_STATIC_ANALYSIS_AND_FULL_AUDIT_PENDING"
+      "status": "PASS_LOCAL_36_RED_TEAM_AND_SLITHER_HIGH_MEDIUM_GATE"
     },
     {
       "id": "H7",
       "name": "Sepolia candidate deployment",
-      "status": "BLOCKED_UNTIL_H5_H6_FULL_AND_GO_GATE"
+      "status": "BLOCKED_UNTIL_INTERFACE_FREEZE_AND_EXPLICIT_SEPOLIA_GO"
     }
   ]
 }
