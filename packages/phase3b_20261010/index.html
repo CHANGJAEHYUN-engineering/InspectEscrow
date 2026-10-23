@@ -24,6 +24,7 @@ input,select,textarea{width:100%;background:#081524;color:var(--text);border:1px
 .hash{font-size:11px;color:#aabbd0;overflow-wrap:anywhere;margin-top:10px}
 .timeline{position:relative;margin-top:12px}.step{display:grid;grid-template-columns:38px 1fr;gap:12px;padding:10px 0}.step:not(:last-child) .node:after{content:"";display:block;width:2px;height:calc(100% + 20px);background:#2b405c;margin:8px auto}.node span{display:flex;width:28px;height:28px;align-items:center;justify-content:center;border-radius:50%;background:#11362f;border:1px solid #2f7868;color:#9af0d8;font-weight:900}.step-title{font-weight:850}.step-meta{color:var(--muted);font-size:13px}.txlink{color:var(--blue);text-decoration:none;font-family:ui-monospace,monospace;font-size:12px}.txlink:hover{text-decoration:underline}
 .anchor{padding:14px;background:#091727;border:1px solid #213650;border-radius:10px}.anchor b{display:block;margin-bottom:6px}.anchor code{font-size:11px;color:#aec0d5;overflow-wrap:anywhere}
+.proof{padding:16px;background:#0a1728;border:1px solid #2b405c;border-radius:12px}.proof strong{display:block;margin-bottom:7px}.proof .tag{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.06em;color:#9af0d8;border:1px solid #2f7868;background:#11362f;border-radius:999px;padding:3px 8px;margin-bottom:8px}
 .boundary{display:grid;grid-template-columns:1fr 1fr;gap:14px}.boundary div{padding:15px;border-radius:12px}.proves{background:#0c241f;border:1px solid #285e51}.limits{background:#251c14;border:1px solid #614b2d}
 details>summary{cursor:pointer;font-weight:850;font-size:18px;padding:4px 0}.operator{margin-top:28px}.addr{overflow-wrap:anywhere}
 hr{border:0;border-top:1px solid var(--line);margin:20px 0}
@@ -103,6 +104,25 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
   <div class="eyebrow">FROZEN TRUST ANCHORS</div>
   <h2>Outcome 전에 Rule을 Commit</h2>
   <div class="grid3" id="anchors"></div>
+</section>
+
+<section>
+  <div class="eyebrow">PATCH3 CANDIDATE · LOCAL HARDENING PROOFS</div>
+  <h2>심사 공격을 실제 실패 테스트로 닫았습니다</h2>
+  <p class="muted">아래는 기존 Sepolia PATCH2 거래를 꾸미는 장면이 아니라, 멘토 피드백 이후 별도 PATCH3 candidate를 로컬 Anvil/CI에서 공격한 결과입니다. PATCH3는 아직 Sepolia에 배포되지 않았습니다.</p>
+  <div class="grid3">
+    <div class="proof"><span class="tag">REVERT</span><strong>Funded rule tamper</strong><div class="muted">잘못된 policy/model/evidence anchor를 넣은 제출은 거절되고 active trade rule은 바뀌지 않습니다.</div></div>
+    <div class="proof"><span class="tag">HOLD</span><strong>Replay mismatch</strong><div class="muted">불일치 replay는 자동 RELEASE/REFUND가 아니라 EXECUTION_HOLD로 들어가고, 사전합의된 finite exit만 허용합니다.</div></div>
+    <div class="proof"><span class="tag">REVOKE</span><strong>Credential compromise</strong><div class="muted">SUSPENDED/REVOKED signer의 새 attestation은 거절됩니다. Credential Authority의 조치만으로 escrow state나 수령인은 바뀌지 않습니다.</div></div>
+    <div class="proof"><span class="tag">BOUND</span><strong>Human judgment basis</strong><div class="muted">Inspector는 RELEASE/REFUND만 선택하며 reasonCode와 decisionEvidenceHash를 함께 bind해야 합니다.</div></div>
+    <div class="proof"><span class="tag">FINITE</span><strong>Exception liveness</strong><div class="muted">Mutual window → External Arbitration → exception-specific precommitted fallback으로 영구 lock 경로를 제거했습니다.</div></div>
+    <div class="proof"><span class="tag">36 / 0</span><strong>Hostile Red-Team</strong><div class="muted">36 PASS / 0 FAIL, Python↔JS↔Solidity interop PASS, project-source Slither High/Medium blocking 0.</div></div>
+  </div>
+  <p>
+    <a class="button secondary" href="https://github.com/CHANGJAEHYUN-engineering/InspectEscrow/actions/runs/39930784063" target="_blank" rel="noopener">PATCH3 CI Evidence</a>
+    <a class="button secondary" href="https://github.com/CHANGJAEHYUN-engineering/InspectEscrow/actions/runs/39929609993" target="_blank" rel="noopener">Static Analysis</a>
+    <a class="button" href="../physical_capture_v1/" target="_blank" rel="noopener">Physical Capture Console</a>
+  </p>
 </section>
 
 <section>
