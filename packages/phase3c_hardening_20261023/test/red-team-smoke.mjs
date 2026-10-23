@@ -429,6 +429,120 @@ async function arbitrationMessage(t,decision,tag){
   pass('ESCALATED after both Inspector timeouts reaches precommitted fallback');
 }
 
+// N1: Credential registry governance cannot be called by a random account.
+await expectRevert('random account cannot suspend a credential',async()=>{
+  await registry.connect(attacker).suspendCredential(addresses[7],h('UNAUTHORIZED_SUSPEND'));
+});
+
+// N2: EIP-712 domain/timestamp attacks must all be revert-only.
+{
+  const t=await setup('eip712-negative-matrix');
+  const base=await inspectionMessage(t,0,100,'DOMAIN_MATRIX');
+
+  const wrongChainDomain={...domain,chainId:31339};
+  const wrongChainSig=await supplierStation.signTypedData(
+    wrongChainDomain,{StationAttestation:types.StationAttestation},base
+  );
+  await expectRevert('cross-chain Station signature is rejected',async()=>{
+    await c.connect(supplier).submitInspection(base,wrongChainSig);
+  });
+
+  const wrongContractDomain={...domain,verifyingContract:addresses[11]};
+  const wrongContractSig=await supplierStation.signTypedData(
+    wrongContractDomain,{StationAttestation:types.StationAttestation},base
+  );
+  await expectRevert('cross-contract Station signature is rejected',async()=>{
+    await c.connect(supplier).submitInspection(base,wrongContractSig);
+  });
+
+  const otherTradeMessage={...base,tradeId:h('OTHER_TRADE_FOR_SIGNATURE')};
+  const crossTradeSig=await supplierStation.signTypedData(
+    domain,{StationAttestation:types.StationAttestation},otherTradeMessage
+  );
+  await expectRevert('cross-trade Station signature is rejected',async()=>{
+    await c.connect(supplier).submitInspection(base,crossTradeSig);
+  });
+
+  const latest=await provider.getBlock('latest');
+  const expired={
+    ...base,
+    sessionNonce:h('EXPIRED:SESSION'),
+    issuedAt:latest.timestamp-120,
+    validUntil:latest.timestamp-1
+  };
+  const expiredSig=await signTyped(supplierStation,'StationAttestation',expired);
+  await expectRevert('expired Station attestation is rejected',async()=>{
+    await c.connect(supplier).submitInspection(expired,expiredSig);
+  });
+
+  const future={
+    ...base,
+    sessionNonce:h('FUTURE:SESSION'),
+    issuedAt:latest.timestamp+10,
+    validUntil:latest.timestamp+120
+  };
+  const futureSig=await signTyped(supplierStation,'StationAttestation',future);
+  await expectRevert('future-issued Station attestation is rejected',async()=>{
+    await c.connect(supplier).submitInspection(future,futureSig);
+  });
+
+  assert.equal(await c.getTradeState(t.tradeId),5n);
+  pass('domain/timestamp attack matrix leaves trade state unchanged');
+  await mine(61);
+  await (await c.connect(attacker).invokeSupplierInspectionTimeout(t.tradeId)).wait();
+  await (await c.connect(buyer).withdraw()).wait();
+}
+
+// N3: Nonce replay must be blocked even when the attempt number changes.
+{
+  const t=await setup('nonce-reuse');
+  const first=await inspectionMessage(t,0,0,'NONCE_REUSE_FIRST',{
+    inspectionValidity:1,
+    invalidReason:1,
+    sessionNonce:h('FIXED_REPLAY_NONCE')
+  });
+  const firstSig=await signTyped(supplierStation,'StationAttestation',first);
+  await (await c.connect(supplier).submitInspection(first,firstSig)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),6n);
+
+  const second=await inspectionMessage(t,0,100,'NONCE_REUSE_SECOND',{
+    attempt:2,
+    sessionNonce:h('FIXED_REPLAY_NONCE')
+  });
+  const secondSig=await signTyped(supplierStation,'StationAttestation',second);
+  await expectRevert('same scoped Station nonce cannot be reused on a later attempt',async()=>{
+    await c.connect(supplier).submitInspection(second,secondSig);
+  });
+  assert.equal(await c.getTradeState(t.tradeId),6n);
+  await mine(61);
+  await (await c.connect(attacker).invokeReinspectionTimeout(t.tradeId)).wait();
+  await (await c.connect(buyer).withdraw()).wait();
+}
+
+// N4: Credential Authority has security-control authority, not settlement authority.
+{
+  const t=await setup('authority-no-settlement');
+  await submitInspection(t,0,100,'AUTH_SUPPLIER');
+  await submitInspection(t,1,600,'AUTH_BUYER');
+  const r=await replayMessage(t,true,'AUTH_REPLAY');
+  const rsig=await signTyped(primaryStation,'ReplayAttestation',r);
+  await (await c.connect(primary).recordReplayResult(r,rsig)).wait();
+
+  const tw=await timeWindow();
+  const d={
+    tradeId:t.tradeId,stage:0,inspectorActor:addresses[3],policyHash:t.policyHash,
+    supplierEvidenceHash:r.supplierEvidenceHash,buyerEvidenceHash:r.buyerEvidenceHash,
+    replayReportHash:r.replayReportHash,decision:2,reasonCode:h('AUTH:DECISION'),
+    nonce:h('AUTH:DECISION_NONCE'),...tw
+  };
+  const dsig=await signTyped(primaryStation,'InspectorDecisionAttestation',d);
+  await expectRevert('Credential Authority cannot submit Inspector settlement decision',async()=>{
+    await c.connect(authority).submitInspectorDecision(d,dsig);
+  });
+  await (await c.connect(primary).submitInspectorDecision(d,dsig)).wait();
+  await (await c.connect(buyer).withdraw()).wait();
+}
+
 // G6: A credential incident before the first inspection must still have a finite exit.
 //     Then revoke the external-arbitrator Station too, proving fallback is independent of it.
 {
