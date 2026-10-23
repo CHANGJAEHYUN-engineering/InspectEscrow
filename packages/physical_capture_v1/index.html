@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InspectEscrow Physical Capture Console</title>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;margin:0;background:#f5f7fa;color:#111827}
+main{max-width:1180px;margin:auto;padding:28px}
+h1{margin:0 0 8px} h2{margin-top:30px}
+.card{background:white;border:1px solid #d8dee8;border-radius:14px;padding:20px;margin:16px 0;box-shadow:0 3px 12px rgba(0,0,0,.04)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+label{display:block;font-weight:650;margin-bottom:5px}
+input,select,button{font:inherit}
+input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #b9c2d0;border-radius:8px}
+button{padding:10px 14px;border:0;border-radius:9px;background:#111827;color:white;cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+.secondary{background:#475569}
+.warnbox{background:#fff7ed;border:1px solid #fed7aa;padding:14px;border-radius:10px}
+.ok{color:#087443}.bad{color:#b42318}.warn{color:#a15c00}
+.mono{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;word-break:break-all}
+table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #e5e7eb;padding:9px;text-align:left;vertical-align:top}
+#log{max-height:250px;overflow:auto;font-family:ui-monospace,monospace;font-size:12px}
+.result{font-weight:700;margin-top:12px}
+.small{font-size:13px;color:#475569}
+</style>
+</head>
+<body>
+<main>
+<h1>InspectEscrow · Physical Capture Console V1</h1>
+<p>Ordered capture → pre-inference image hash → Station EIP-712 signature → session seal.</p>
+<div class="warnbox"><b>중요:</b> 3/3 required views가 SEALED 되기 전에는 PatchCore inference를 실행하지 않는다. 이 도구는 physical truth를 증명하지 않으며 촬영 이후 파일 integrity와 capture procedure를 검증한다.</div>
+
+<section class="card">
+<h2>1. Session</h2>
+<div class="grid">
+<div><label>Station wallet</label><div id="wallet" class="mono">Not connected</div><button id="connectBtn">Connect Sepolia Wallet</button></div>
+<div><label>Specimen ID</label><input id="specimenId" value="IE-DEMO-001"></div>
+<div><label>Role</label><select id="role"><option>SUPPLIER</option><option>BUYER</option></select></div>
+<div><label>tradeId / demo binding bytes32</label><input id="tradeId" placeholder="0x..."><button id="demoIdBtn" class="secondary">Generate Demo Binding</button></div>
+</div>
+<p><button id="startBtn">Open Capture Session</button></p>
+<div><b>State:</b> <span id="sessionState">No active session</span></div>
+</section>
+
+<section class="card">
+<h2>2. Ordered capture</h2>
+<p>Required order: <b>TOP → FRONT → SIDE</b>. Next: <strong id="nextView">TOP</strong></p>
+<input id="imageFile" type="file" accept="image/*">
+<p><button id="commitBtn">Hash + Sign Next View</button> <button id="sealBtn" disabled>Seal 3/3 Session</button> <button id="exportBtn" disabled class="secondary">Export Session JSON</button></p>
+<table>
+<thead><tr><th>#</th><th>View</th><th>Original file</th><th>Image Hash</th><th>Capture Digest</th></tr></thead>
+<tbody id="tableBody"></tbody>
+</table>
+</section>
+
+<section class="card">
+<h2>3. Finals verification</h2>
+<p class="small">본선에서 사전 촬영 당시 export한 session JSON과 TOP/FRONT/SIDE 원본 3장을 다시 선택한다.</p>
+<div class="grid">
+<div><label>Capture Session JSON</label><input id="verifyManifest" type="file" accept=".json,application/json"></div>
+<div><label>Original images — TOP, FRONT, SIDE 순서</label><input id="verifyImages" type="file" accept="image/*" multiple></div>
+</div>
+<p><button id="verifyBtn">Verify Physical Evidence</button></p>
+<div id="verifyResult" class="result"></div>
+</section>
+
+<section class="card">
+<h2>Activity</h2>
+<div id="log"></div>
+</section>
+</main>
+<script src="../phase3b_20261010/vendor/ethers.umd.min.js"></script>
+<script type="module" src="./src/capture.mjs"></script>
+</body>
+</html>
