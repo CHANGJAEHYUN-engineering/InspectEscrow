@@ -59,6 +59,9 @@ jobs:
             -H 'content-type: application/json' \
             --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}'
           node packages/phase3c_hardening_20261023/test/red-team-smoke.mjs
+          node packages/phase3c_hardening_20261023/test/interop-golden.mjs
+          python3 -m pip install --disable-pip-version-check --quiet pycryptodome==3.23.0
+          python3 packages/phase3c_hardening_20261023/test/interop-golden.py
 
       - name: Structural hardening assertions
         shell: bash
