@@ -37,6 +37,23 @@
 
 원본 모델 파일을 저장하려면 Git LFS / Release asset / 외부 object storage를 사용한다.
 
+## Artifact lineage 주의
+
+최종 active Model Bundle 기준값은 아래 하나다.
+
+- `modelBundleHash = 0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e`
+
+`ai/policy/AI_REPLAY_TOLERANCE_POLICY_V1.json`에는 이전 lineage의
+`0x5283badc2a43c964cda6f7a921117340f0b1928027e05c3f7aea0dcba9849466`가 남아 있다.
+해당 JSON은 당시 replay-tolerance derivation의 **historical artifact**이며, 최종 Sepolia 거래의 active Model Bundle 식별자로 사용하면 안 된다.
+
+최종 policy / Sepolia E2E의 authoritative references:
+- `ai/policy/FINAL_POLICY_INTEGRATION_CLARIFICATION_V1.json`
+- `ai/policy/INSPECTION_POLICY_V1_1_COMMITMENT.json`
+- `../phase3b_20261010/results/FINAL_SEPOLIA_E2E_20261011.json`
+
+과거 artifact 자체를 수정하면 provenance digest가 달라질 수 있으므로 원본은 보존하고 lineage를 문서로 명시한다.
+
 ## 주의
 - private key / mnemonic / station signature는 포함하지 않는다.
 - 이 패키지는 AI + evidence + contract handoff 자료다.

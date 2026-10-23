@@ -1,3 +1,9 @@
+> [!IMPORTANT]
+> **HISTORICAL SNAPSHOT — 2026-10-09/10.** 이 문서는 PHASE3B 진행 중 당시의 상태 기록이며 현재 상태를 나타내지 않는다.
+> 실제 funded Sepolia E2E는 이후 **REFUNDED → Buyer withdraw → accountingConserved() = true**까지 완료되었다.
+> 최신 기준 문서는 `docs/STATUS_20261011_KO.md` 및 `packages/phase3b_20261010/results/FINAL_SEPOLIA_E2E_20261011.json`이다.
+> 아래 본문은 감사 추적성을 위해 당시 기록 그대로 보존한다.
+
 # PHASE 3B Integration Progress — 2026-10-09
 
 **현재 상태: 연동 구현 + 로컬 E2E 검증 완료. Sepolia DISPUTE 거래 진행 중 — `proposeTrade`와 Supplier `acceptPolicy` 성공, Buyer `acceptPolicy` 대기.**
