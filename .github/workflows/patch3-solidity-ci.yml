@@ -5,7 +5,9 @@ on:
     branches:
       - patch3-mentor-hardening
     paths:
-      - 'packages/phase3c_hardening_20261023/**'
+      - 'packages/phase3c_hardening_20261023/contracts/**'
+      - 'packages/phase3c_hardening_20261023/scripts/**'
+      - 'packages/phase3c_hardening_20261023/test/**'
       - '.github/workflows/patch3-solidity-ci.yml'
   workflow_dispatch:
 
