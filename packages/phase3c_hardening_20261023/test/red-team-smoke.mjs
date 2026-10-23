@@ -130,7 +130,13 @@ function terms(label,overrides={}){
     scoreMaxScaled:1000n,
     maxSupplierRetries:1,
     maxBuyerRetries:1,
-    finalFallbackOutcome:2,
+    fallbackPolicy:{
+      buyerInspectionTimeout:2,
+      executionHold:2,
+      evidenceHold:2,
+      inspectorEscalated:2,
+      credentialHold:2
+    },
     windows:{
       supplierInspection:60,buyerInspection:60,buyerAcceptance:60,
       primaryInspector:60,backupInspector:60,mutualResolution:30,externalArbitration:30
@@ -138,8 +144,8 @@ function terms(label,overrides={}){
     ...overrides
   };
 }
-async function setup(label){
-  const t=terms(label);
+async function setup(label,overrides={}){
+  const t=terms(label,overrides);
   await (await c.connect(supplier).proposeTrade(t)).wait();
   await (await c.connect(supplier).acceptPolicy(t.tradeId)).wait();
   await (await c.connect(buyer).acceptPolicy(t.tradeId)).wait();
@@ -543,6 +549,29 @@ await expectRevert('random account cannot suspend a credential',async()=>{
   await (await c.connect(buyer).withdraw()).wait();
 }
 
+// L8: Final fallback is exception-specific, not one coarse global outcome.
+{
+  const t=await setup('context-specific-fallback',{
+    fallbackPolicy:{
+      buyerInspectionTimeout:1,
+      executionHold:2,
+      evidenceHold:2,
+      inspectorEscalated:2,
+      credentialHold:2
+    }
+  });
+  await submitInspection(t,0,100,'CTX_SUPPLIER');
+  await mine(61);
+  await (await c.connect(attacker).invokeBuyerInspectionTimeout(t.tradeId)).wait();
+  await mine(31);
+  await (await c.connect(attacker).escalateToExternalArbitration(t.tradeId)).wait();
+  await mine(31);
+  await (await c.connect(attacker).executeFinalFallback(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),17n);
+  await (await c.connect(supplier).withdraw()).wait();
+  pass('BUYER_INSPECTION_TIMEOUT can use a precommitted RELEASE fallback while other exception classes remain REFUND');
+}
+
 // G6: A credential incident before the first inspection must still have a finite exit.
 //     Then revoke the external-arbitrator Station too, proving fallback is independent of it.
 {
@@ -583,7 +612,7 @@ pass('SUSPENDED credential can be restored for future trades');
 const writeNames=abi.filter(x=>x.type==='function'&&!['view','pure'].includes(x.stateMutability)).map(x=>x.name);
 for(const forbidden of [
   'adminSettle','forceRelease','forceRefund','sweep','setPolicy','setThreshold',
-  'setFinalFallbackOutcome','registerCredential','suspendCredential','resumeCredential','revokeCredential'
+  'setFinalFallbackOutcome','setFallbackPolicy','registerCredential','suspendCredential','resumeCredential','revokeCredential'
 ]){
   assert.ok(!writeNames.includes(forbidden),'forbidden admin capability present: '+forbidden);
 }
