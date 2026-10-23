@@ -100,6 +100,8 @@ It **does not** prove that a physical item is genuine, that Supplier and Buyer i
 - [Final evidence index](docs/FINAL_EVIDENCE_INDEX.md)
 - [Final red-team master](docs/FINAL_RED_TEAM_MASTER_20261023_KO.md)
 - [PATCH3 mentor-hardening spec](docs/PATCH3_MENTOR_HARDENING_SPEC_KO.md)
+- [PATCH3 trust assumptions](docs/PATCH3_TRUST_ASSUMPTION_REGISTER_KO.md)
+- [Physical Capture Protocol V1](docs/PHYSICAL_CAPTURE_PROTOCOL_V1_KO.md)
 - [2026-10-11 final Korean status](docs/STATUS_20261011_KO.md)
 - [2026-10-11 final audit](docs/LATEST_AUDIT_20261011.json)
 - [Architecture and trust boundaries](docs/architecture.md)
