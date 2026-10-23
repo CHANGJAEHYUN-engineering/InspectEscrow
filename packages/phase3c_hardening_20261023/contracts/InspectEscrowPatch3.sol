@@ -106,6 +106,14 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         uint64 externalArbitration;
     }
 
+    struct FallbackPolicy {
+        SettlementOutcome buyerInspectionTimeout;
+        SettlementOutcome executionHold;
+        SettlementOutcome evidenceHold;
+        SettlementOutcome inspectorEscalated;
+        SettlementOutcome credentialHold;
+    }
+
     struct TradeTerms {
         bytes32 tradeId;
         address supplier;
@@ -132,7 +140,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         uint128 scoreMaxScaled;
         uint8 maxSupplierRetries;
         uint8 maxBuyerRetries;
-        SettlementOutcome finalFallbackOutcome;
+        FallbackPolicy fallbackPolicy;
         Windows windows;
     }
 
@@ -231,6 +239,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         InspectionRecord buyerInspection;
         ReplayStatus replayStatus;
         bytes32 replayReportHash;
+        TradeState arbitrationOriginState;
     }
 
     bytes32 public constant STATION_ATTESTATION_TYPEHASH = keccak256(
@@ -363,7 +372,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         bytes32 decisionEvidenceHash
     );
     event FinalFallbackExecuted(
-        bytes32 indexed tradeId, SettlementOutcome outcome
+        bytes32 indexed tradeId, TradeState indexed originState, SettlementOutcome outcome
     );
     event InspectorDecisionRecorded(
         bytes32 indexed tradeId,
@@ -782,6 +791,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         Trade storage trade = _trade(tradeId);
         if (!_mutualResolutionState(trade.state)) revert InvalidStateSet(trade.state);
         _requireDeadlineReached(trade);
+        trade.arbitrationOriginState = trade.state;
         uint64 deadline = _deadlineFromNow(trade.terms.windows.externalArbitration);
         _enterState(trade, TradeState.ARBITRATION_PENDING, deadline);
         emit ExternalArbitrationOpened(tradeId, deadline);
@@ -844,8 +854,8 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
             revert InvalidState(TradeState.ARBITRATION_PENDING, trade.state);
         }
         _requireDeadlineReached(trade);
-        SettlementOutcome outcome = trade.terms.finalFallbackOutcome;
-        emit FinalFallbackExecuted(tradeId, outcome);
+        SettlementOutcome outcome = _fallbackOutcome(trade);
+        emit FinalFallbackExecuted(tradeId, trade.arbitrationOriginState, outcome);
         _settle(tradeId, trade, outcome);
     }
 
@@ -1009,10 +1019,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
                 || t.productSpecHash == bytes32(0) || t.requiredViewSetHash == bytes32(0)
                 || t.scoreSchemaId == bytes32(0)
         ) revert InvalidTerms();
-        if (
-            t.finalFallbackOutcome != SettlementOutcome.RELEASE_TO_SUPPLIER
-                && t.finalFallbackOutcome != SettlementOutcome.REFUND_TO_BUYER
-        ) revert InvalidSettlementOutcome();
+        _validateFallbackPolicy(t.fallbackPolicy);
         if (
             t.scoreMinScaled > t.thresholdScaled || t.thresholdScaled > t.scoreMaxScaled
                 || t.windows.supplierInspection == 0 || t.windows.buyerInspection == 0
@@ -1020,6 +1027,19 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
                 || t.windows.backupInspector == 0 || t.windows.mutualResolution == 0
                 || t.windows.externalArbitration == 0
         ) revert InvalidTerms();
+    }
+
+    function _validateFallbackPolicy(FallbackPolicy calldata p) internal pure {
+        if (!_validSettlementOutcome(p.buyerInspectionTimeout)) revert InvalidSettlementOutcome();
+        if (!_validSettlementOutcome(p.executionHold)) revert InvalidSettlementOutcome();
+        if (!_validSettlementOutcome(p.evidenceHold)) revert InvalidSettlementOutcome();
+        if (!_validSettlementOutcome(p.inspectorEscalated)) revert InvalidSettlementOutcome();
+        if (!_validSettlementOutcome(p.credentialHold)) revert InvalidSettlementOutcome();
+    }
+
+    function _validSettlementOutcome(SettlementOutcome outcome) internal pure returns (bool) {
+        return outcome == SettlementOutcome.RELEASE_TO_SUPPLIER
+            || outcome == SettlementOutcome.REFUND_TO_BUYER;
     }
 
     function _validateInspectionStateAndCaller(Trade storage trade, InspectionRole role)
@@ -1307,6 +1327,26 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         }
 
         return false;
+    }
+
+    function _fallbackOutcome(Trade storage trade) internal view returns (SettlementOutcome) {
+        TradeState origin = trade.arbitrationOriginState;
+        if (origin == TradeState.BUYER_INSPECTION_TIMEOUT) {
+            return trade.terms.fallbackPolicy.buyerInspectionTimeout;
+        }
+        if (origin == TradeState.EXECUTION_HOLD) {
+            return trade.terms.fallbackPolicy.executionHold;
+        }
+        if (origin == TradeState.EVIDENCE_HOLD) {
+            return trade.terms.fallbackPolicy.evidenceHold;
+        }
+        if (origin == TradeState.ESCALATED) {
+            return trade.terms.fallbackPolicy.inspectorEscalated;
+        }
+        if (origin == TradeState.CREDENTIAL_HOLD) {
+            return trade.terms.fallbackPolicy.credentialHold;
+        }
+        revert InvalidStateSet(origin);
     }
 
     function _settle(bytes32 tradeId, Trade storage trade, SettlementOutcome outcome) internal {
