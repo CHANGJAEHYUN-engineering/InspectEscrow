@@ -113,19 +113,54 @@ Every critical attack must be closed as one of:
 
 ## H. Still-open final submission evidence
 
-- [ ] Physical Capture Protocol + same-specimen demo
-- [ ] pre-inference ordered image commitments
+- [~] Physical Capture Protocol spec frozen; actual same-specimen capture still pending
+- [~] pre-inference ordered image commitment protocol frozen; implementation/capture pending
 - [ ] blind physical-specimen frozen-model result
 - [ ] PatchCore vs baseline comparison
-- [ ] PATCH3 finite-liveness tests
-- [ ] credential suspend/revoke tests
-- [ ] Primary/Backup/Arbitrator key-separation tests
-- [ ] policy-tamper rejection demo
-- [ ] replay-mismatch HOLD demo
-- [ ] Python ↔ JS ↔ Solidity golden interop vector
+- [x] PATCH3 finite-liveness tests — local/CI 36-pass red-team
+- [x] credential suspend/revoke tests — signature rejection + no direct Escrow state mutation
+- [x] Primary/Backup/Arbitrator key-separation tests
+- [x] policy-tamper rejection — local funded-state negative test
+- [x] replay-mismatch → EXECUTION_HOLD → finite exit — local hostile test
+- [x] Python ↔ JS ↔ Solidity golden interop vector
 - [ ] discoverable public Foundry test suite / reproduction commands
 - [ ] external hosting/release of large frozen model artifacts + checksum
 - [ ] final 8-minute pitch + hostile 2-minute Q&A
 - [ ] backup demo recording
 
 No unchecked item may silently be presented as completed.
+
+
+## I. PATCH3 hardening evidence — 2026-10-23
+
+Current PATCH3 candidate lives on branch `patch3-mentor-hardening`.
+
+Verified local/CI gates:
+- hostile Anvil red-team: **36 PASS / 0 FAIL**
+- Solidity 0.8.26 compile PASS
+- InspectEscrowPatch3 runtime: **22,669 bytes**
+- CredentialRegistryPatch3 runtime: **1,494 bytes**
+- Python ↔ JavaScript ↔ Solidity golden interop PASS
+- ABI SHA256 + five EIP-712 typehash equality PASS
+- Slither project-source untriaged High/Medium blocking findings: **0**
+- independent professional audit / formal verification / production certification: **NO**
+
+Durable interface candidate:
+- `packages/phase3c_hardening_20261023/PATCH3_INTERFACE_FREEZE_CANDIDATE.json`
+
+Sepolia hard gate:
+- `packages/phase3c_hardening_20261023/PATCH3_SEPOLIA_DEPLOYMENT_PRECHECK_KO.md`
+
+PATCH3 policy rule:
+- PATCH2 policyHash must **not** be reused.
+- PATCH3 uses policy schema v1.2 / policyVersion 2.
+- final policyHash is generated only after actual PATCH3 verifyingContract, CredentialRegistry, fresh tradeId and role addresses are known.
+- local policy generator/self-hash gate PASS; local smoke hash is not a Sepolia production/demo trade hash.
+
+Trust assumptions:
+- `docs/PATCH3_TRUST_ASSUMPTION_REGISTER_KO.md`
+
+Physical capture:
+- `docs/PHYSICAL_CAPTURE_PROTOCOL_V1_KO.md`
+
+PATCH3 remains **NOT DEPLOYED** until the deployment hard gate is satisfied.
