@@ -34,7 +34,9 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         ESCALATED,
         RELEASED,
         REFUNDED,
-        CANCELLED
+        CANCELLED,
+        CREDENTIAL_HOLD,
+        ARBITRATION_PENDING
     }
 
     enum InspectionRole {
@@ -88,6 +90,8 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         uint64 buyerAcceptance;
         uint64 primaryInspector;
         uint64 backupInspector;
+        uint64 mutualResolution;
+        uint64 externalArbitration;
     }
 
     struct TradeTerms {
@@ -96,9 +100,12 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         address buyer;
         address primaryInspector;
         address backupInspector;
+        address externalArbitrator;
         address supplierStation;
         address buyerStation;
-        address inspectorStation;
+        address primaryInspectorStation;
+        address backupInspectorStation;
+        address externalArbitratorStation;
         uint256 escrowAmount;
         uint32 policyVersion;
         bytes32 policyHash;
@@ -113,6 +120,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         uint128 scoreMaxScaled;
         uint8 maxSupplierRetries;
         uint8 maxBuyerRetries;
+        SettlementOutcome finalFallbackOutcome;
         Windows windows;
     }
 
@@ -181,6 +189,20 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         uint64 deadline;
     }
 
+    struct ArbitrationDecisionAttestation {
+        bytes32 tradeId;
+        address arbitratorActor;
+        bytes32 policyHash;
+        bytes32 supplierEvidenceHash;
+        bytes32 buyerEvidenceHash;
+        SettlementOutcome decision;
+        bytes32 reasonCode;
+        bytes32 decisionEvidenceHash;
+        bytes32 nonce;
+        uint64 issuedAt;
+        uint64 validUntil;
+    }
+
     struct Trade {
         TradeTerms terms;
         TradeState state;
@@ -190,6 +212,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         bool buyerAccepted;
         bool primaryInspectorAccepted;
         bool backupInspectorAccepted;
+        bool externalArbitratorAccepted;
         bool funded;
         bool settled;
         InspectionRecord supplierInspection;
@@ -209,6 +232,9 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     );
     bytes32 public constant MUTUAL_RESOLUTION_TYPEHASH = keccak256(
         "MutualResolution(bytes32 tradeId,uint8 outcome,bytes32 resolutionNonce,uint64 deadline)"
+    );
+    bytes32 public constant ARBITRATION_DECISION_TYPEHASH = keccak256(
+        "ArbitrationDecisionAttestation(bytes32 tradeId,address arbitratorActor,bytes32 policyHash,bytes32 supplierEvidenceHash,bytes32 buyerEvidenceHash,uint8 decision,bytes32 reasonCode,bytes32 decisionEvidenceHash,bytes32 nonce,uint64 issuedAt,uint64 validUntil)"
     );
 
     mapping(bytes32 tradeId => Trade trade) private _trades;
@@ -248,6 +274,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     error AlreadyFunded();
     error AlreadySettled();
     error InvalidMutualSignatures();
+    error ArbitrationRequired();
     error ZeroAddress();
     error InvalidTerms();
     error InvalidInspectionReason();
@@ -308,6 +335,17 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         bool consistent
     );
     event Escalated(bytes32 indexed tradeId);
+    event ExternalArbitrationOpened(bytes32 indexed tradeId, uint64 arbitrationDeadline);
+    event ArbitrationDecisionRecorded(
+        bytes32 indexed tradeId,
+        address indexed arbitrator,
+        SettlementOutcome decision,
+        bytes32 reasonCode,
+        bytes32 decisionEvidenceHash
+    );
+    event FinalFallbackExecuted(
+        bytes32 indexed tradeId, SettlementOutcome outcome
+    );
     event InspectorDecisionRecorded(
         bytes32 indexed tradeId,
         InspectorStage indexed stage,
@@ -380,11 +418,17 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         } else if (msg.sender == trade.terms.backupInspector) {
             if (trade.backupInspectorAccepted) revert ForbiddenDuplicateSubmission();
             trade.backupInspectorAccepted = true;
+        } else if (msg.sender == trade.terms.externalArbitrator) {
+            if (trade.externalArbitratorAccepted) revert ForbiddenDuplicateSubmission();
+            trade.externalArbitratorAccepted = true;
         } else {
             revert UnauthorizedCaller();
         }
         emit InspectorAssignmentAccepted(tradeId, msg.sender, trade.terms.policyHash);
-        if (trade.primaryInspectorAccepted && trade.backupInspectorAccepted) {
+        if (
+            trade.primaryInspectorAccepted && trade.backupInspectorAccepted
+                && trade.externalArbitratorAccepted
+        ) {
             _enterState(trade, TradeState.INSPECTORS_ACCEPTED, 0);
         }
     }
@@ -500,7 +544,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
             revert InvalidStateSet(trade.state);
         }
         _requireDeadlineReached(trade);
-        _enterState(trade, TradeState.EVIDENCE_HOLD, 0);
+        _enterMutualResolutionState(trade, TradeState.EVIDENCE_HOLD);
         emit EvidenceHoldEntered(tradeId, InspectionRole.BUYER, keccak256("REINSPECTION_TIMEOUT"));
     }
 
@@ -569,7 +613,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         }
         if (trade.buyerInspection.attempt != 0) revert ForbiddenDuplicateSubmission();
         _requireDeadlineReached(trade);
-        _enterState(trade, TradeState.BUYER_INSPECTION_TIMEOUT, 0);
+        _enterMutualResolutionState(trade, TradeState.BUYER_INSPECTION_TIMEOUT);
         emit BuyerInspectionTimeoutEntered(tradeId);
     }
 
@@ -591,18 +635,19 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         if (attestation.replayReportHash == bytes32(0)) revert InvalidTerms();
         _validateTime(attestation.issuedAt, attestation.validUntil);
 
+        address activeInspectorStation = _activeInspectorStation(trade, stage);
         bytes32 digest = hashReplayAttestation(attestation);
         bytes32 nonceKey = keccak256(
             abi.encode(
                 REPLAY_ATTESTATION_TYPEHASH,
-                trade.terms.inspectorStation,
+                activeInspectorStation,
                 attestation.tradeId,
                 attestation.stage,
                 attestation.nonce
             )
         );
         if (consumedNonce[nonceKey]) revert NonceAlreadyUsed();
-        _validateFreshSignature(digest, signature, trade.terms.inspectorStation);
+        _validateFreshSignature(digest, signature, activeInspectorStation);
         consumedDigest[digest] = true;
         consumedNonce[nonceKey] = true;
 
@@ -611,7 +656,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
             trade.replayStatus = ReplayStatus.CONSISTENT;
         } else {
             trade.replayStatus = ReplayStatus.INCONSISTENT;
-            _enterState(trade, TradeState.EXECUTION_HOLD, 0);
+            _enterMutualResolutionState(trade, TradeState.EXECUTION_HOLD);
         }
         emit ReplayResultRecorded(
             attestation.tradeId, stage, attestation.replayReportHash, attestation.consistent
@@ -643,18 +688,19 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         ) revert EvidenceHashMismatch();
         _validateTime(attestation.issuedAt, attestation.validUntil);
 
+        address activeInspectorStation = _activeInspectorStation(trade, stage);
         bytes32 digest = hashInspectorDecision(attestation);
         bytes32 nonceKey = keccak256(
             abi.encode(
                 INSPECTOR_DECISION_TYPEHASH,
-                trade.terms.inspectorStation,
+                activeInspectorStation,
                 attestation.tradeId,
                 attestation.stage,
                 attestation.nonce
             )
         );
         if (consumedNonce[nonceKey]) revert NonceAlreadyUsed();
-        _validateFreshSignature(digest, signature, trade.terms.inspectorStation);
+        _validateFreshSignature(digest, signature, activeInspectorStation);
         consumedDigest[digest] = true;
         consumedNonce[nonceKey] = true;
 
@@ -687,8 +733,78 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
             revert InvalidState(TradeState.DISPUTED_BACKUP, trade.state);
         }
         _requireDeadlineReached(trade);
-        _enterState(trade, TradeState.ESCALATED, 0);
+        _enterMutualResolutionState(trade, TradeState.ESCALATED);
         emit Escalated(tradeId);
+    }
+
+    function escalateToExternalArbitration(bytes32 tradeId) external {
+        Trade storage trade = _trade(tradeId);
+        if (!_mutualResolutionState(trade.state)) revert InvalidStateSet(trade.state);
+        _requireDeadlineReached(trade);
+        uint64 deadline = _deadlineFromNow(trade.terms.windows.externalArbitration);
+        _enterState(trade, TradeState.ARBITRATION_PENDING, deadline);
+        emit ExternalArbitrationOpened(tradeId, deadline);
+    }
+
+    function submitArbitrationDecision(
+        ArbitrationDecisionAttestation calldata attestation,
+        bytes calldata signature
+    ) external {
+        Trade storage trade = _trade(attestation.tradeId);
+        if (trade.state != TradeState.ARBITRATION_PENDING) {
+            revert InvalidState(TradeState.ARBITRATION_PENDING, trade.state);
+        }
+        if (
+            msg.sender != trade.terms.externalArbitrator
+                || attestation.arbitratorActor != trade.terms.externalArbitrator
+        ) revert UnauthorizedCaller();
+        if (block.timestamp > trade.actionDeadline) revert DeadlinePassed();
+        if (
+            attestation.decision != SettlementOutcome.RELEASE_TO_SUPPLIER
+                && attestation.decision != SettlementOutcome.REFUND_TO_BUYER
+        ) revert InvalidSettlementOutcome();
+        if (attestation.policyHash != trade.terms.policyHash) revert PolicyHashMismatch();
+        _validateArbitrationEvidenceAnchors(
+            trade, attestation.supplierEvidenceHash, attestation.buyerEvidenceHash
+        );
+        if (attestation.reasonCode == bytes32(0) || attestation.decisionEvidenceHash == bytes32(0)) {
+            revert InvalidTerms();
+        }
+        _validateTime(attestation.issuedAt, attestation.validUntil);
+
+        bytes32 digest = hashArbitrationDecision(attestation);
+        bytes32 nonceKey = keccak256(
+            abi.encode(
+                ARBITRATION_DECISION_TYPEHASH,
+                trade.terms.externalArbitratorStation,
+                attestation.tradeId,
+                attestation.nonce
+            )
+        );
+        if (consumedNonce[nonceKey]) revert NonceAlreadyUsed();
+        _validateFreshSignature(digest, signature, trade.terms.externalArbitratorStation);
+        consumedDigest[digest] = true;
+        consumedNonce[nonceKey] = true;
+
+        emit ArbitrationDecisionRecorded(
+            attestation.tradeId,
+            attestation.arbitratorActor,
+            attestation.decision,
+            attestation.reasonCode,
+            attestation.decisionEvidenceHash
+        );
+        _settle(attestation.tradeId, trade, attestation.decision);
+    }
+
+    function executeFinalFallback(bytes32 tradeId) external {
+        Trade storage trade = _trade(tradeId);
+        if (trade.state != TradeState.ARBITRATION_PENDING) {
+            revert InvalidState(TradeState.ARBITRATION_PENDING, trade.state);
+        }
+        _requireDeadlineReached(trade);
+        SettlementOutcome outcome = trade.terms.finalFallbackOutcome;
+        emit FinalFallbackExecuted(tradeId, outcome);
+        _settle(tradeId, trade, outcome);
     }
 
     function mutualResolve(
@@ -698,7 +814,12 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     ) external {
         Trade storage trade = _trade(resolution.tradeId);
         if (!_mutualResolutionState(trade.state)) revert InvalidStateSet(trade.state);
-        if (resolution.outcome == SettlementOutcome.NONE) revert InvalidSettlementOutcome();
+        if (block.timestamp > trade.actionDeadline) revert DeadlinePassed();
+        if (
+            resolution.outcome != SettlementOutcome.RELEASE_TO_SUPPLIER
+                && resolution.outcome != SettlementOutcome.REFUND_TO_BUYER
+        ) revert InvalidSettlementOutcome();
+        if (resolution.deadline > trade.actionDeadline) revert InvalidAttestationWindow();
         if (block.timestamp > resolution.deadline) revert AttestationExpired();
         if (usedResolutionNonce[resolution.tradeId][resolution.resolutionNonce]) {
             revert NonceAlreadyUsed();
@@ -799,29 +920,47 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         return _hashTypedDataV4(keccak256(abi.encode(MUTUAL_RESOLUTION_TYPEHASH, r)));
     }
 
+    function hashArbitrationDecision(ArbitrationDecisionAttestation calldata a)
+        public
+        view
+        returns (bytes32)
+    {
+        return _hashTypedDataV4(keccak256(abi.encode(ARBITRATION_DECISION_TYPEHASH, a)));
+    }
+
     function _validateTerms(TradeTerms calldata t) internal pure {
-        if (
-            t.tradeId == bytes32(0) || t.supplier == address(0) || t.buyer == address(0)
-                || t.primaryInspector == address(0) || t.backupInspector == address(0)
-                || t.supplierStation == address(0) || t.buyerStation == address(0)
-                || t.inspectorStation == address(0)
-        ) revert ZeroAddress();
-        if (
-            t.supplier == t.buyer || t.supplier == t.primaryInspector
-                || t.supplier == t.backupInspector || t.buyer == t.primaryInspector
-                || t.buyer == t.backupInspector || t.primaryInspector == t.backupInspector
-        ) revert InvalidTerms();
-        if (
-            t.supplierStation == t.buyerStation || t.supplierStation == t.inspectorStation
-                || t.buyerStation == t.inspectorStation
-        ) revert InvalidTerms();
-        address[4] memory actors = [t.supplier, t.buyer, t.primaryInspector, t.backupInspector];
-        address[3] memory stations = [t.supplierStation, t.buyerStation, t.inspectorStation];
+        address[5] memory actors = [
+            t.supplier,
+            t.buyer,
+            t.primaryInspector,
+            t.backupInspector,
+            t.externalArbitrator
+        ];
+        address[5] memory stations = [
+            t.supplierStation,
+            t.buyerStation,
+            t.primaryInspectorStation,
+            t.backupInspectorStation,
+            t.externalArbitratorStation
+        ];
+
         for (uint256 i; i < actors.length; ++i) {
-            for (uint256 j; j < stations.length; ++j) {
-                if (actors[i] == stations[j]) revert InvalidTerms();
+            if (actors[i] == address(0)) revert ZeroAddress();
+            for (uint256 j = i + 1; j < actors.length; ++j) {
+                if (actors[i] == actors[j]) revert InvalidTerms();
             }
         }
+        for (uint256 i; i < stations.length; ++i) {
+            if (stations[i] == address(0)) revert ZeroAddress();
+            for (uint256 j = i + 1; j < stations.length; ++j) {
+                if (stations[i] == stations[j]) revert InvalidTerms();
+            }
+            for (uint256 j; j < actors.length; ++j) {
+                if (stations[i] == actors[j]) revert InvalidTerms();
+            }
+        }
+
+        if (t.tradeId == bytes32(0)) revert InvalidTerms();
         if (
             t.escrowAmount == 0 || t.policyVersion == 0 || t.policyHash == bytes32(0)
                 || t.modelBundleHash == bytes32(0) || t.captureProfileHash == bytes32(0)
@@ -829,10 +968,15 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
                 || t.scoreSchemaId == bytes32(0)
         ) revert InvalidTerms();
         if (
+            t.finalFallbackOutcome != SettlementOutcome.RELEASE_TO_SUPPLIER
+                && t.finalFallbackOutcome != SettlementOutcome.REFUND_TO_BUYER
+        ) revert InvalidSettlementOutcome();
+        if (
             t.scoreMinScaled > t.thresholdScaled || t.thresholdScaled > t.scoreMaxScaled
                 || t.windows.supplierInspection == 0 || t.windows.buyerInspection == 0
                 || t.windows.buyerAcceptance == 0 || t.windows.primaryInspector == 0
-                || t.windows.backupInspector == 0
+                || t.windows.backupInspector == 0 || t.windows.mutualResolution == 0
+                || t.windows.externalArbitration == 0
         ) revert InvalidTerms();
     }
 
@@ -878,6 +1022,18 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
             supplierEvidenceHash != trade.supplierInspection.evidencePackageHash
                 || buyerEvidenceHash != trade.buyerInspection.evidencePackageHash
                 || supplierEvidenceHash == bytes32(0) || buyerEvidenceHash == bytes32(0)
+        ) revert EvidenceHashMismatch();
+    }
+
+    function _validateArbitrationEvidenceAnchors(
+        Trade storage trade,
+        bytes32 supplierEvidenceHash,
+        bytes32 buyerEvidenceHash
+    ) internal view {
+        if (
+            supplierEvidenceHash != trade.supplierInspection.evidencePackageHash
+                || buyerEvidenceHash != trade.buyerInspection.evidencePackageHash
+                || supplierEvidenceHash == bytes32(0)
         ) revert EvidenceHashMismatch();
     }
 
@@ -973,7 +1129,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
                 );
                 return;
             }
-            _enterState(trade, TradeState.EVIDENCE_HOLD, 0);
+            _enterMutualResolutionState(trade, TradeState.EVIDENCE_HOLD);
             emit EvidenceHoldEntered(a.tradeId, a.role, keccak256("RETRY_LIMIT_EXHAUSTED"));
             return;
         }
@@ -1044,6 +1200,20 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
             return (InspectorStage.BACKUP, trade.terms.backupInspector);
         }
         revert InvalidStateSet(trade.state);
+    }
+
+    function _activeInspectorStation(Trade storage trade, InspectorStage stage)
+        internal
+        view
+        returns (address)
+    {
+        if (stage == InspectorStage.PRIMARY) return trade.terms.primaryInspectorStation;
+        if (stage == InspectorStage.BACKUP) return trade.terms.backupInspectorStation;
+        revert WrongRole();
+    }
+
+    function _enterMutualResolutionState(Trade storage trade, TradeState state) internal {
+        _enterState(trade, state, _deadlineFromNow(trade.terms.windows.mutualResolution));
     }
 
     function _settle(bytes32 tradeId, Trade storage trade, SettlementOutcome outcome) internal {
