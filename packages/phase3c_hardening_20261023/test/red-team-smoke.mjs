@@ -15,6 +15,9 @@ const bytecode='0x'+fs.readFileSync(path.join(BUILD,binFile),'utf8').trim();
 const registryAbi=JSON.parse(fs.readFileSync(path.join(BUILD,registryAbiFile),'utf8'));
 const registryBytecode='0x'+fs.readFileSync(path.join(BUILD,registryBinFile),'utf8').trim();
 
+const checks=[];
+const pass=name=>{checks.push(name);console.log('PASS',name);};
+
 const provider=new E.JsonRpcProvider('http://127.0.0.1:18546',undefined,{cacheTimeout:-1});
 assert.equal(Number((await provider.getNetwork()).chainId),31338,'PATCH3 TEST CHAIN ONLY');
 
@@ -77,8 +80,6 @@ const types={
 };
 
 const h=x=>E.keccak256(E.toUtf8Bytes('PATCH3_RED_TEAM:'+x));
-const checks=[];
-const pass=name=>{checks.push(name);console.log('PASS',name);};
 async function expectRevert(name,fn){
   let err;
   try{await fn();}catch(e){err=e;}
