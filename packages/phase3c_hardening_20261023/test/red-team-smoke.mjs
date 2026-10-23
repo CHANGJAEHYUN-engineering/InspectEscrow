@@ -67,7 +67,8 @@ const types={
     {name:'tradeId',type:'bytes32'},{name:'stage',type:'uint8'},{name:'inspectorActor',type:'address'},
     {name:'policyHash',type:'bytes32'},{name:'supplierEvidenceHash',type:'bytes32'},
     {name:'buyerEvidenceHash',type:'bytes32'},{name:'replayReportHash',type:'bytes32'},
-    {name:'decision',type:'uint8'},{name:'reasonCode',type:'bytes32'},{name:'nonce',type:'bytes32'},
+    {name:'decision',type:'uint8'},{name:'reasonCode',type:'bytes32'},
+    {name:'decisionEvidenceHash',type:'bytes32'},{name:'nonce',type:'bytes32'},
     {name:'issuedAt',type:'uint64'},{name:'validUntil',type:'uint64'}
   ],
   ArbitrationDecisionAttestation:[
@@ -134,8 +135,7 @@ function terms(label,overrides={}){
       buyerInspectionTimeout:2,
       executionHold:2,
       evidenceHold:2,
-      inspectorEscalated:2,
-      credentialHold:2
+      inspectorEscalated:2
     },
     windows:{
       supplierInspection:60,buyerInspection:60,buyerAcceptance:60,
@@ -215,6 +215,29 @@ async function arbitrationMessage(t,decision,tag){
   });
 }
 
+// G1B: A credential revoked after proposal but before funding blocks funds from entering.
+{
+  const t=terms('prefund-credential-recheck');
+  await (await c.connect(supplier).proposeTrade(t)).wait();
+  await (await c.connect(supplier).acceptPolicy(t.tradeId)).wait();
+  await (await c.connect(buyer).acceptPolicy(t.tradeId)).wait();
+  await (await c.connect(primary).acceptInspectorAssignment(t.tradeId)).wait();
+  await (await c.connect(backup).acceptInspectorAssignment(t.tradeId)).wait();
+  await (await c.connect(arbitrator).acceptInspectorAssignment(t.tradeId)).wait();
+
+  await (await registry.connect(authority).suspendCredential(addresses[7],h('PREFUND_BUYER_STATION_SUSPEND'))).wait();
+  await expectRevert('funding rechecks all assigned credentials immediately before escrow deposit',async()=>{
+    await c.connect(buyer).fund(t.tradeId,{value:t.escrowAmount});
+  });
+  assert.equal(await c.getTradeState(t.tradeId),3n);
+  await (await registry.connect(authority).resumeCredential(addresses[7],h('PREFUND_BUYER_STATION_RESTORE'))).wait();
+  await (await c.connect(buyer).fund(t.tradeId,{value:t.escrowAmount})).wait();
+  await (await c.connect(attacker).activate(t.tradeId)).wait();
+  await mine(61);
+  await (await c.connect(attacker).invokeSupplierInspectionTimeout(t.tradeId)).wait();
+  await (await c.connect(buyer).withdraw()).wait();
+}
+
 // G2: Invalid signature must not mutate state or create a hold.
 {
   const t=await setup('invalid-signature');
@@ -268,8 +291,14 @@ async function arbitrationMessage(t,decision,tag){
     tradeId:t.tradeId,stage:0,inspectorActor:addresses[3],policyHash:t.policyHash,
     supplierEvidenceHash:r.supplierEvidenceHash,buyerEvidenceHash:r.buyerEvidenceHash,
     replayReportHash:r.replayReportHash,decision:2,reasonCode:h('KEYSEP:DECISION'),
-    nonce:h('KEYSEP:DECISION_NONCE'),...tw
+    decisionEvidenceHash:h('KEYSEP:DECISION_EVIDENCE'),nonce:h('KEYSEP:DECISION_NONCE'),...tw
   };
+  const missingBasis={...d,decisionEvidenceHash:E.ZeroHash,nonce:h('KEYSEP:MISSING_BASIS_NONCE')};
+  const missingBasisSig=await signTyped(primaryStation,'InspectorDecisionAttestation',missingBasis);
+  await expectRevert('Inspector settlement requires a nonzero judgment-basis hash',async()=>{
+    await c.connect(primary).submitInspectorDecision(missingBasis,missingBasisSig);
+  });
+
   const dsig=await signTyped(primaryStation,'InspectorDecisionAttestation',d);
   await expectRevert('random actor cannot submit a valid Inspector decision',async()=>{
     await c.connect(attacker).submitInspectorDecision(d,dsig);
@@ -294,7 +323,7 @@ async function arbitrationMessage(t,decision,tag){
 
   await mine(31);
   await (await c.connect(attacker).escalateToExternalArbitration(t.tradeId)).wait();
-  assert.equal(await c.getTradeState(t.tradeId),21n);
+  assert.equal(await c.getTradeState(t.tradeId),20n);
   await mine(31);
   await (await c.connect(attacker).executeFinalFallback(t.tradeId)).wait();
   assert.equal(await c.getTradeState(t.tradeId),18n);
@@ -354,7 +383,7 @@ async function arbitrationMessage(t,decision,tag){
 
   await mine(31);
   await (await c.connect(attacker).escalateToExternalArbitration(t.tradeId)).wait();
-  assert.equal(await c.getTradeState(t.tradeId),21n);
+  assert.equal(await c.getTradeState(t.tradeId),20n);
 
   const a=await arbitrationMessage(t,2,'BUYER_TIMEOUT_ARB');
   const sig=await signTyped(arbitratorStation,'ArbitrationDecisionAttestation',a);
@@ -403,7 +432,7 @@ async function arbitrationMessage(t,decision,tag){
     tradeId:t.tradeId,stage:1,inspectorActor:addresses[4],policyHash:t.policyHash,
     supplierEvidenceHash:r.supplierEvidenceHash,buyerEvidenceHash:r.buyerEvidenceHash,
     replayReportHash:r.replayReportHash,decision:2,reasonCode:h('BACKUP_SUCCESS:DECISION'),
-    nonce:h('BACKUP_SUCCESS:DECISION_NONCE'),...tw
+    decisionEvidenceHash:h('BACKUP_SUCCESS:DECISION_EVIDENCE'),nonce:h('BACKUP_SUCCESS:DECISION_NONCE'),...tw
   };
   const dsig=await signTyped(backupStation,'InspectorDecisionAttestation',d);
   await (await c.connect(backup).submitInspectorDecision(d,dsig)).wait();
@@ -427,7 +456,7 @@ async function arbitrationMessage(t,decision,tag){
 
   await mine(31);
   await (await c.connect(attacker).escalateToExternalArbitration(t.tradeId)).wait();
-  assert.equal(await c.getTradeState(t.tradeId),21n);
+  assert.equal(await c.getTradeState(t.tradeId),20n);
   await mine(31);
   await (await c.connect(attacker).executeFinalFallback(t.tradeId)).wait();
   assert.equal(await c.getTradeState(t.tradeId),18n);
@@ -539,7 +568,7 @@ await expectRevert('random account cannot suspend a credential',async()=>{
     tradeId:t.tradeId,stage:0,inspectorActor:addresses[3],policyHash:t.policyHash,
     supplierEvidenceHash:r.supplierEvidenceHash,buyerEvidenceHash:r.buyerEvidenceHash,
     replayReportHash:r.replayReportHash,decision:2,reasonCode:h('AUTH:DECISION'),
-    nonce:h('AUTH:DECISION_NONCE'),...tw
+    decisionEvidenceHash:h('AUTH:DECISION_EVIDENCE'),nonce:h('AUTH:DECISION_NONCE'),...tw
   };
   const dsig=await signTyped(primaryStation,'InspectorDecisionAttestation',d);
   await expectRevert('Credential Authority cannot submit Inspector settlement decision',async()=>{
@@ -556,8 +585,7 @@ await expectRevert('random account cannot suspend a credential',async()=>{
       buyerInspectionTimeout:1,
       executionHold:2,
       evidenceHold:2,
-      inspectorEscalated:2,
-      credentialHold:2
+      inspectorEscalated:2
     }
   });
   await submitInspection(t,0,100,'CTX_SUPPLIER');
@@ -572,36 +600,25 @@ await expectRevert('random account cannot suspend a credential',async()=>{
   pass('BUYER_INSPECTION_TIMEOUT can use a precommitted RELEASE fallback while other exception classes remain REFUND');
 }
 
-// G6: A credential incident before the first inspection must still have a finite exit.
-//     Then revoke the external-arbitrator Station too, proving fallback is independent of it.
+// G6: Credential suspension cannot directly fast-forward settlement state.
 {
   const t=await setup('credential-liveness');
   await (await registry.connect(authority).suspendCredential(addresses[6],h('SUPPLIER_STATION_SUSPEND'))).wait();
-  await (await c.connect(attacker).invokeCredentialHold(t.tradeId,addresses[6])).wait();
-  assert.equal(await c.getTradeState(t.tradeId),20n);
-  assert.ok((await c.getActionDeadline(t.tradeId))>0n);
-  pass('suspended currently-required Station enters bounded CREDENTIAL_HOLD');
 
-  await mine(31);
-  await (await c.connect(attacker).escalateToExternalArbitration(t.tradeId)).wait();
-  assert.equal(await c.getTradeState(t.tradeId),21n);
-
-  await (await registry.connect(authority).revokeCredential(addresses[10],h('ARBITRATOR_STATION_REVOKE'))).wait();
-  const a=await arbitrationMessage(t,2,'CRED_LIVE');
-  const asig=await signTyped(arbitratorStation,'ArbitrationDecisionAttestation',a);
-  await expectRevert('revoked Arbitrator Station cannot authorize arbitration decision',async()=>{
-    await c.connect(arbitrator).submitArbitrationDecision(a,asig);
+  const m=await inspectionMessage(t,0,100,'SUSPENDED_SUPPLIER');
+  const sig=await signTyped(supplierStation,'StationAttestation',m);
+  await expectRevert('suspended Station cannot authorize a new inspection',async()=>{
+    await c.connect(supplier).submitInspection(m,sig);
   });
+  assert.equal(await c.getTradeState(t.tradeId),5n);
+  pass('credential suspension does not itself mutate escrow state');
 
-  await mine(31);
-  await (await c.connect(attacker).executeFinalFallback(t.tradeId)).wait();
+  await mine(61);
+  await (await c.connect(attacker).invokeSupplierInspectionTimeout(t.tradeId)).wait();
   assert.equal(await c.getTradeState(t.tradeId),18n);
   await (await c.connect(buyer).withdraw()).wait();
-  pass('credential failure plus arbitrator-key failure still reaches precommitted terminal fallback');
+  pass('unavailable Supplier credential exits through pre-existing protocol timeout');
 
-  await expectRevert('REVOKED credential cannot be resumed',async()=>{
-    await registry.connect(authority).resumeCredential(addresses[10],h('ILLEGAL_RESUME'));
-  });
 }
 
 // Restore supplier station for any later trade; SUSPENDED may resume.
@@ -612,17 +629,18 @@ pass('SUSPENDED credential can be restored for future trades');
 const writeNames=abi.filter(x=>x.type==='function'&&!['view','pure'].includes(x.stateMutability)).map(x=>x.name);
 for(const forbidden of [
   'adminSettle','forceRelease','forceRefund','sweep','setPolicy','setThreshold',
-  'setFinalFallbackOutcome','setFallbackPolicy','registerCredential','suspendCredential','resumeCredential','revokeCredential'
+  'setFinalFallbackOutcome','setFallbackPolicy','invokeCredentialHold','registerCredential','suspendCredential','resumeCredential','revokeCredential'
 ]){
   assert.ok(!writeNames.includes(forbidden),'forbidden admin capability present: '+forbidden);
 }
 pass('no admin settlement, sweep, policy or fallback mutation function in ABI');
 
 assert.equal(await c.accountingConserved(),true);
+assert.equal(await c.balanceCoversLiabilities(),true);
 assert.equal(await c.unsettledEscrow(),0n);
 assert.equal(await c.outstandingClaimable(),0n);
 assert.equal(await c.totalFunded(),await c.totalWithdrawn());
-pass('final accounting conserved after all red-team scenarios');
+pass('final accounting conserved and on-chain balance covers liabilities');
 
 const result={
   scope:'PATCH3_LOCAL_SYNTHETIC_RED_TEAM',
