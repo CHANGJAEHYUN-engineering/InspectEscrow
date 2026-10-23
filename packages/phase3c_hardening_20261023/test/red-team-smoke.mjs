@@ -7,9 +7,13 @@ const BUILD='.patch3-build';
 const files=fs.readdirSync(BUILD);
 const abiFile=files.find(x=>x.endsWith('_InspectEscrowPatch3.abi'));
 const binFile=files.find(x=>x.endsWith('_InspectEscrowPatch3.bin'));
-if(!abiFile||!binFile) throw Error('PATCH3 compile outputs not found');
+const registryAbiFile=files.find(x=>x.endsWith('_CredentialRegistryPatch3.abi'));
+const registryBinFile=files.find(x=>x.endsWith('_CredentialRegistryPatch3.bin'));
+if(!abiFile||!binFile||!registryAbiFile||!registryBinFile) throw Error('PATCH3 compile outputs not found');
 const abi=JSON.parse(fs.readFileSync(path.join(BUILD,abiFile),'utf8'));
 const bytecode='0x'+fs.readFileSync(path.join(BUILD,binFile),'utf8').trim();
+const registryAbi=JSON.parse(fs.readFileSync(path.join(BUILD,registryAbiFile),'utf8'));
+const registryBytecode='0x'+fs.readFileSync(path.join(BUILD,registryBinFile),'utf8').trim();
 
 const provider=new E.JsonRpcProvider('http://127.0.0.1:18546',undefined,{cacheTimeout:-1});
 assert.equal(Number((await provider.getNetwork()).chainId),31338,'PATCH3 TEST CHAIN ONLY');
@@ -24,10 +28,19 @@ const [
 const addr=async s=>s.getAddress();
 const addresses=await Promise.all(signers.map(addr));
 
-const deployed=await new E.ContractFactory(abi,bytecode,authority).deploy(addresses[0]);
+const registry=await new E.ContractFactory(registryAbi,registryBytecode,authority).deploy(addresses[0]);
+await registry.waitForDeployment();
+const registryAddress=await registry.getAddress();
+
+const deployed=await new E.ContractFactory(abi,bytecode,authority).deploy(registryAddress);
 await deployed.waitForDeployment();
 const contractAddress=await deployed.getAddress();
 const c=deployed;
+
+const runtimeCode=await provider.getCode(contractAddress);
+const runtimeBytes=(runtimeCode.length-2)/2;
+assert.ok(runtimeBytes<=24576,'Escrow runtime exceeds EIP-170');
+pass('optimized Escrow runtime satisfies EIP-170: '+runtimeBytes+' bytes');
 
 const domain={name:'InspectEscrow',version:'1',chainId:31338,verifyingContract:contractAddress};
 const types={
@@ -85,7 +98,7 @@ async function signTyped(signer,type,message){
 }
 
 for(const station of [supplierStation,buyerStation,primaryStation,backupStation,arbitratorStation]){
-  await (await c.connect(authority).registerCredential(await addr(station),h('REGISTER:'+await addr(station)))).wait();
+  await (await registry.connect(authority).registerCredential(await addr(station),h('REGISTER:'+await addr(station)))).wait();
 }
 pass('five signing credentials registered ACTIVE');
 
@@ -277,7 +290,7 @@ async function arbitrationMessage(t,decision,tag){
 //     Then revoke the external-arbitrator Station too, proving fallback is independent of it.
 {
   const t=await setup('credential-liveness');
-  await (await c.connect(authority).suspendCredential(addresses[6],h('SUPPLIER_STATION_SUSPEND'))).wait();
+  await (await registry.connect(authority).suspendCredential(addresses[6],h('SUPPLIER_STATION_SUSPEND'))).wait();
   await (await c.connect(attacker).invokeCredentialHold(t.tradeId,addresses[6])).wait();
   assert.equal(await c.getTradeState(t.tradeId),20n);
   assert.ok((await c.getActionDeadline(t.tradeId))>0n);
@@ -287,7 +300,7 @@ async function arbitrationMessage(t,decision,tag){
   await (await c.connect(attacker).escalateToExternalArbitration(t.tradeId)).wait();
   assert.equal(await c.getTradeState(t.tradeId),21n);
 
-  await (await c.connect(authority).revokeCredential(addresses[10],h('ARBITRATOR_STATION_REVOKE'))).wait();
+  await (await registry.connect(authority).revokeCredential(addresses[10],h('ARBITRATOR_STATION_REVOKE'))).wait();
   const a=await arbitrationMessage(t,2,'CRED_LIVE');
   const asig=await signTyped(arbitratorStation,'ArbitrationDecisionAttestation',a);
   await expectRevert('revoked Arbitrator Station cannot authorize arbitration decision',async()=>{
@@ -301,17 +314,20 @@ async function arbitrationMessage(t,decision,tag){
   pass('credential failure plus arbitrator-key failure still reaches precommitted terminal fallback');
 
   await expectRevert('REVOKED credential cannot be resumed',async()=>{
-    await c.connect(authority).resumeCredential(addresses[10],h('ILLEGAL_RESUME'));
+    await registry.connect(authority).resumeCredential(addresses[10],h('ILLEGAL_RESUME'));
   });
 }
 
 // Restore supplier station for any later trade; SUSPENDED may resume.
-await (await c.connect(authority).resumeCredential(addresses[6],h('SUPPLIER_STATION_RESTORE'))).wait();
+await (await registry.connect(authority).resumeCredential(addresses[6],h('SUPPLIER_STATION_RESTORE'))).wait();
 pass('SUSPENDED credential can be restored for future trades');
 
 // ABI surface check: no admin settlement/sweep backdoor was introduced.
 const writeNames=abi.filter(x=>x.type==='function'&&!['view','pure'].includes(x.stateMutability)).map(x=>x.name);
-for(const forbidden of ['adminSettle','forceRelease','forceRefund','sweep','setPolicy','setThreshold','setFinalFallbackOutcome']){
+for(const forbidden of [
+  'adminSettle','forceRelease','forceRefund','sweep','setPolicy','setThreshold',
+  'setFinalFallbackOutcome','registerCredential','suspendCredential','resumeCredential','revokeCredential'
+]){
   assert.ok(!writeNames.includes(forbidden),'forbidden admin capability present: '+forbidden);
 }
 pass('no admin settlement, sweep, policy or fallback mutation function in ABI');
@@ -326,6 +342,8 @@ console.log(JSON.stringify({
   scope:'PATCH3_LOCAL_SYNTHETIC_RED_TEAM',
   chainId:31338,
   contract:contractAddress,
+  credentialRegistry:registryAddress,
+  runtimeBytes,
   checks:checks.length,
   results:checks
 },null,2));
