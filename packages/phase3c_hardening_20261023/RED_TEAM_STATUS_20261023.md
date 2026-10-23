@@ -5,14 +5,14 @@ Candidate: `PHASE2-PATCH3-CANDIDATE`
 
 ## Current local gate
 
-GitHub Actions run: `39893169652`
+GitHub Actions run: `39929665212`
 
 Result:
 
 - Solidity compile: **PASS**
 - EIP-170 runtime-size gate: **PASS**
 - EIP-3860 initcode-size gate: **PASS**
-- local Anvil hostile red-team: **35 PASS / 0 FAIL**
+- local Anvil hostile red-team: **36 PASS / 0 FAIL**
 - final accounting conservation: **PASS**
 
 Bytecode with frozen candidate build settings:
@@ -20,7 +20,7 @@ Bytecode with frozen candidate build settings:
 | Contract | Creation | Runtime |
 |---|---:|---:|
 | CredentialRegistryPatch3 | 1,668 B | 1,494 B |
-| InspectEscrowPatch3 | 24,556 B | 23,185 B |
+| InspectEscrowPatch3 | 24,033 B | 22,669 B |
 
 Build settings:
 
@@ -38,6 +38,9 @@ The deployment-size gate is important because an earlier monolithic candidate ex
 ## Security / authority checks currently passing
 
 - Credential Authority cannot be a Supplier/Buyer/Inspector/Station role.
+- Credential Authority cannot directly fast-forward escrow into a special settlement state; credential suspension only blocks new signed actions and normal protocol deadlines remain authoritative.
+- Funding rechecks all assigned credentials immediately before escrow deposit.
+- Inspector settlement requires a nonzero judgment-basis hash in addition to reasonCode and replayReportHash.
 - Invalid Station signature is revert-only and cannot force a hold.
 - Funded trade rejects policyHash tampering.
 - Backup Station key cannot authorize Primary replay.
@@ -61,7 +64,6 @@ The deployment-size gate is important because an earlier monolithic candidate ex
 - DISPUTED_PRIMARY timeout → independent Backup → settlement
 - DISPUTED_BACKUP timeout → ESCALATED
 - ESCALATED → Arbitration timeout → precommitted fallback
-- CREDENTIAL_HOLD → Arbitration/fallback
 - Arbitrator credential failure → final fallback remains available
 
 All tested routes were followed through recipient `withdraw()` and final accounting conservation.
@@ -108,9 +110,13 @@ The proven public-chain baseline remains PHASE2-PATCH2 until PATCH3 completes al
 
 ## Still open before PATCH3 GO
 
-- Python ↔ JavaScript ↔ Solidity interoperability golden vector
-- broader digest-reuse cases across Replay/Inspector/Arbitration attestations
-- additional registry-governance abuse cases
-- final ABI / typed-data freeze
-- static-analysis / security audit refresh
-- new Sepolia funded E2E only after all prior gates PASS
+Completed gates:
+- Python ↔ JavaScript ↔ Solidity interoperability golden vector: PASS
+- Slither project-source untriaged High/Medium findings: 0
+- authority/governance and signature-domain abuse matrix: PASS in local synthetic red-team
+
+Still open before PATCH3 GO:
+- final ABI / typed-data interface freeze after current hardening changes
+- downloadable CI evidence artifact retention verification
+- explicit deployment parameters / credential-authority governance choice
+- new Sepolia funded E2E only after the above gates PASS
