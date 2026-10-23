@@ -1131,7 +1131,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         if (
             supplierEvidenceHash != trade.supplierInspection.evidencePackageHash
                 || buyerEvidenceHash != trade.buyerInspection.evidencePackageHash
-                || supplierEvidenceHash == bytes32(0)
         ) revert EvidenceHashMismatch();
     }
 
