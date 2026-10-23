@@ -157,7 +157,7 @@ ArbitrationDecisionAttestation
 
 Contract가 서명·credential·deadline·evidence anchor를 검증한 뒤 `_settle()`을 호출한다.
 
-### 3.4 Final Fallback
+### 3.4 Final Fallback — exception-specific
 
 External Arbitrator도 `windows.externalArbitration` 내 응답하지 않으면 누구나:
 
@@ -165,27 +165,39 @@ External Arbitrator도 `windows.externalArbitration` 내 응답하지 않으면 
 
 을 호출할 수 있다.
 
-결과는 거래 생성 전에 합의한:
+초기 단일 `finalFallbackOutcome` 설계는 서로 다른 실패 원인을 하나의 결과로 처리한다는 Red-Team 약점이 발견되어 폐기하였다.
 
-`finalFallbackOutcome`
+PATCH3 candidate는 거래 생성 전에 다음 예외별 fallback을 각각 고정한다.
 
-을 그대로 사용한다.
+```text
+FallbackPolicy
+- buyerInspectionTimeout
+- executionHold
+- evidenceHold
+- inspectorEscalated
+- credentialHold
+```
 
-허용:
+각 값은 다음 둘 중 하나만 허용한다.
+
 - RELEASE_TO_SUPPLIER
 - REFUND_TO_BUYER
+
+External Arbitration으로 전환할 때 원래 예외 상태를 `arbitrationOriginState`로 보존하고, 최종 timeout 시 그 origin에 대응하는 사전합의 fallback만 실행한다.
 
 금지:
 - NONE
 - 관리자 임의 선택
-- timeout 이후 outcome 변경
+- timeout 이후 fallback 정책 변경
+- 모든 예외를 하나의 사후 재량으로 처리
 
-즉 fallback은 사후 관리자 재량이 아니라 **Outcome-before-Rule Commit**의 일부다.
+즉 fallback은 사후 관리자 재량이 아니라 **Outcome-before-Rule Commit**의 일부이며, 실패 유형별 경제적 의미까지 사전에 분리한다.
 
-Demo 정책 후보:
-- unresolved integrity / unavailable-authority scenario → `REFUND_TO_BUYER`
+예:
+- Buyer inspection no-response → 당사자 합의에 따라 RELEASE 가능
+- execution/evidence integrity failure → 당사자 합의에 따라 REFUND 가능
 
-이 값은 데모 정책일 뿐 보편적 B2B 규칙으로 주장하지 않는다.
+이 값들은 데모/거래 정책이며 보편적 B2B 정산규칙으로 주장하지 않는다.
 
 ---
 
@@ -206,7 +218,7 @@ Demo 정책 후보:
 - retry policy
 - settlement outcomes
 - windows
-- finalFallbackOutcome
+- exception-specific FallbackPolicy
 - role identities / assigned organizations
 
 ### 4.2 Revocable Credential
@@ -235,11 +247,23 @@ REVOKED
 - ACTIVE/SUSPENDED → REVOKED
 - REVOKED → terminal
 
-### 4.3 Credential Authority의 권한 제한
+### 4.3 Credential Registry 분리와 Authority 권한 제한
 
-`credentialAuthority`는 production에서 multisig를 전제로 한다.
+초기 candidate에서는 credential lifecycle을 Escrow 본체에 넣었으나, Red-Team/CI에서 runtime bytecode가 EIP-170 한도를 초과하는 문제가 발견되었다.
 
-할 수 있는 것:
+따라서 PATCH3는 다음 두 계약으로 분리한다.
+
+```text
+CredentialRegistryPatch3
+→ ACTIVE / SUSPENDED / REVOKED 관리
+
+InspectEscrowPatch3
+→ policy / state / evidence / arbitration / settlement
+```
+
+`CredentialRegistryPatch3.authority`는 production에서 multisig/dual-control을 전제로 한다.
+
+Registry Authority가 할 수 있는 것:
 - credential register
 - suspend
 - resume suspended credential
@@ -255,7 +279,14 @@ REVOKED
 - withdraw
 - escrow sweep
 
-즉 security authority는 **키를 비활성화할 수 있을 뿐 돈의 수령인을 결정할 수 없다.**
+Escrow contract ABI에는 credential lifecycle mutation 함수 자체를 두지 않는다.
+
+즉 security authority는 **키 상태를 관리할 수 있을 뿐 돈의 수령인을 결정할 수 없다.**
+
+남는 governance risk도 명시한다:
+- 악의적 Authority가 credential을 정지해 정상 경로를 방해할 수는 있다.
+- 그러나 settlement outcome을 사후 선택할 수 없고, trade에 pre-committed된 mutual/arbitration/fallback 경로로만 진행된다.
+- production에서는 단일 EOA가 아니라 multisig/dual-control governance가 요구된다.
 
 ### 4.4 Revocation 처리
 
@@ -343,9 +374,13 @@ Replay/Decision stage에 따라 정확한 station signer를 선택한다.
 ### Settlement policy
 
 추가:
-- `SettlementOutcome finalFallbackOutcome`
+- `FallbackPolicy buyerInspectionTimeout`
+- `FallbackPolicy executionHold`
+- `FallbackPolicy evidenceHold`
+- `FallbackPolicy inspectorEscalated`
+- `FallbackPolicy credentialHold`
 
-모든 신규 필드는 `proposeTrade` 시 고정되고 양측이 같은 policy를 accept해야 한다.
+모든 신규 필드는 `proposeTrade` 시 고정되고 양측이 같은 policy를 accept해야 한다. External Arbitration 진입 시 origin state를 보존하여 해당 예외 유형의 fallback만 적용한다.
 
 ---
 
@@ -439,9 +474,9 @@ PATCH3 테스트에서 반드시 유지:
 2. Contract balance >= unsettledEscrow + outstandingClaimable
 3. settled trade는 두 번 settle 불가
 4. final fallback은 deadline 이전 실행 불가
-5. final fallback outcome은 trade creation 이후 변경 불가
-6. credentialAuthority는 `_settle()` 직접 호출 불가
-7. credentialAuthority는 TradeTerms mutation 불가
+5. exception-specific fallback policy는 trade creation 이후 변경 불가
+6. Credential Registry Authority는 `_settle()` 직접 호출 불가
+7. Credential Registry Authority는 TradeTerms mutation 불가
 8. REVOKED credential은 재활성화 불가
 9. Primary/Backup/Arbitrator station signer는 서로 달라야 함
 10. actor/station cross-role collision 금지
