@@ -5,6 +5,11 @@ import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { EIP712 } from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import { ReentrancyGuard } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+interface ICredentialRegistryPatch3 {
+    function authority() external view returns (address);
+    function status(address credential) external view returns (uint8);
+}
+
 /// @title InspectEscrow
 /// @notice Native-ETH escrow coupled to signed manufacturing-inspection evidence.
 /// @dev The contract verifies commitments, authority and state transitions. It does not prove
@@ -89,13 +94,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         ACTIVE,
         SUSPENDED,
         REVOKED
-    }
-
-    struct CredentialRecord {
-        CredentialStatus status;
-        uint64 changedAt;
-        uint64 revokedAt;
-        bytes32 reasonCode;
     }
 
     struct Windows {
@@ -252,13 +250,12 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     );
 
     mapping(bytes32 tradeId => Trade trade) private _trades;
-    mapping(address credential => CredentialRecord record) public credentials;
     mapping(bytes32 digest => bool consumed) public consumedDigest;
     mapping(bytes32 scopedNonceKey => bool consumed) public consumedNonce;
     mapping(bytes32 tradeId => mapping(bytes32 nonce => bool used)) public usedResolutionNonce;
     mapping(address recipient => uint256 amount) public claimable;
 
-    address public immutable credentialAuthority;
+    ICredentialRegistryPatch3 public immutable credentialRegistry;
 
     uint256 public totalFunded;
     uint256 public unsettledEscrow;
@@ -292,8 +289,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     error AlreadySettled();
     error InvalidMutualSignatures();
     error ArbitrationRequired();
-    error UnauthorizedCredentialAuthority();
-    error InvalidCredentialState();
     error CredentialNotActive(address credential);
     error CredentialNotRequired();
     error ZeroAddress();
@@ -307,13 +302,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     error NativeTransferFailed();
     error DirectEtherDisabled();
 
-    event CredentialStatusChanged(
-        address indexed credential,
-        CredentialStatus previousStatus,
-        CredentialStatus newStatus,
-        bytes32 reasonCode,
-        uint64 changedAt
-    );
     event CredentialHoldEntered(
         bytes32 indexed tradeId, address indexed credential, CredentialStatus status, uint64 deadline
     );
@@ -396,9 +384,10 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     event Withdrawal(address indexed recipient, uint256 amount);
     event TradeCancelled(bytes32 indexed tradeId, address indexed caller);
 
-    constructor(address credentialAuthority_) EIP712(NAME, VERSION) {
-        if (credentialAuthority_ == address(0)) revert ZeroAddress();
-        credentialAuthority = credentialAuthority_;
+    constructor(address credentialRegistry_) EIP712(NAME, VERSION) {
+        if (credentialRegistry_ == address(0)) revert ZeroAddress();
+        credentialRegistry = ICredentialRegistryPatch3(credentialRegistry_);
+        if (credentialRegistry.authority() == address(0)) revert InvalidTerms();
     }
 
     receive() external payable {
@@ -407,53 +396,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
 
     fallback() external payable {
         revert DirectEtherDisabled();
-    }
-
-    modifier onlyCredentialAuthority() {
-        if (msg.sender != credentialAuthority) revert UnauthorizedCredentialAuthority();
-        _;
-    }
-
-    function registerCredential(address credential, bytes32 reasonCode)
-        external
-        onlyCredentialAuthority
-    {
-        if (credential == address(0)) revert ZeroAddress();
-        if (credential == credentialAuthority) revert InvalidTerms();
-        CredentialRecord storage record = credentials[credential];
-        if (record.status != CredentialStatus.UNKNOWN) revert InvalidCredentialState();
-        _setCredentialStatus(credential, record, CredentialStatus.ACTIVE, reasonCode);
-    }
-
-    function suspendCredential(address credential, bytes32 reasonCode)
-        external
-        onlyCredentialAuthority
-    {
-        CredentialRecord storage record = credentials[credential];
-        if (record.status != CredentialStatus.ACTIVE) revert InvalidCredentialState();
-        _setCredentialStatus(credential, record, CredentialStatus.SUSPENDED, reasonCode);
-    }
-
-    function resumeCredential(address credential, bytes32 reasonCode)
-        external
-        onlyCredentialAuthority
-    {
-        CredentialRecord storage record = credentials[credential];
-        if (record.status != CredentialStatus.SUSPENDED) revert InvalidCredentialState();
-        _setCredentialStatus(credential, record, CredentialStatus.ACTIVE, reasonCode);
-    }
-
-    function revokeCredential(address credential, bytes32 reasonCode)
-        external
-        onlyCredentialAuthority
-    {
-        CredentialRecord storage record = credentials[credential];
-        if (
-            record.status != CredentialStatus.ACTIVE
-                && record.status != CredentialStatus.SUSPENDED
-        ) revert InvalidCredentialState();
-        _setCredentialStatus(credential, record, CredentialStatus.REVOKED, reasonCode);
-        record.revokedAt = uint64(block.timestamp);
     }
 
     /// @notice Creates immutable business terms. Credential status remains independently revocable.
@@ -827,9 +769,9 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         Trade storage trade = _trade(tradeId);
         if (!_credentialRequiredForCurrentState(trade, credential)) revert CredentialNotRequired();
 
-        CredentialStatus status = credentials[credential].status;
+        CredentialStatus status = CredentialStatus(credentialRegistry.status(credential));
         if (status != CredentialStatus.SUSPENDED && status != CredentialStatus.REVOKED) {
-            revert InvalidCredentialState();
+            revert CredentialNotActive(credential);
         }
 
         _enterMutualResolutionState(trade, TradeState.CREDENTIAL_HOLD);
@@ -1316,16 +1258,14 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     }
 
     function _validateAuthoritySeparation(TradeTerms calldata t) internal view {
+        address authority = credentialRegistry.authority();
         if (
-            credentialAuthority == t.supplier || credentialAuthority == t.buyer
-                || credentialAuthority == t.primaryInspector
-                || credentialAuthority == t.backupInspector
-                || credentialAuthority == t.externalArbitrator
-                || credentialAuthority == t.supplierStation
-                || credentialAuthority == t.buyerStation
-                || credentialAuthority == t.primaryInspectorStation
-                || credentialAuthority == t.backupInspectorStation
-                || credentialAuthority == t.externalArbitratorStation
+            authority == t.supplier || authority == t.buyer
+                || authority == t.primaryInspector || authority == t.backupInspector
+                || authority == t.externalArbitrator || authority == t.supplierStation
+                || authority == t.buyerStation || authority == t.primaryInspectorStation
+                || authority == t.backupInspectorStation
+                || authority == t.externalArbitratorStation
         ) revert InvalidTerms();
     }
 
@@ -1338,7 +1278,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     }
 
     function _requireCredentialActive(address credential) internal view {
-        if (credentials[credential].status != CredentialStatus.ACTIVE) {
+        if (credentialRegistry.status(credential) != uint8(CredentialStatus.ACTIVE)) {
             revert CredentialNotActive(credential);
         }
     }
@@ -1367,21 +1307,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         }
 
         return false;
-    }
-
-    function _setCredentialStatus(
-        address credential,
-        CredentialRecord storage record,
-        CredentialStatus newStatus,
-        bytes32 reasonCode
-    ) internal {
-        CredentialStatus previousStatus = record.status;
-        record.status = newStatus;
-        record.changedAt = uint64(block.timestamp);
-        record.reasonCode = reasonCode;
-        emit CredentialStatusChanged(
-            credential, previousStatus, newStatus, reasonCode, uint64(block.timestamp)
-        );
     }
 
     function _settle(bytes32 tradeId, Trade storage trade, SettlementOutcome outcome) internal {
