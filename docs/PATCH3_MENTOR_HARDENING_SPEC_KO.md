@@ -175,7 +175,6 @@ FallbackPolicy
 - executionHold
 - evidenceHold
 - inspectorEscalated
-- credentialHold
 ```
 
 각 값은 다음 둘 중 하나만 허용한다.
@@ -299,17 +298,23 @@ Attestation 제출 시 required credential이 ACTIVE가 아니면 revert.
 
 따라서 current status가 ACTIVE가 아니면 새로운 state transition에 사용할 수 없다.
 
-그 결과 정상 경로가 막히면 liveness path:
+그 결과 required credential이 SUSPENDED/REVOKED이면 해당 credential의 **새로운 attestation만 거절**한다.
+
+중요하게, Credential Authority의 정지 행위 자체가 Escrow state를 바꾸지는 않는다. 초기 candidate의 credential-triggered hold state는 Authority가 간접적으로 fallback 진행을 앞당길 수 있다는 Red-Team 약점이 발견되어 폐기하였다.
+
+최종 candidate의 liveness 원칙:
 
 ```text
 credential unavailable
-→ CREDENTIAL_HOLD
-→ mutual resolution
+→ new signed action REVERT
+→ current protocol state/deadline은 그대로 유지
+→ 기존 timeout/failover/exception 경로
+→ 필요 시 mutual resolution
 → external arbitration
-→ final fallback
+→ precommitted contextual fallback
 ```
 
-으로 종료한다.
+즉 **Credential은 사용 가능성을 통제하지만 settlement clock이나 수령인을 결정하지 않는다.**
 
 ---
 
@@ -378,7 +383,6 @@ Replay/Decision stage에 따라 정확한 station signer를 선택한다.
 - `FallbackPolicy executionHold`
 - `FallbackPolicy evidenceHold`
 - `FallbackPolicy inspectorEscalated`
-- `FallbackPolicy credentialHold`
 
 모든 신규 필드는 `proposeTrade` 시 고정되고 양측이 같은 policy를 accept해야 한다. External Arbitration 진입 시 origin state를 보존하여 해당 예외 유형의 fallback만 적용한다.
 
@@ -388,14 +392,10 @@ Replay/Decision stage에 따라 정확한 station signer를 선택한다.
 
 기존 enum 번호에 의존하는 외부 도구가 있으므로 PATCH3에서는 ABI/version을 명확히 새로 freeze한다.
 
-추가 후보:
-- `CREDENTIAL_HOLD`
+추가:
 - `ARBITRATION_PENDING`
 
-권장 의미:
-
-### CREDENTIAL_HOLD
-필수 signer가 SUSPENDED/REVOKED되어 정상 절차를 계속할 수 없는 상태.
+초기 candidate에서 검토했던 credential-triggered hold state는 최종 hardening에서 제거했다. Credential Authority가 key suspension만으로 거래를 별도 settlement 경로로 이동시키는 권한을 갖지 않게 하기 위함이다.
 
 ### ARBITRATION_PENDING
 mutual resolution 실패 또는 Backup timeout 이후 외부 중재 결정을 기다리는 상태.
@@ -409,18 +409,23 @@ Funded trade가 nonterminal state에 무기한 남는 경로가 없어야 한다
 
 ---
 
-## 8. Credential failure 진입 규칙
+## 8. Credential failure 규칙
 
-단순히 signature가 틀렸다고 자동 CREDENTIAL_HOLD로 보내면 공격자가 악성 서명을 던져 DoS할 수 있다.
+Credential 사고 대응과 settlement 권한을 분리한다.
 
 따라서:
 
 - invalid signature → revert only
 - wrong signer → revert only
 - nonce reuse → revert only
-- credential registry가 실제로 SUSPENDED/REVOKED 상태인 경우에만 hold 진입 가능
+- SUSPENDED/REVOKED credential의 새로운 attestation → revert only
+- credential 상태 변경 자체 → **Escrow state mutation 없음**
+- funding 직전 모든 assigned signing credential이 ACTIVE인지 다시 확인
+- 이미 funded된 거래는 현재 state에 원래 존재하는 timeout/failover/liveness 규칙으로만 진행
 
-누구나 `invokeCredentialHold(tradeId, role)`을 호출할 수 있으나 Contract가 해당 role의 현재 credential status를 직접 확인한 경우에만 성공해야 한다.
+credential-triggered state transition 함수는 두지 않는다.
+
+이 구조는 악성 signature DoS뿐 아니라 **Credential Authority가 suspension을 이용해 settlement를 간접적으로 앞당기는 governance attack**도 차단한다.
 
 ---
 
@@ -455,11 +460,12 @@ Funded trade가 nonterminal state에 무기한 남는 경로가 없어야 한다
 - 자동 돈 이동 없음
 - mutual → arbitration → fallback 순서만 허용
 
-### B4. Revoked credential
+### B4. Revoked/Suspended credential
 기대:
-- attestation reject
-- credential authority가 settlement 불가
-- hold → arbitration path로만 종료
+- 새로운 attestation reject
+- 현재 Escrow state는 credential 변경만으로 변하지 않음
+- Credential Authority가 settlement 불가
+- 기존 state deadline / failover / precommitted liveness path만 사용
 
 ### B5. Liveness
 모든 actor가 비협조적인 최악의 경우에도 마지막 pre-committed fallback 이후 terminal state 도달.
@@ -477,14 +483,18 @@ PATCH3 테스트에서 반드시 유지:
 5. exception-specific fallback policy는 trade creation 이후 변경 불가
 6. Credential Registry Authority는 `_settle()` 직접 호출 불가
 7. Credential Registry Authority는 TradeTerms mutation 불가
-8. REVOKED credential은 재활성화 불가
-9. Primary/Backup/Arbitrator station signer는 서로 달라야 함
-10. actor/station cross-role collision 금지
-11. Replay inconsistent만으로 RELEASE/REFUND 불가
-12. Arbitration decision은 RELEASE/REFUND 외 값 불가
-13. Arbitration decision은 frozen policy/evidence anchors와 일치해야 함
-14. timeout 호출은 누구나 가능하되 결과는 사전 규칙으로만 결정
-15. private key/secret은 frontend bundle에 포함 금지
+8. Credential Registry Authority의 suspend/revoke만으로 Escrow state 변경 불가
+9. Funding 직전 assigned signing credentials ACTIVE 재검증
+10. REVOKED credential은 재활성화 불가
+11. Primary/Backup/Arbitrator station signer는 서로 달라야 함
+12. actor/station cross-role collision 금지
+13. Replay inconsistent만으로 RELEASE/REFUND 불가
+14. Arbitration decision은 RELEASE/REFUND 외 값 불가
+15. Arbitration decision은 frozen policy/evidence anchors와 일치해야 함
+16. Inspector decision은 nonzero reasonCode + decisionEvidenceHash를 가져야 함
+17. timeout 호출은 누구나 가능하되 결과는 사전 규칙으로만 결정
+18. internal ledger conservation + on-chain balance liability coverage 확인
+19. private key/secret은 frontend bundle에 포함 금지
 
 ---
 
@@ -620,3 +630,30 @@ PATCH3를 Sepolia에 배포하기 전에 아래가 전부 PASS여야 한다.
 - existing core PASS/REVIEW/dispute behavior semantically preserved
 
 하나라도 FAIL이면 PATCH2의 기존 성공본을 본선 baseline으로 유지하고 PATCH3는 “hardening candidate”로만 제시한다.
+
+
+---
+
+## 16. 2026-10-23 Hardening Result Update
+
+현재 `patch3-mentor-hardening` candidate는 다음 자동 gate를 통과했다.
+
+- hostile local Anvil Red-Team: **36 PASS / 0 FAIL**
+- Solidity 0.8.26 compile PASS
+- InspectEscrowPatch3 runtime: **22,669 bytes** → EIP-170 PASS
+- CredentialRegistryPatch3 runtime: **1,494 bytes**
+- Python ↔ JavaScript ↔ Solidity interop golden vector PASS
+- ABI SHA256 + 5종 EIP-712 typehash local on-chain equality PASS
+- Slither project-source untriaged High/Medium blocking findings: **0**
+- professional independent audit / formal verification / production certification: **아님**
+
+추가 Red-Team 수정:
+- credential-triggered 별도 settlement state 제거
+- funding 직전 credential ACTIVE 재검증
+- Inspector decision에 `decisionEvidenceHash` 필수화
+- `balanceCoversLiabilities()` 검증 추가
+- PATCH3는 PATCH2 policyHash를 재사용하지 않으며, 새 settlement/authority semantics를 포함한 **policy schema v1.2 / policyVersion 2**를 새로 생성해야 한다.
+
+Authoritative candidate evidence:
+- `packages/phase3c_hardening_20261023/PATCH3_INTERFACE_FREEZE_CANDIDATE.json`
+- `packages/phase3c_hardening_20261023/PATCH3_SEPOLIA_DEPLOYMENT_PRECHECK_KO.md`
