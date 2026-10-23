@@ -41,7 +41,8 @@ jobs:
             --bin \
             --abi \
             -o .patch3-build \
-            packages/phase3c_hardening_20261023/contracts/InspectEscrowPatch3.sol
+            packages/phase3c_hardening_20261023/contracts/InspectEscrowPatch3.sol \
+            packages/phase3c_hardening_20261023/contracts/CredentialRegistryPatch3.sol
 
       - name: Install Foundry 1.8.5
         uses: foundry-rs/foundry-toolchain@v1
@@ -82,6 +83,11 @@ jobs:
           grep -q 'submitArbitrationDecision' "$SRC"
           grep -q 'executeFinalFallback' "$SRC"
           grep -q 'windows.mutualResolution' "$SRC"
+          grep -q 'credentialRegistry.status' "$SRC"
+          if grep -Eq 'function (registerCredential|suspendCredential|resumeCredential|revokeCredential)' "$SRC"; then
+            echo 'FAIL: credential lifecycle management leaked back into escrow contract'
+            exit 1
+          fi
           if grep -q 'address inspectorStation;' "$SRC"; then
             echo 'FAIL: shared inspectorStation remains in TradeTerms'
             exit 1
@@ -91,7 +97,7 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          bins=list(Path('.patch3-build').glob('*InspectEscrowPatch3*.bin'))
+          bins=list(Path('.patch3-build').glob('*.bin'))
           if not bins:
               raise SystemExit('No candidate bytecode output found')
           for p in bins:
