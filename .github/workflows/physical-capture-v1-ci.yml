@@ -1,0 +1,46 @@
+name: Physical Capture V1 CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/physical_capture_v1/**'
+      - 'docs/PHYSICAL_CAPTURE_PROTOCOL_V1_KO.md'
+      - '.github/workflows/physical-capture-v1-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: JavaScript syntax check
+        run: node --check packages/physical_capture_v1/src/capture.mjs
+
+      - name: Required protocol bindings
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC=packages/physical_capture_v1/src/capture.mjs
+          HTML=packages/physical_capture_v1/index.html
+          grep -q 'TOP", "FRONT", "SIDE' "$SRC"
+          grep -q 'previousCaptureDigest' "$SRC"
+          grep -q 'sessionManifestHash' "$SRC"
+          grep -q 'SEALED_INFERENCE_ALLOWED' "$SRC"
+          grep -q 'InspectEscrowPhysicalCapture' "$SRC"
+          grep -q 'Verify Physical Evidence' "$HTML"
+          test -f packages/phase3b_20261010/vendor/ethers.umd.min.js
+          if grep -RniE '(private.?key|mnemonic|seed phrase).*[=:].*(0x[0-9a-fA-F]{32,}|[a-z]+ [a-z]+ [a-z]+ [a-z]+)' packages/physical_capture_v1; then
+            echo 'Potential secret material detected'
+            exit 1
+          fi
