@@ -57,7 +57,19 @@
     {
       "id": "H7",
       "name": "Sepolia candidate deployment",
-      "status": "BLOCKED_UNTIL_INTERFACE_FREEZE_AND_EXPLICIT_SEPOLIA_GO"
+      "status": "READY_FOR_DEPLOYMENT_PARAMETERS_BLOCKED_ON_PATCH3_POLICY_HASH_AND_NEW_ROLE_ADDRESSES"
     }
-  ]
+  ],
+  "deploymentPrecheck": {
+    "interfaceFreeze": "PASS",
+    "durableInterfaceManifest": "packages/phase3c_hardening_20261023/PATCH3_INTERFACE_FREEZE_CANDIDATE.json",
+    "deploymentHardGate": "packages/phase3c_hardening_20261023/PATCH3_SEPOLIA_DEPLOYMENT_PRECHECK_KO.md",
+    "blockers": [
+      "PATCH3-specific policy document/hash must commit new arbitration/fallback/role semantics",
+      "external arbitrator actor address required",
+      "distinct primary/backup/arbitrator station addresses required",
+      "credential-registry authority address/governance required",
+      "explicit Sepolia GO required before any broadcast"
+    ]
+  }
 }
