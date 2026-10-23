@@ -40,7 +40,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         RELEASED,
         REFUNDED,
         CANCELLED,
-        CREDENTIAL_HOLD,
         ARBITRATION_PENDING
     }
 
@@ -111,7 +110,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         SettlementOutcome executionHold;
         SettlementOutcome evidenceHold;
         SettlementOutcome inspectorEscalated;
-        SettlementOutcome credentialHold;
     }
 
     struct TradeTerms {
@@ -197,6 +195,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         bytes32 replayReportHash;
         SettlementOutcome decision;
         bytes32 reasonCode;
+        bytes32 decisionEvidenceHash;
         bytes32 nonce;
         uint64 issuedAt;
         uint64 validUntil;
@@ -249,7 +248,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         "ReplayAttestation(bytes32 tradeId,uint8 stage,address inspectorActor,bytes32 policyHash,bytes32 supplierEvidenceHash,bytes32 buyerEvidenceHash,bytes32 replayReportHash,bool consistent,bytes32 nonce,uint64 issuedAt,uint64 validUntil)"
     );
     bytes32 public constant INSPECTOR_DECISION_TYPEHASH = keccak256(
-        "InspectorDecisionAttestation(bytes32 tradeId,uint8 stage,address inspectorActor,bytes32 policyHash,bytes32 supplierEvidenceHash,bytes32 buyerEvidenceHash,bytes32 replayReportHash,uint8 decision,bytes32 reasonCode,bytes32 nonce,uint64 issuedAt,uint64 validUntil)"
+        "InspectorDecisionAttestation(bytes32 tradeId,uint8 stage,address inspectorActor,bytes32 policyHash,bytes32 supplierEvidenceHash,bytes32 buyerEvidenceHash,bytes32 replayReportHash,uint8 decision,bytes32 reasonCode,bytes32 decisionEvidenceHash,bytes32 nonce,uint64 issuedAt,uint64 validUntil)"
     );
     bytes32 public constant MUTUAL_RESOLUTION_TYPEHASH = keccak256(
         "MutualResolution(bytes32 tradeId,uint8 outcome,bytes32 resolutionNonce,uint64 deadline)"
@@ -299,7 +298,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     error InvalidMutualSignatures();
     error ArbitrationRequired();
     error CredentialNotActive(address credential);
-    error CredentialNotRequired();
     error ZeroAddress();
     error InvalidTerms();
     error InvalidInspectionReason();
@@ -311,9 +309,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
     error NativeTransferFailed();
     error DirectEtherDisabled();
 
-    event CredentialHoldEntered(
-        bytes32 indexed tradeId, address indexed credential, CredentialStatus status, uint64 deadline
-    );
     event TradeProposed(
         bytes32 indexed tradeId, address indexed supplier, address indexed buyer, bytes32 policyHash
     );
@@ -379,6 +374,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         InspectorStage indexed stage,
         SettlementOutcome decision,
         bytes32 reasonCode,
+        bytes32 decisionEvidenceHash,
         bytes32 replayReportHash
     );
     event MutualResolutionRecorded(
@@ -475,6 +471,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         if (msg.sender != trade.terms.buyer) revert UnauthorizedCaller();
         if (trade.funded) revert AlreadyFunded();
         if (msg.value != trade.terms.escrowAmount) revert FundingMismatch();
+        _validateStoredTradeCredentialsActive(trade);
 
         trade.funded = true;
         totalFunded += msg.value;
@@ -710,8 +707,12 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
             revert UnauthorizedCaller();
         }
         if (block.timestamp > trade.actionDeadline) revert DeadlinePassed();
-        if (attestation.decision == SettlementOutcome.NONE) {
-            revert InvalidSettlementOutcome();
+        if (
+            attestation.decision != SettlementOutcome.RELEASE_TO_SUPPLIER
+                && attestation.decision != SettlementOutcome.REFUND_TO_BUYER
+        ) revert InvalidSettlementOutcome();
+        if (attestation.reasonCode == bytes32(0) || attestation.decisionEvidenceHash == bytes32(0)) {
+            revert InvalidTerms();
         }
         if (trade.replayStatus != ReplayStatus.CONSISTENT) revert ReplayRequired();
         if (attestation.policyHash != trade.terms.policyHash) revert PolicyHashMismatch();
@@ -746,6 +747,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
             stage,
             attestation.decision,
             attestation.reasonCode,
+            attestation.decisionEvidenceHash,
             attestation.replayReportHash
         );
         _settle(attestation.tradeId, trade, attestation.decision);
@@ -774,18 +776,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         emit Escalated(tradeId);
     }
 
-    function invokeCredentialHold(bytes32 tradeId, address credential) external {
-        Trade storage trade = _trade(tradeId);
-        if (!_credentialRequiredForCurrentState(trade, credential)) revert CredentialNotRequired();
-
-        CredentialStatus status = CredentialStatus(credentialRegistry.status(credential));
-        if (status != CredentialStatus.SUSPENDED && status != CredentialStatus.REVOKED) {
-            revert CredentialNotActive(credential);
-        }
-
-        _enterMutualResolutionState(trade, TradeState.CREDENTIAL_HOLD);
-        emit CredentialHoldEntered(tradeId, credential, status, trade.actionDeadline);
-    }
 
     function escalateToExternalArbitration(bytes32 tradeId) external {
         Trade storage trade = _trade(tradeId);
@@ -950,6 +940,10 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         return totalFunded == unsettledEscrow + outstandingClaimable + totalWithdrawn;
     }
 
+    function balanceCoversLiabilities() external view returns (bool) {
+        return address(this).balance >= unsettledEscrow + outstandingClaimable;
+    }
+
     function hashStationAttestation(StationAttestation calldata a) public view returns (bytes32) {
         // Every member is a static ABI type, so encoding the tuple is equivalent to listing
         // each member after the type hash and avoids compiler stack-depth fragility.
@@ -1034,7 +1028,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         if (!_validSettlementOutcome(p.executionHold)) revert InvalidSettlementOutcome();
         if (!_validSettlementOutcome(p.evidenceHold)) revert InvalidSettlementOutcome();
         if (!_validSettlementOutcome(p.inspectorEscalated)) revert InvalidSettlementOutcome();
-        if (!_validSettlementOutcome(p.credentialHold)) revert InvalidSettlementOutcome();
     }
 
     function _validSettlementOutcome(SettlementOutcome outcome) internal pure returns (bool) {
@@ -1303,31 +1296,14 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         }
     }
 
-    function _credentialRequiredForCurrentState(Trade storage trade, address credential)
-        internal
-        view
-        returns (bool)
-    {
-        if (
-            trade.state == TradeState.AWAIT_SUPPLIER
-                || trade.state == TradeState.SUPPLIER_REINSPECTION
-        ) return credential == trade.terms.supplierStation;
-
-        if (
-            trade.state == TradeState.AWAIT_BUYER
-                || trade.state == TradeState.BUYER_REINSPECTION
-        ) return credential == trade.terms.buyerStation;
-
-        if (trade.state == TradeState.DISPUTED_PRIMARY) {
-            return credential == trade.terms.primaryInspectorStation;
-        }
-
-        if (trade.state == TradeState.DISPUTED_BACKUP) {
-            return credential == trade.terms.backupInspectorStation;
-        }
-
-        return false;
+    function _validateStoredTradeCredentialsActive(Trade storage trade) internal view {
+        _requireCredentialActive(trade.terms.supplierStation);
+        _requireCredentialActive(trade.terms.buyerStation);
+        _requireCredentialActive(trade.terms.primaryInspectorStation);
+        _requireCredentialActive(trade.terms.backupInspectorStation);
+        _requireCredentialActive(trade.terms.externalArbitratorStation);
     }
+
 
     function _fallbackOutcome(Trade storage trade) internal view returns (SettlementOutcome) {
         TradeState origin = trade.arbitrationOriginState;
@@ -1342,9 +1318,6 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
         }
         if (origin == TradeState.ESCALATED) {
             return trade.terms.fallbackPolicy.inspectorEscalated;
-        }
-        if (origin == TradeState.CREDENTIAL_HOLD) {
-            return trade.terms.fallbackPolicy.credentialHold;
         }
         revert InvalidStateSet(origin);
     }
@@ -1377,8 +1350,7 @@ contract InspectEscrowPatch3 is EIP712, ReentrancyGuard {
 
     function _mutualResolutionState(TradeState state) internal pure returns (bool) {
         return state == TradeState.ESCALATED || state == TradeState.EXECUTION_HOLD
-            || state == TradeState.BUYER_INSPECTION_TIMEOUT || state == TradeState.EVIDENCE_HOLD
-            || state == TradeState.CREDENTIAL_HOLD;
+            || state == TradeState.BUYER_INSPECTION_TIMEOUT || state == TradeState.EVIDENCE_HOLD;
     }
 
     function _retryAvailable(uint32 currentAttempt, uint8 maxAdditionalAttempts)
