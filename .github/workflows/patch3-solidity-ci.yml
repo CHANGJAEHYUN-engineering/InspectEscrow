@@ -28,7 +28,7 @@ jobs:
       - name: Install pinned Solidity compiler and OpenZeppelin
         run: |
           npm init -y >/dev/null 2>&1
-          npm install --no-save solc@0.8.26 @openzeppelin/contracts@5.0.2
+          npm install --no-save solc@0.8.26 @openzeppelin/contracts@5.5.0
 
       - name: Compile PATCH3 candidate
         run: |
