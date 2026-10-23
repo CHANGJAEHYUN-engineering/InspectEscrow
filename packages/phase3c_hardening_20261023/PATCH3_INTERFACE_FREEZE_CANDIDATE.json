@@ -1,0 +1,87 @@
+{
+  "schema": "inspectescrow.patch3-interface-freeze-candidate/1.0.0",
+  "frozenAt": "2026-10-23",
+  "status": "CANDIDATE_NOT_DEPLOYED",
+  "sourceBranch": "patch3-mentor-hardening",
+  "interfaceGateCommit": "0f7a58949e6b3917ca2fa6e60ccc4cfc80b17707",
+  "contractHardeningCommit": "3fc4743f96acebb0c6327d98f88506512dccf55c",
+  "redTeamCommit": "725f2aa5856ee4a09308d4be8e858ea7e6dfbb26",
+  "githubActions": {
+    "runId": 39930083801,
+    "conclusion": "success",
+    "artifactId": 12491376734,
+    "artifactName": "patch3-solidity-compile",
+    "artifactDigest": "sha256:278316cddc1e40850ea46e2d2fa208d5df449f2f1a2a397a9d87c33f63933f0c",
+    "artifactExpiresAt": "2026-11-06T09:12:32Z"
+  },
+  "contractVersion": "PHASE2-PATCH3-CANDIDATE",
+  "compiler": {
+    "solidity": "0.8.26",
+    "optimizerEnabled": true,
+    "optimizerRuns": 200,
+    "viaIR": true,
+    "evmVersion": "cancun",
+    "openZeppelin": "5.5.0"
+  },
+  "bytecode": {
+    "InspectEscrowPatch3": {
+      "creationBytes": 24033,
+      "runtimeBytes": 22669,
+      "eip170RuntimePass": true,
+      "eip3860InitcodePass": true
+    },
+    "CredentialRegistryPatch3": {
+      "creationBytes": 1668,
+      "runtimeBytes": 1494,
+      "eip170RuntimePass": true,
+      "eip3860InitcodePass": true
+    }
+  },
+  "abi": {
+    "InspectEscrowPatch3": {
+      "entries": 125,
+      "sha256": "c98abd82a22eca86934745423f814f5a0a8dffed0dda1acbf8811ccfb261a260"
+    },
+    "CredentialRegistryPatch3": {
+      "entries": 13,
+      "sha256": "b13ff0ec7197674284bb7a673a837935c25e0f4db2f68daade41b20a13d4c1a3"
+    }
+  },
+  "eip712Domain": {
+    "name": "InspectEscrow",
+    "version": "1",
+    "chainId": "DEPLOYMENT_SPECIFIC",
+    "verifyingContract": "DEPLOYMENT_SPECIFIC"
+  },
+  "typedData": {
+    "StationAttestation": {
+      "typehash": "0xf1ecdb3adf98171da23ddff64314592bdc7872b9fd77c8c413e4b4018dcd3c7d",
+      "typeString": "StationAttestation(bytes32 tradeId,uint8 role,address station,uint32 attempt,bytes32 sessionNonce,bytes32 policyHash,bytes32 modelBundleHash,bytes32 captureProfileHash,bytes32 specimenManifestHash,bytes32 evidencePackageHash,uint128 aggregateScoreScaled,bytes32 scoreSchemaId,uint8 inspectionValidity,uint8 invalidReason,uint64 issuedAt,uint64 validUntil)"
+    },
+    "ReplayAttestation": {
+      "typehash": "0x249ba70ad197b09272a599e947e24a31e28e1add1bf62ab364715d14925ff6b5",
+      "typeString": "ReplayAttestation(bytes32 tradeId,uint8 stage,address inspectorActor,bytes32 policyHash,bytes32 supplierEvidenceHash,bytes32 buyerEvidenceHash,bytes32 replayReportHash,bool consistent,bytes32 nonce,uint64 issuedAt,uint64 validUntil)"
+    },
+    "InspectorDecisionAttestation": {
+      "typehash": "0xaf2490d532c8158cacd7fa074e9af2f2ffccc1722f0f6da8c2cfe47fbae05001",
+      "typeString": "InspectorDecisionAttestation(bytes32 tradeId,uint8 stage,address inspectorActor,bytes32 policyHash,bytes32 supplierEvidenceHash,bytes32 buyerEvidenceHash,bytes32 replayReportHash,uint8 decision,bytes32 reasonCode,bytes32 decisionEvidenceHash,bytes32 nonce,uint64 issuedAt,uint64 validUntil)"
+    },
+    "MutualResolution": {
+      "typehash": "0xaa19f7651cd92ffe1afa80df33adddb41837feec359f77717b71b9b3792fd254",
+      "typeString": "MutualResolution(bytes32 tradeId,uint8 outcome,bytes32 resolutionNonce,uint64 deadline)"
+    },
+    "ArbitrationDecisionAttestation": {
+      "typehash": "0x1d791300b556948b87afa976291e833ca366b537d7fa07c9333fffa4de7b0af6",
+      "typeString": "ArbitrationDecisionAttestation(bytes32 tradeId,address arbitratorActor,bytes32 policyHash,bytes32 supplierEvidenceHash,bytes32 buyerEvidenceHash,uint8 decision,bytes32 reasonCode,bytes32 decisionEvidenceHash,bytes32 nonce,uint64 issuedAt,uint64 validUntil)"
+    }
+  },
+  "validation": {
+    "redTeam": "36_PASS_0_FAIL",
+    "pythonJavaScriptSolidityInterop": "PASS",
+    "onchainTypehashEqualityLocal": "PASS",
+    "slitherProjectSourceUntriagedHighMedium": 0,
+    "independentProfessionalAudit": false,
+    "formalVerification": false,
+    "productionCertification": false
+  }
+}
