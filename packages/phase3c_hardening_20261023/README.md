@@ -18,11 +18,11 @@ The candidate has now passed the first local hardening gate:
 
 - compile PASS
 - deployable bytecode-size gates PASS
-- hostile Anvil red-team **25 PASS / 0 FAIL**
-- finite-exit matrix for the critical funded hold states PASS
+- hostile Anvil red-team **36 PASS / 0 FAIL**
+- finite-exit matrix for the critical funded exception states PASS
 - accounting conservation PASS
 
-Credential lifecycle is intentionally separated into `CredentialRegistryPatch3.sol` so credential security authority is distinct from escrow settlement authority.
+Credential lifecycle is intentionally separated into `CredentialRegistryPatch3.sol` so credential security authority is distinct from escrow settlement authority. Suspension/revocation rejects new signatures but does not itself change escrow state; existing protocol deadlines and precommitted arbitration/fallback rules preserve liveness.
 
 This is still a **candidate**, not a replacement for the proven PHASE2-PATCH2 Sepolia baseline. See `RED_TEAM_STATUS_20261023.md`.
 
