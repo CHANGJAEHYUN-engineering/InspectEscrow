@@ -64,6 +64,7 @@ jobs:
           node packages/phase3c_hardening_20261023/test/interop-golden.mjs
           python3 -m pip install --disable-pip-version-check --quiet pycryptodome==3.23.0
           python3 packages/phase3c_hardening_20261023/test/interop-golden.py
+          node packages/phase3c_hardening_20261023/test/interface-freeze.mjs
 
       - name: Structural hardening assertions
         shell: bash
