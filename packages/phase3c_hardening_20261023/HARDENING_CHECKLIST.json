@@ -1,0 +1,43 @@
+{
+  "schema": "inspectescrow.patch3-hardening-checklist/1.0.0",
+  "baselineVersion": "PHASE2-PATCH2",
+  "candidateVersion": "PHASE2-PATCH3-CANDIDATE",
+  "deployedBaselineMustRemainUnchanged": true,
+  "phases": [
+    {
+      "id": "H1",
+      "name": "Inspector signing-key separation",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "H2",
+      "name": "External arbitration + bounded authority",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "H3",
+      "name": "Finite liveness + final fallback",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "H4",
+      "name": "Credential lifecycle",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "H5",
+      "name": "Interop golden vector",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "H6",
+      "name": "Red-team + accounting invariants",
+      "status": "NOT_STARTED"
+    },
+    {
+      "id": "H7",
+      "name": "Sepolia candidate deployment",
+      "status": "BLOCKED_UNTIL_TESTS_PASS"
+    }
+  ]
+}
