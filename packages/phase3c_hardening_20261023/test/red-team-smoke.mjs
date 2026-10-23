@@ -170,12 +170,21 @@ async function submitInspection(t,role,score,tag){
   await (await c.connect(actor).submitInspection(m,sig)).wait();
   return m;
 }
-async function replayMessage(t,consistent,tag){
+async function submitInvalidInspection(t,role,tag){
+  const m=await inspectionMessage(t,role,0,tag,{inspectionValidity:1,invalidReason:1});
+  const station=role===0?supplierStation:buyerStation;
+  const actor=role===0?supplier:buyer;
+  const sig=await signTyped(station,'StationAttestation',m);
+  await (await c.connect(actor).submitInspection(m,sig)).wait();
+  return m;
+}
+async function replayMessage(t,consistent,tag,stage=0){
   const tw=await timeWindow();
   const si=await c.getInspection(t.tradeId,0);
   const bi=await c.getInspection(t.tradeId,1);
+  const inspectorActor=stage===0?addresses[3]:addresses[4];
   return {
-    tradeId:t.tradeId,stage:0,inspectorActor:addresses[3],policyHash:t.policyHash,
+    tradeId:t.tradeId,stage,inspectorActor,policyHash:t.policyHash,
     supplierEvidenceHash:si.evidencePackageHash,buyerEvidenceHash:bi.evidencePackageHash,
     replayReportHash:h(tag+':REPLAY'),consistent,nonce:h(tag+':REPLAY_NONCE'),...tw
   };
@@ -287,6 +296,139 @@ async function arbitrationMessage(t,decision,tag){
   pass('EXECUTION_HOLD reaches terminal fallback with all decision actors silent');
 }
 
+// L1: SUPPLIER_REINSPECTION has a deterministic timeout refund.
+{
+  const t=await setup('supplier-reinspection-timeout');
+  await submitInvalidInspection(t,0,'SUP_REINSPECT_INVALID');
+  assert.equal(await c.getTradeState(t.tradeId),6n);
+  assert.ok((await c.getActionDeadline(t.tradeId))>0n);
+  await mine(61);
+  await (await c.connect(attacker).invokeReinspectionTimeout(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),18n);
+  await (await c.connect(buyer).withdraw()).wait();
+  pass('SUPPLIER_REINSPECTION timeout reaches REFUNDED and withdraw');
+}
+
+// L2: SUPPLIER_HOLD has a deterministic timeout refund.
+{
+  const t=await setup('supplier-hold-timeout');
+  await submitInspection(t,0,500,'SUP_HOLD_REVIEW');
+  assert.equal(await c.getTradeState(t.tradeId),7n);
+  assert.ok((await c.getActionDeadline(t.tradeId))>0n);
+  await mine(61);
+  await (await c.connect(attacker).invokeSupplierHoldTimeout(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),18n);
+  await (await c.connect(buyer).withdraw()).wait();
+  pass('SUPPLIER_HOLD timeout reaches REFUNDED and withdraw');
+}
+
+// L3: ACCEPTANCE_PENDING cannot be held forever by a silent Buyer.
+{
+  const t=await setup('acceptance-timeout');
+  await submitInspection(t,0,100,'ACCEPT_SUPPLIER');
+  await submitInspection(t,1,100,'ACCEPT_BUYER');
+  assert.equal(await c.getTradeState(t.tradeId),11n);
+  assert.ok((await c.getActionDeadline(t.tradeId))>0n);
+  await mine(61);
+  await (await c.connect(attacker).invokeAcceptanceTimeout(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),17n);
+  await (await c.connect(supplier).withdraw()).wait();
+  pass('ACCEPTANCE_PENDING timeout reaches RELEASED and Supplier withdraw');
+}
+
+// L4: BUYER_INSPECTION_TIMEOUT -> arbitration -> valid signed arbitrator decision.
+{
+  const t=await setup('buyer-inspection-timeout');
+  await submitInspection(t,0,100,'BUYER_TIMEOUT_SUPPLIER');
+  assert.equal(await c.getTradeState(t.tradeId),8n);
+  await mine(61);
+  await (await c.connect(attacker).invokeBuyerInspectionTimeout(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),10n);
+  assert.ok((await c.getActionDeadline(t.tradeId))>0n);
+
+  await mine(31);
+  await (await c.connect(attacker).escalateToExternalArbitration(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),21n);
+
+  const a=await arbitrationMessage(t,2,'BUYER_TIMEOUT_ARB');
+  const sig=await signTyped(arbitratorStation,'ArbitrationDecisionAttestation',a);
+  await (await c.connect(arbitrator).submitArbitrationDecision(a,sig)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),18n);
+  await (await c.connect(buyer).withdraw()).wait();
+  pass('BUYER_INSPECTION_TIMEOUT reaches signed external arbitration and REFUNDED');
+}
+
+// L5: BUYER_REINSPECTION timeout -> EVIDENCE_HOLD -> finite fallback.
+{
+  const t=await setup('evidence-hold-timeout');
+  await submitInspection(t,0,100,'EVIDENCE_SUPPLIER');
+  await submitInvalidInspection(t,1,'EVIDENCE_BUYER_INVALID');
+  assert.equal(await c.getTradeState(t.tradeId),9n);
+  await mine(61);
+  await (await c.connect(attacker).invokeReinspectionTimeout(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),15n);
+  assert.ok((await c.getActionDeadline(t.tradeId))>0n);
+
+  await mine(31);
+  await (await c.connect(attacker).escalateToExternalArbitration(t.tradeId)).wait();
+  await mine(31);
+  await (await c.connect(attacker).executeFinalFallback(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),18n);
+  await (await c.connect(buyer).withdraw()).wait();
+  pass('EVIDENCE_HOLD reaches precommitted terminal fallback');
+}
+
+// L6: Primary silence -> Backup; Backup key is independent and can settle.
+{
+  const t=await setup('primary-timeout-backup-success');
+  await submitInspection(t,0,100,'BACKUP_SUPPLIER');
+  await submitInspection(t,1,600,'BACKUP_BUYER');
+  assert.equal(await c.getTradeState(t.tradeId),12n);
+  await mine(61);
+  await (await c.connect(attacker).activateBackupInspector(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),13n);
+
+  const r=await replayMessage(t,true,'BACKUP_SUCCESS',1);
+  const rsig=await signTyped(backupStation,'ReplayAttestation',r);
+  await (await c.connect(backup).recordReplayResult(r,rsig)).wait();
+
+  const tw=await timeWindow();
+  const d={
+    tradeId:t.tradeId,stage:1,inspectorActor:addresses[4],policyHash:t.policyHash,
+    supplierEvidenceHash:r.supplierEvidenceHash,buyerEvidenceHash:r.buyerEvidenceHash,
+    replayReportHash:r.replayReportHash,decision:2,reasonCode:h('BACKUP_SUCCESS:DECISION'),
+    nonce:h('BACKUP_SUCCESS:DECISION_NONCE'),...tw
+  };
+  const dsig=await signTyped(backupStation,'InspectorDecisionAttestation',d);
+  await (await c.connect(backup).submitInspectorDecision(d,dsig)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),18n);
+  await (await c.connect(buyer).withdraw()).wait();
+  pass('DISPUTED_PRIMARY timeout fails over to independent Backup and settles');
+}
+
+// L7: Both Inspectors silent -> ESCALATED -> arbitration window -> fallback.
+{
+  const t=await setup('backup-timeout-escalated');
+  await submitInspection(t,0,100,'ESC_SUPPLIER');
+  await submitInspection(t,1,600,'ESC_BUYER');
+  await mine(61);
+  await (await c.connect(attacker).activateBackupInspector(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),13n);
+  await mine(61);
+  await (await c.connect(attacker).escalateAfterBackupTimeout(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),16n);
+  assert.ok((await c.getActionDeadline(t.tradeId))>0n);
+
+  await mine(31);
+  await (await c.connect(attacker).escalateToExternalArbitration(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),21n);
+  await mine(31);
+  await (await c.connect(attacker).executeFinalFallback(t.tradeId)).wait();
+  assert.equal(await c.getTradeState(t.tradeId),18n);
+  await (await c.connect(buyer).withdraw()).wait();
+  pass('ESCALATED after both Inspector timeouts reaches precommitted fallback');
+}
+
 // G6: A credential incident before the first inspection must still have a finite exit.
 //     Then revoke the external-arbitrator Station too, proving fallback is independent of it.
 {
@@ -339,7 +481,7 @@ assert.equal(await c.outstandingClaimable(),0n);
 assert.equal(await c.totalFunded(),await c.totalWithdrawn());
 pass('final accounting conserved after all red-team scenarios');
 
-console.log(JSON.stringify({
+const result={
   scope:'PATCH3_LOCAL_SYNTHETIC_RED_TEAM',
   chainId:31338,
   contract:contractAddress,
@@ -347,6 +489,8 @@ console.log(JSON.stringify({
   runtimeBytes,
   checks:checks.length,
   results:checks
-},null,2));
+};
+fs.writeFileSync(path.join(BUILD,'PATCH3_RED_TEAM_RESULTS.json'),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify(result,null,2));
 
 provider.destroy();
