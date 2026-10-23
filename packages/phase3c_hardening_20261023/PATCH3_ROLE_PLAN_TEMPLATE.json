@@ -1,0 +1,56 @@
+{
+  "schema": "inspectescrow.patch3-role-plan/1.0.0",
+  "status": "DRAFT_PUBLIC_ADDRESSES_ONLY",
+  "note": "No private key, seed phrase, mnemonic or secret may be stored here.",
+  "reuseFromPatch2": {
+    "supplier": {
+      "address": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
+      "reuseCandidate": true
+    },
+    "buyer": {
+      "address": "0x5B52D3B71dD5B4637B828Fd2a0e8bC78346709eE",
+      "reuseCandidate": true
+    },
+    "primaryInspector": {
+      "address": "0xb60F55bC142a078781199C6a1689Bd7a86d4f6a8",
+      "reuseCandidate": true
+    },
+    "backupInspector": {
+      "address": "0xeE9652D5F77ffee10aFeb7854E88f7B83bDAF7dd",
+      "reuseCandidate": true
+    },
+    "supplierStation": {
+      "address": "0x02883F2C472E6d82B88373448E54a209C27A6779",
+      "reuseCandidate": true
+    },
+    "buyerStation": {
+      "address": "0xD5acfa7301BD73FfcBb3f73705E4dA4a2548faab",
+      "reuseCandidate": true
+    },
+    "primaryInspectorStation": {
+      "address": "0x0d9B5d1caf10e7E66AE1F63A4085387F707d092d",
+      "reuseCandidate": true,
+      "note": "PATCH2 shared Inspector Station may be reused only as PATCH3 Primary Inspector Station; Backup/Arbitrator must be distinct."
+    }
+  },
+  "newRequired": {
+    "externalArbitrator": null,
+    "backupInspectorStation": null,
+    "externalArbitratorStation": null,
+    "credentialRegistryAuthority": null
+  },
+  "recommendedGovernance": {
+    "hackathonMinimum": "dedicated isolated EOA for CredentialRegistry Authority",
+    "productionTarget": "multisig/dual-control authority",
+    "authorityMustNotOverlapAnyTradeActorOrStation": true
+  },
+  "preflight": [
+    "all addresses nonzero",
+    "all actors pairwise distinct",
+    "all stations pairwise distinct",
+    "no actor equals any station",
+    "credentialRegistryAuthority distinct from all actors/stations",
+    "new Backup Inspector Station is not old shared Inspector Station",
+    "new External Arbitrator Station is distinct from every Inspector/party Station"
+  ]
+}
