@@ -281,23 +281,78 @@ async function verifySession(){
   if(imageFiles.length!==3) throw new Error("Select exactly 3 original images in TOP, FRONT, SIDE order");
   const manifest=JSON.parse(await manifestFile.text());
   if(!manifest.seal || manifest.status!=="SEALED_INFERENCE_ALLOWED") throw new Error("Manifest not sealed");
-  if(manifest.captures.length!==3) throw new Error("Manifest does not contain 3 captures");
+  if(!Array.isArray(manifest.captures) || manifest.captures.length!==3) throw new Error("Manifest does not contain 3 captures");
+  if(manifest.requiredViewSetId!==REQUIRED_VIEW_SET_ID) throw new Error("Required view set ID mismatch");
+  if(manifest.requiredViewSetHash.toLowerCase()!==REQUIRED_VIEW_SET_HASH.toLowerCase()) throw new Error("Required view set hash mismatch");
+  if(manifest.requiredViewCount!==3) throw new Error("Required view count mismatch");
+  if(E.id(manifest.specimenId).toLowerCase()!==manifest.specimenIdHash.toLowerCase()) throw new Error("Specimen ID hash mismatch");
+
+  const importedPreimage={
+    schema:manifest.schema,
+    protocol:manifest.protocol,
+    tradeId:manifest.tradeId,
+    role:manifest.role,
+    roleCode:manifest.roleCode,
+    station:manifest.station,
+    specimenId:manifest.specimenId,
+    specimenIdHash:manifest.specimenIdHash,
+    captureSessionNonce:manifest.captureSessionNonce,
+    requiredViewSetId:manifest.requiredViewSetId,
+    requiredViewSetHash:manifest.requiredViewSetHash,
+    requiredViewCount:manifest.requiredViewCount,
+    openedAt:manifest.openedAt,
+    captures:manifest.captures.map(function(c){
+      return {
+        viewId:c.viewId,
+        originalFileName:c.originalFileName,
+        byteLength:c.byteLength,
+        mediaType:c.mediaType,
+        imageHash:c.imageHash,
+        attestationDigest:c.attestationDigest
+      };
+    })
+  };
+  const recomputedManifestHash=E.keccak256(E.toUtf8Bytes(jcs(importedPreimage)));
+  if(recomputedManifestHash.toLowerCase()!==manifest.sessionManifestHash.toLowerCase()) throw new Error("Session manifest hash mismatch");
+  if(recomputedManifestHash.toLowerCase()!==manifest.seal.message.sessionManifestHash.toLowerCase()) throw new Error("Seal does not bind this session manifest");
 
   for(let i=0;i<3;i++){
-    const h=E.keccak256(await readFileBytes(imageFiles[i]));
-    if(h.toLowerCase()!==manifest.captures[i].imageHash.toLowerCase()){
-      throw new Error(VIEWS[i]+" image hash mismatch");
-    }
     const cap=manifest.captures[i];
+    if(cap.viewId!==VIEWS[i]) throw new Error("View order mismatch at "+(i+1));
+    if(cap.attestation.sequenceIndex!==i+1) throw new Error(VIEWS[i]+" sequence index mismatch");
+    if(cap.attestation.requiredViewCount!==3) throw new Error(VIEWS[i]+" required view count mismatch");
+    if(cap.attestation.tradeId.toLowerCase()!==manifest.tradeId.toLowerCase()) throw new Error(VIEWS[i]+" trade binding mismatch");
+    if(cap.attestation.station.toLowerCase()!==manifest.station.toLowerCase()) throw new Error(VIEWS[i]+" station binding mismatch");
+    if(cap.attestation.specimenIdHash.toLowerCase()!==manifest.specimenIdHash.toLowerCase()) throw new Error(VIEWS[i]+" specimen binding mismatch");
+    if(cap.attestation.captureSessionNonce.toLowerCase()!==manifest.captureSessionNonce.toLowerCase()) throw new Error(VIEWS[i]+" session nonce mismatch");
+    if(cap.attestation.viewIdHash.toLowerCase()!==E.id(VIEWS[i]).toLowerCase()) throw new Error(VIEWS[i]+" view ID hash mismatch");
+
+    const h=E.keccak256(await readFileBytes(imageFiles[i]));
+    if(h.toLowerCase()!==cap.imageHash.toLowerCase()) throw new Error(VIEWS[i]+" image hash mismatch");
+    if(h.toLowerCase()!==cap.attestation.imageHash.toLowerCase()) throw new Error(VIEWS[i]+" attestation image hash mismatch");
+
+    const recomputedDigest=E.TypedDataEncoder.hash(manifest.seal.domain,CAPTURE_TYPES,cap.attestation);
+    if(recomputedDigest.toLowerCase()!==cap.attestationDigest.toLowerCase()) throw new Error(VIEWS[i]+" attestation digest mismatch");
     const recovered=E.verifyTypedData(manifest.seal.domain,CAPTURE_TYPES,cap.attestation,cap.signature);
     if(recovered.toLowerCase()!==manifest.station.toLowerCase()) throw new Error(VIEWS[i]+" capture signature mismatch");
-    if(i>0 && cap.attestation.previousCaptureDigest.toLowerCase()!==manifest.captures[i-1].attestationDigest.toLowerCase()){
-      throw new Error(VIEWS[i]+" chain link mismatch");
-    }
+
+    const expectedPrevious=i===0 ? ZERO32 : manifest.captures[i-1].attestationDigest;
+    if(cap.attestation.previousCaptureDigest.toLowerCase()!==expectedPrevious.toLowerCase()) throw new Error(VIEWS[i]+" chain link mismatch");
   }
+
+  if(manifest.seal.message.finalCaptureDigest.toLowerCase()!==manifest.captures[2].attestationDigest.toLowerCase()) throw new Error("Final capture digest mismatch");
+  if(manifest.seal.message.requiredViewSetHash.toLowerCase()!==REQUIRED_VIEW_SET_HASH.toLowerCase()) throw new Error("Seal required-view-set mismatch");
+  if(manifest.seal.message.tradeId.toLowerCase()!==manifest.tradeId.toLowerCase()) throw new Error("Seal trade binding mismatch");
+  if(manifest.seal.message.station.toLowerCase()!==manifest.station.toLowerCase()) throw new Error("Seal station binding mismatch");
+  if(manifest.seal.message.specimenIdHash.toLowerCase()!==manifest.specimenIdHash.toLowerCase()) throw new Error("Seal specimen binding mismatch");
+  if(manifest.seal.message.captureSessionNonce.toLowerCase()!==manifest.captureSessionNonce.toLowerCase()) throw new Error("Seal session nonce mismatch");
+
+  const recomputedSealDigest=E.TypedDataEncoder.hash(manifest.seal.domain,SEAL_TYPES,manifest.seal.message);
+  if(recomputedSealDigest.toLowerCase()!==manifest.seal.digest.toLowerCase()) throw new Error("Seal digest mismatch");
   const sealRecovered=E.verifyTypedData(manifest.seal.domain,SEAL_TYPES,manifest.seal.message,manifest.seal.signature);
   if(sealRecovered.toLowerCase()!==manifest.station.toLowerCase()) throw new Error("Seal signer mismatch");
-  $("verifyResult").textContent="VERIFIED — 3/3 image hashes, capture signatures, sequence chain and session seal match.";
+
+  $("verifyResult").textContent="VERIFIED — exact 3/3 files, view order, metadata bindings, capture digest chain, session manifest hash and Station signatures all match.";
   $("verifyResult").className="result ok";
   log("Imported physical evidence verified successfully.","ok");
 }
