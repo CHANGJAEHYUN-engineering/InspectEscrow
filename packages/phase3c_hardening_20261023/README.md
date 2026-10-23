@@ -14,12 +14,17 @@ Do not modify or overwrite:
 
 ## Candidate status
 
-`contracts/InspectEscrowPatch3.sol` begins as a source-equivalent copy of the frozen PATCH2 contract, with only:
+The candidate has now passed the first local hardening gate:
 
-- contract class renamed to `InspectEscrowPatch3`
-- `CONTRACT_VERSION` changed to `PHASE2-PATCH3-CANDIDATE`
+- compile PASS
+- deployable bytecode-size gates PASS
+- hostile Anvil red-team **25 PASS / 0 FAIL**
+- finite-exit matrix for the critical funded hold states PASS
+- accounting conservation PASS
 
-No hardening behavior should be claimed until tests pass.
+Credential lifecycle is intentionally separated into `CredentialRegistryPatch3.sol` so credential security authority is distinct from escrow settlement authority.
+
+This is still a **candidate**, not a replacement for the proven PHASE2-PATCH2 Sepolia baseline. See `RED_TEAM_STATUS_20261023.md`.
 
 ## Implementation order
 

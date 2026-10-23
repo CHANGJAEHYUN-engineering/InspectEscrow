@@ -1,43 +1,60 @@
 {
-  "schema": "inspectescrow.patch3-hardening-checklist/1.0.0",
+  "schema": "inspectescrow.patch3-hardening-checklist/1.1.0",
   "baselineVersion": "PHASE2-PATCH2",
   "candidateVersion": "PHASE2-PATCH3-CANDIDATE",
   "deployedBaselineMustRemainUnchanged": true,
+  "latestLocalEvidence": {
+    "githubActionsRunId": 39893169652,
+    "chainId": 31338,
+    "redTeamChecksPassed": 25,
+    "redTeamChecksFailed": 0,
+    "inspectEscrowCreationBytes": 23944,
+    "inspectEscrowRuntimeBytes": 22573,
+    "credentialRegistryCreationBytes": 1668,
+    "credentialRegistryRuntimeBytes": 1494,
+    "compiler": "solc 0.8.26",
+    "optimizer": {
+      "enabled": true,
+      "runs": 200,
+      "viaIR": true
+    },
+    "note": "Local synthetic security/liveness evidence only; not an independent audit or production certification."
+  },
   "phases": [
     {
       "id": "H1",
       "name": "Inspector signing-key separation",
-      "status": "NOT_STARTED"
+      "status": "PASS_LOCAL_RED_TEAM"
     },
     {
       "id": "H2",
       "name": "External arbitration + bounded authority",
-      "status": "NOT_STARTED"
+      "status": "PASS_LOCAL_RED_TEAM"
     },
     {
       "id": "H3",
       "name": "Finite liveness + final fallback",
-      "status": "NOT_STARTED"
+      "status": "PASS_LOCAL_LIVENESS_MATRIX"
     },
     {
       "id": "H4",
       "name": "Credential lifecycle",
-      "status": "NOT_STARTED"
+      "status": "PASS_LOCAL_RED_TEAM"
     },
     {
       "id": "H5",
       "name": "Interop golden vector",
-      "status": "NOT_STARTED"
+      "status": "IN_PROGRESS"
     },
     {
       "id": "H6",
       "name": "Red-team + accounting invariants",
-      "status": "NOT_STARTED"
+      "status": "CORE_25_PASS_MORE_NEGATIVE_TESTS_PENDING"
     },
     {
       "id": "H7",
       "name": "Sepolia candidate deployment",
-      "status": "BLOCKED_UNTIL_TESTS_PASS"
+      "status": "BLOCKED_UNTIL_H5_H6_FULL_AND_GO_GATE"
     }
   ]
 }
