@@ -31,8 +31,8 @@ PATCH3 must be deployed as a **new contract pair**. Never overwrite or reinterpr
 - funding rechecks all assigned signing credentials
 - frozen public role plan validation: **PASS — 11 unique addresses**
 - latest full PATCH3 Solidity CI: **SUCCESS**
-  - run: `40322769511`
-  - deployment-source freeze commit: `31279e39d3b26210af2b9d755664d67add62a52f`
+  - run: `40323176958`
+  - deployment-source freeze commit: `397ede4f9b47580c9308cf5ff9d17bed6b979aef`
 
 Authoritative interface freeze:
 `packages/phase3c_hardening_20261023/PATCH3_INTERFACE_FREEZE_CANDIDATE.json`
