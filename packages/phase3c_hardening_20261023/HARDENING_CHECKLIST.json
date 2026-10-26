@@ -3,9 +3,9 @@
   "baselineVersion": "PHASE2-PATCH2",
   "candidateVersion": "PHASE2-PATCH3-CANDIDATE",
   "deployedBaselineMustRemainUnchanged": true,
-  "deploymentSourceFreezeCommit": "397ede4f9b47580c9308cf5ff9d17bed6b979aef",
+  "deploymentSourceFreezeCommit": "97d03c357563dbe4a5b6a72e88f08d07c94a6e3d",
   "latestLocalEvidence": {
-    "githubActionsRunId": 40323176958,
+    "githubActionsRunId": 40323416921,
     "githubActionsConclusion": "SUCCESS",
     "staticAnalysisRunId": 39929609993,
     "chainId": 31338,
