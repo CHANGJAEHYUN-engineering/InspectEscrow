@@ -14,7 +14,11 @@ const names=Object.keys(known).sort();
 if(!role||!Object.hasOwn(known,role))throw new Error('Specify one frozen role: '+names.join(', '));
 const privateKey=process.env.PATCH3_ACTOR_PRIVATE_KEY;
 if(!privateKey)throw new Error('PATCH3_ACTOR_PRIVATE_KEY is required; type only in a LOCAL secure prompt');
-const signer=new Wallet(privateKey);
+// Fail closed without allowing a library error to echo malformed secret input.
+if(!/^0x[0-9a-fA-F]{64}$/.test(privateKey))throw new Error('Expected a 0x-prefixed 32-byte hex key (input not printed)');
+let signer;
+try { signer=new Wallet(privateKey); }
+catch { throw new Error('Unable to derive wallet address (input not printed)'); }
 const expected=getAddress(known[role]);
 const actual=getAddress(signer.address);
 const matches=names.filter(name=>getAddress(known[name])===actual);
