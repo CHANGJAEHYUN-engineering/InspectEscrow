@@ -39,8 +39,29 @@ if (balance === 0n) {
   throw new Error(`Authority/deployer ${actual} has zero Sepolia ETH`);
 }
 
+const feeCeiling = feeData.maxFeePerGas ?? feeData.gasPrice;
+if (feeCeiling == null || feeCeiling <= 0n) {
+  throw new Error('Could not obtain a usable Sepolia fee ceiling from RPC');
+}
+
+// Conservative envelope for:
+// Registry deploy + 5 credential registrations + large Escrow deploy + safety margin.
+// This is a preflight budget, not a claim about exact gas consumption.
+const estimatedTransactionGasEnvelope = 8_000_000n;
+const safetyNumerator = 125n;
+const safetyDenominator = 100n;
+const recommendedBudgetWei =
+  estimatedTransactionGasEnvelope * feeCeiling * safetyNumerator / safetyDenominator;
+
+if (balance < recommendedBudgetWei) {
+  throw new Error(
+    `Insufficient conservative Sepolia deployment budget: balance=${formatEther(balance)} ETH, ` +
+    `recommended>=${formatEther(recommendedBudgetWei)} ETH at current fee ceiling`
+  );
+}
+
 const result = {
-  schema: 'inspectescrow.patch3-wallet-preflight/1.0.0',
+  schema: 'inspectescrow.patch3-wallet-preflight/1.1.0',
   status: 'PASS',
   chainId: Number(network.chainId),
   authorityAndDeployer: actual,
@@ -52,10 +73,20 @@ const result = {
     maxFeePerGasWei: feeData.maxFeePerGas?.toString() ?? null,
     maxPriorityFeePerGasWei: feeData.maxPriorityFeePerGas?.toString() ?? null
   },
+  deploymentBudget: {
+    gasEnvelope: estimatedTransactionGasEnvelope.toString(),
+    safetyPercent: 125,
+    feeCeilingWei: feeCeiling.toString(),
+    recommendedBudgetWei: recommendedBudgetWei.toString(),
+    recommendedBudgetEth: formatEther(recommendedBudgetWei),
+    balanceCoversRecommendedBudget: true,
+    note: 'Conservative preflight envelope only; actual gas can differ.'
+  },
   assertions: {
     sepoliaChain: true,
     privateKeyMatchesFrozenAuthority: true,
-    nonzeroSepoliaBalance: true
+    nonzeroSepoliaBalance: true,
+    balanceCoversConservativeDeploymentBudget: true
   },
   secretBoundary: 'PRIVATE_KEY_NOT_PRINTED_OR_WRITTEN'
 };
