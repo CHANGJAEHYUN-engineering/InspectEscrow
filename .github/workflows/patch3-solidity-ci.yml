@@ -10,6 +10,7 @@ on:
       - 'packages/phase3c_hardening_20261023/test/**'
       - 'packages/phase3c_hardening_20261023/policy/**'
       - 'packages/phase3c_hardening_20261023/PATCH3_ROLE_PLAN_TEMPLATE.json'
+      - 'packages/phase3c_hardening_20261023/PATCH3_ROLE_PLAN.json'
       - '.github/workflows/patch3-solidity-ci.yml'
   workflow_dispatch:
 
@@ -42,9 +43,8 @@ jobs:
           node --check packages/phase3c_hardening_20261023/scripts/deploy-patch3-sepolia.mjs
           node --check packages/phase3c_hardening_20261023/scripts/verify-patch3-deployment.mjs
           node --check packages/phase3c_hardening_20261023/scripts/build-patch3-policy-input.mjs
-          node packages/phase3c_hardening_20261023/scripts/validate-patch3-role-plan.mjs \
-            packages/phase3c_hardening_20261023/PATCH3_ROLE_PLAN_TEMPLATE.json \
-            --allow-incomplete
+          node packages/phase3c_hardening_20261023/scripts/validate-patch3-role-plan.mjs             packages/phase3c_hardening_20261023/PATCH3_ROLE_PLAN_TEMPLATE.json             --allow-incomplete
+          node packages/phase3c_hardening_20261023/scripts/validate-patch3-role-plan.mjs             packages/phase3c_hardening_20261023/PATCH3_ROLE_PLAN.json
 
       - name: Compile PATCH3 candidate
         run: |
@@ -63,17 +63,12 @@ jobs:
           ANVIL_PID=$!
           trap 'kill $ANVIL_PID 2>/dev/null || true' EXIT
           for i in {1..30}; do
-            if curl -s -X POST http://127.0.0.1:18546 \
-              -H 'content-type: application/json' \
-              --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
-              | grep -q '"result"'; then
+            if curl -s -X POST http://127.0.0.1:18546               -H 'content-type: application/json'               --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}'               | grep -q '"result"'; then
               break
             fi
             sleep 1
           done
-          curl -fsS -X POST http://127.0.0.1:18546 \
-            -H 'content-type: application/json' \
-            --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}'
+          curl -fsS -X POST http://127.0.0.1:18546             -H 'content-type: application/json'             --data '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}'
           node packages/phase3c_hardening_20261023/test/red-team-smoke.mjs
           node packages/phase3c_hardening_20261023/test/interop-golden.mjs
           python3 -m pip install --disable-pip-version-check --quiet pycryptodome==3.23.0
