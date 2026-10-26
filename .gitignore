@@ -24,3 +24,5 @@ __pycache__/
 datasets/
 raw_images/
 secrets/
+# Local PATCH3 trade-specific evidence, signatures and operator state
+.patch3-local/
