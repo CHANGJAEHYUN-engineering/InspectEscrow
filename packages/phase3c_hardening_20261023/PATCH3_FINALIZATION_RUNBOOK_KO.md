@@ -12,7 +12,7 @@ Status: **PRE-BROADCAST TOOLING READY / PUBLIC ADDRESSES REQUIRED**
 - private key / seed phrase / mnemonic / RPC credential은 GitHub, Chat, 문서, 로그에 넣지 않는다.
 - 실제 broadcast 전 `PATCH3_SEPOLIA_DEPLOYMENT_PRECHECK_KO.md`의 GO gate를 다시 확인한다.
 
-## 1. 필요한 신규 공개 주소 4개
+## 0.5. Final deployment source freeze\n\n실제 Sepolia broadcast는 아래 CI-PASS source commit에서 실행한다.\n\n```text\n97d03c357563dbe4a5b6a72e88f08d07c94a6e3d\n```\n\nGitHub Actions run `40323416921`: **SUCCESS**.\n\n이 커밋에는 frozen role plan, secret-safe Windows runner, wallet/address/balance/gas-budget preflight가 포함되어 있다. 문서-only 후속 커밋은 배포 source freeze를 바꾸지 않는다.\n\n권장 실행 전 확인:\n\n```powershell\ngit status\ngit checkout 97d03c357563dbe4a5b6a72e88f08d07c94a6e3d\n```\n\n## 1. 필요한 신규 공개 주소 4개
 
 `PATCH3_ROLE_PLAN_TEMPLATE.json`의 다음 네 값을 채운다.
 
@@ -54,7 +54,7 @@ node packages/phase3c_hardening_20261023/scripts/compile-patch3.mjs
 - `CredentialRegistryPatch3` runtime <= 24,576 bytes
 - frozen compiler/build settings 유지
 
-## 3. Secret은 로컬 환경변수로만 주입
+## 2.5. Windows one-command preflight\n\nWindows에서는 저장소 루트에서 먼저 **read-only** 모드로 실행한다.\n\n```powershell\n.\\packages\\phase3c_hardening_20261023\\run-patch3-sepolia.ps1\n```\n\n이 단계는 transaction을 전송하지 않고 Sepolia chainId, frozen Authority 주소와 private-key-derived address 일치, 잔액, 현재 fee ceiling, 보수적 배포 gas budget을 확인한다. private key는 secure prompt로 입력하며 파일/GitHub에 저장하지 않는다.\n\nPASS 후 실제 배포 시에만:\n\n```powershell\n.\\packages\\phase3c_hardening_20261023\\run-patch3-sepolia.ps1 -Broadcast\n```\n\n그리고 `DEPLOY_PATCH3_SEPOLIA` 확인 문구를 직접 입력해야 transaction이 전송된다.\n\n## 3. Secret은 로컬 환경변수로만 주입
 
 예시 파일:
 
