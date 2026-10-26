@@ -174,8 +174,18 @@ demand(Number.isSafeInteger(message.issuedAt)&&
 const state=Number(await escrow.getTradeState(tradeId));
 const deadline=await escrow.getActionDeadline(tradeId);
 const fee=await provider.getFeeData();
-const feeCap=fee.maxFeePerGas??fee.gasPrice;
-demand(feeCap!=null&&feeCap>0n,'Sepolia gas fee quote unavailable');
+const rpcFeeQuote=fee.maxFeePerGas??fee.gasPrice;
+demand(rpcFeeQuote!=null&&rpcFeeQuote>0n,'Sepolia gas fee quote unavailable');
+// Some Sepolia public RPCs return tiny wei-denominated quotes (e.g. 35 wei).
+// Such numbers must never be presented as a credible *gas budget ceiling*.
+// Use a deliberately conservative 2 gwei max-fee minimum; this is not a
+// prediction of the eventual amount the user will pay.
+const MIN_GAS_FEE_BUDGET_WEI=2_000_000_000n;
+const MIN_PRIORITY_FEE_WEI=100_000_000n;
+const feeCap=rpcFeeQuote>MIN_GAS_FEE_BUDGET_WEI?rpcFeeQuote:MIN_GAS_FEE_BUDGET_WEI;
+const rpcPriority=fee.maxPriorityFeePerGas??0n;
+const priority=rpcPriority>MIN_PRIORITY_FEE_WEI?rpcPriority:MIN_PRIORITY_FEE_WEI;
+demand(priority<=feeCap,'Priority fee exceeds maximum gas fee cap');
 const actorBalance=await provider.getBalance(actor);
 const MIN_SIMULATION_BUDGET_GAS=650000n;
 let estimatedGas=null;
@@ -219,7 +229,11 @@ console.log(JSON.stringify({
   specimenManifestHash:message.specimenManifestHash,
   expectedOutcome:role==='supplier'?'ADMISSIBLE_PASS':'ADMISSIBLE_REVIEW',
   actorBalanceEth:formatEther(actorBalance),
+  rpcFeeQuoteWei:rpcFeeQuote.toString(),
+  gasFeeBudgetFloorWei:MIN_GAS_FEE_BUDGET_WEI.toString(),
   gasCeilingWei:feeCap.toString(),
+  gasCeilingBasis:'MAX_OF_RPC_QUOTE_AND_2_GWEI_FLOOR',
+  priorityFeeWei:priority.toString(),
   gasBudgetMode:state===4?'CONSERVATIVE_UPPER_BOUND_NOT_AN_ESTIMATE':'ONCHAIN_ESTIMATE_PADDED_25_PERCENT',
   gasLimit:gasLimit?.toString()??null,
   estimatedGas:estimatedGas?.toString()??null,
@@ -257,7 +271,11 @@ demand(Number(await registry.status(station))===1,'Station credential changed to
 await escrow.submitInspection.staticCall(message,signed.signature,{from:actor});
 demand(await provider.getBalance(actor)>=gasBudget,'Actor balance fell below budget');
 const writer=new Contract(addr,abi,actorSigner);
-const tx=await writer.submitInspection(message,signed.signature,{gasLimit});
+// Fee cap is explicitly set on broadcast, so the read-only maximumGasBudgetEth
+// corresponds to this tx envelope and never to an implausibly tiny RPC quote.
+const tx=await writer.submitInspection(message,signed.signature,{
+  gasLimit,maxFeePerGas:feeCap,maxPriorityFeePerGas:priority
+});
 console.log(JSON.stringify({
   status:'PATCH3_INSPECTION_TRANSACTION_SENT',role,tradeId,
   txHash:tx.hash,explorer:'https://sepolia.etherscan.io/tx/'+tx.hash,
