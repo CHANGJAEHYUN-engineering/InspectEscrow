@@ -31,8 +31,8 @@ PATCH3 must be deployed as a **new contract pair**. Never overwrite or reinterpr
 - funding rechecks all assigned signing credentials
 - frozen public role plan validation: **PASS — 11 unique addresses**
 - latest full PATCH3 Solidity CI: **SUCCESS**
-  - run: `40323176958`
-  - deployment-source freeze commit: `397ede4f9b47580c9308cf5ff9d17bed6b979aef`
+  - run: `40323416921`
+  - deployment-source freeze commit: `97d03c357563dbe4a5b6a72e88f08d07c94a6e3d`
 
 Authoritative interface freeze:
 `packages/phase3c_hardening_20261023/PATCH3_INTERFACE_FREEZE_CANDIDATE.json`
@@ -192,7 +192,7 @@ At minimum:
 
 ### Remaining local hard gate
 
-- [ ] Authority/deployer wallet has sufficient Sepolia ETH
+- [ ] Authority/deployer wallet passes conservative Sepolia deployment-budget preflight
 - [ ] local RPC + private key injected only through environment variables
 - [ ] actual Registry + Escrow broadcast completes and read-back verification passes
 
