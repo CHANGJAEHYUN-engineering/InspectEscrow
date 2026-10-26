@@ -6,6 +6,18 @@ $ErrorActionPreference = "Stop"
 $Pkg = "packages/phase3c_hardening_20261023"
 $RolePlan = "$Pkg/PATCH3_ROLE_PLAN.json"
 
+function Invoke-Checked {
+    param(
+        [Parameter(Mandatory=$true)][string]$Label,
+        [Parameter(Mandatory=$true)][scriptblock]$Command
+    )
+
+    & $Command
+    if ($LASTEXITCODE -ne 0) {
+        throw "$Label failed with exit code $LASTEXITCODE"
+    }
+}
+
 if (-not (Test-Path $RolePlan)) {
     throw "Missing $RolePlan. Run from the InspectEscrow repository root."
 }
@@ -30,23 +42,31 @@ try {
 
     Write-Host ""
     Write-Host "[1/5] Installing pinned local dependencies..."
-    npm install --no-save solc@0.8.26 @openzeppelin/contracts@5.5.0 ethers@6.15.0
+    Invoke-Checked "npm dependency installation" {
+        npm install --no-save solc@0.8.26 @openzeppelin/contracts@5.5.0 ethers@6.15.0
+    }
 
     Write-Host ""
     Write-Host "[2/5] Validating frozen public role plan..."
-    node "$Pkg/scripts/validate-patch3-role-plan.mjs" $RolePlan
+    Invoke-Checked "PATCH3 role-plan validation" {
+        node "$Pkg/scripts/validate-patch3-role-plan.mjs" $RolePlan
+    }
 
     Write-Host ""
     Write-Host "[3/5] Compiling frozen PATCH3 candidate..."
-    node "$Pkg/scripts/compile-patch3.mjs"
+    Invoke-Checked "PATCH3 compilation" {
+        node "$Pkg/scripts/compile-patch3.mjs"
+    }
 
     Write-Host ""
     Write-Host "[4/5] Read-only wallet / chain / balance preflight..."
-    node "$Pkg/scripts/preflight-patch3-wallet.mjs"
+    Invoke-Checked "PATCH3 wallet preflight" {
+        node "$Pkg/scripts/preflight-patch3-wallet.mjs"
+    }
 
     if (-not $Broadcast) {
         Write-Host ""
-        Write-Host "READ-ONLY PREFLIGHT COMPLETE."
+        Write-Host "READ-ONLY PREFLIGHT COMPLETE — PASS."
         Write-Host "No transaction was sent."
         Write-Host "Re-run the same script with -Broadcast only after reviewing the preflight output."
         exit 0
@@ -61,19 +81,27 @@ try {
 
     Write-Host ""
     Write-Host "[5/5] Deploying Registry + 5 credentials + Escrow..."
-    node "$Pkg/scripts/deploy-patch3-sepolia.mjs"
+    Invoke-Checked "PATCH3 Sepolia deployment" {
+        node "$Pkg/scripts/deploy-patch3-sepolia.mjs"
+    }
 
     Write-Host ""
     Write-Host "Verifying deployed contracts by read-back..."
-    node "$Pkg/scripts/verify-patch3-deployment.mjs"
+    Invoke-Checked "PATCH3 deployment read-back verification" {
+        node "$Pkg/scripts/verify-patch3-deployment.mjs"
+    }
 
     Write-Host ""
     Write-Host "Building policy v1.2 input from actual deployment..."
-    node "$Pkg/scripts/build-patch3-policy-input.mjs"
+    Invoke-Checked "PATCH3 policy input build" {
+        node "$Pkg/scripts/build-patch3-policy-input.mjs"
+    }
 
     Write-Host ""
     Write-Host "Generating final PATCH3 policy commitment..."
-    node "$Pkg/policy/generate-patch3-policy.mjs" "$Pkg/policy/PATCH3_POLICY_INPUT.json"
+    Invoke-Checked "PATCH3 policy commitment generation" {
+        node "$Pkg/policy/generate-patch3-policy.mjs" "$Pkg/policy/PATCH3_POLICY_INPUT.json"
+    }
 
     Write-Host ""
     Write-Host "PATCH3 DEPLOYMENT + READBACK + POLICY GENERATION COMPLETE."
