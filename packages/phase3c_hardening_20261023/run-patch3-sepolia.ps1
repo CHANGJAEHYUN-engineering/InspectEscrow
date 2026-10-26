@@ -12,7 +12,10 @@ function Invoke-Checked {
         [Parameter(Mandatory=$true)][scriptblock]$Command
     )
 
-    & $Command
+    # Reset stale codes and dot-source the scriptblock so that native-command
+    # exit status is checked in the same scope that executes npm/node.
+    $LASTEXITCODE = 0
+    . $Command
     if ($LASTEXITCODE -ne 0) {
         throw "$Label failed with exit code $LASTEXITCODE"
     }
