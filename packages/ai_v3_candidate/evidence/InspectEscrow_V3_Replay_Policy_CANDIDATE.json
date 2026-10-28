@@ -1,0 +1,80 @@
+{
+  "schema": "InspectEscrow.AIReplayPolicyCandidate.v3",
+  "status": "DRAFT_NOT_APPROVED",
+  "model": {
+    "architecture": "PatchCore",
+    "source_version": "V2",
+    "weights_reused": true,
+    "model_core_sha256": "8ab4beeb37242a742bac75c8f697d4af625eaf5acda339c887d6c77c9f6bd36b",
+    "legacy_model_bundle_hash": "0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e"
+  },
+  "execution": {
+    "color_space": "RGB",
+    "input_scale": "uint8_to_float32_divide_by_255",
+    "resize": [
+      320,
+      320
+    ],
+    "center_crop": [
+      280,
+      280
+    ],
+    "normalization": {
+      "mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "std": [
+        0.229,
+        0.224,
+        0.225
+      ]
+    },
+    "preprocessing_must_execute": true,
+    "input_tensor_shape": [
+      1,
+      3,
+      280,
+      280
+    ],
+    "score_source": "PatchCore_image_level_pred_score"
+  },
+  "score_policy": {
+    "scale_exponent": 6,
+    "rounding": "ROUND_HALF_UP",
+    "threshold_scaled_candidate": 45405741,
+    "pass_rule": "score_scaled < threshold_scaled",
+    "review_rule": "score_scaled >= threshold_scaled"
+  },
+  "replay_policy": {
+    "tolerance_scaled_candidate": 512,
+    "historical_tolerance_scaled": 222,
+    "observed_max_envelope_scaled": 256,
+    "engineering_factor": 2,
+    "numeric_match_required": true,
+    "decision_match_required": true,
+    "score_consistency_is_not_inspector_settlement": true
+  },
+  "validation_scope": {
+    "tested_images": 159,
+    "same_kaggle_runtime_cpu_gpu": true,
+    "independent_machine_verified": false,
+    "fresh_held_out_verified": false,
+    "universal_tolerance_guaranteed": false
+  },
+  "integration_gates": {
+    "station_signature_validation_required": true,
+    "eip712_domain_and_trade_binding_required": true,
+    "model_bundle_hash_binding_required": true,
+    "policy_hash_binding_required": true,
+    "image_evidence_hash_binding_required": true,
+    "nonce_and_deadline_validation_required": true,
+    "inspector_role_authorization_required": true,
+    "separate_inspector_settlement_required": true
+  },
+  "new_model_bundle_hash": null,
+  "new_policy_hash": null,
+  "existing_patch3_artifacts_modified": false,
+  "authorized_for_onchain_use": false
+}

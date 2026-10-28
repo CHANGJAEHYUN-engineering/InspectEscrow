@@ -1,0 +1,87 @@
+{
+  "schema": "InspectEscrow.V3GitHubHandoff.v1",
+  "status": "DRAFT_NOT_APPROVED",
+  "created_at_utc": "2026-10-28T07:49:55.328981+00:00",
+  "repository": "CHANGJAEHYUN-engineering/InspectEscrow",
+  "proposed_directory": "packages/ai_v3_candidate",
+  "candidate_threshold_scaled": 45405741,
+  "candidate_tolerance_scaled": 512,
+  "verified_images": 159,
+  "maximum_observed_envelope": 256,
+  "observed_decisions_stable": true,
+  "old_tolerance_sufficient": false,
+  "pure_unit_tests_passed": 9,
+  "positive_inference_cases_passed": 2,
+  "negative_inference_cases_passed": 3,
+  "old_trade_migration_authorized": false,
+  "new_policy_hash_finalized": false,
+  "new_model_bundle_hash_finalized": false,
+  "formal_replay_authorized": false,
+  "onchain_transaction_sent": false,
+  "files": {
+    "README.md": {
+      "sha256": "9f499431af9596aed19d8c695b1396b74e1ae78941ad59e56911f8d342d2d8e3",
+      "bytes": 2312
+    },
+    "evidence/InspectEscrow_V3_Bound_Guard_Audit.json": {
+      "sha256": "fd8b6f7f5804b1eaad50d128e7c7d579317c5bd24aabc25134d7fef08428a792",
+      "bytes": 919
+    },
+    "evidence/InspectEscrow_V3_Boundary_Audit.json": {
+      "sha256": "61d4eb1d6b79ba51058390c3364bb78db1f49aaa27fe244d99ee27b7c6544cb8",
+      "bytes": 6044
+    },
+    "evidence/InspectEscrow_V3_Corrected_CrossRuntime_Audit.json": {
+      "sha256": "55985c4c15c97b0c533627faf301b5dc2df8d09e7735da8a1d34ad580acfd509",
+      "bytes": 5231
+    },
+    "evidence/InspectEscrow_V3_Fresh_Model_Reload_Audit.json": {
+      "sha256": "a59bfab7b7f87d26e26dbdea838dfa362e67dcf237416e67ac561a0e4718d46e",
+      "bytes": 872
+    },
+    "evidence/InspectEscrow_V3_Full_159_Pipeline_Audit.json": {
+      "sha256": "9b39e8ba433bccbc907ecf05545f4a1f91aec8440c2db2e4611057006deea43c",
+      "bytes": 91242
+    },
+    "evidence/InspectEscrow_V3_Independent_Preprocessing_Audit.json": {
+      "sha256": "64e9d4a74e5aa7857a89fdbff3b8507428037f6e1c3f840bf874011844c2b57e",
+      "bytes": 9929
+    },
+    "evidence/InspectEscrow_V3_Inference_Guard_Test.json": {
+      "sha256": "c816d7521b6e9d050bb687f2db80f9e8cd933ee17bd1cc89836e8710b2fb4216",
+      "bytes": 2588
+    },
+    "evidence/InspectEscrow_V3_Replay_Policy_CANDIDATE.json": {
+      "sha256": "63f1aa4ba3b937e9be82f4984b998e5188fbfd5737e38c8c86adcb2ca7d226ef",
+      "bytes": 2257
+    },
+    "evidence/InspectEscrow_V3_Replay_Policy_Test_Results.json": {
+      "sha256": "0b7c5aa4b1144fac544fcf3dfb8a9995f2ae90490a6e0fa6335993413a003b1d",
+      "bytes": 1867
+    },
+    "evidence/InspectEscrow_V3_Standalone_Smoke_Test.json": {
+      "sha256": "655e6f7b79e6df9f418d0f39f58c145162c4e9c686fcd604e96b21a6d0fcb3a3",
+      "bytes": 1193
+    },
+    "evidence/V2_CORRECTED_FINAL_TEST_DIAGNOSTIC.csv": {
+      "sha256": "2e05e85ffbaeac24842e948d65f40dc43d73b9d4ea11ce274abe6ffc3507f1a2",
+      "bytes": 5449
+    },
+    "evidence/V2_CORRECTED_FINAL_TEST_EVALUATION.json": {
+      "sha256": "02700d0bc01b2aec075c25d02007c64d095f4f5f59e0fd11d73e1f008ef6e42b",
+      "bytes": 1553
+    },
+    "evidence/V2_CORRECTED_VALIDATION_DIAGNOSTIC.csv": {
+      "sha256": "c4e503a38d5db20f409fc523ad6e907d283f89c1d7de59fa49bccd14456a37d8",
+      "bytes": 3243
+    },
+    "runtime/inspectescrow_v3_runtime.py": {
+      "sha256": "7f12246d59373827dbde44bb03040cc31ae08badb02c2bdf62b4568720755db8",
+      "bytes": 10507
+    },
+    "test/test_v3_runtime_pure.py": {
+      "sha256": "b07f53ca5f9a1a081693d21246a84bb7e02a26b30792fc4184f7a3e0fd4ec2ad",
+      "bytes": 1478
+    }
+  }
+}
