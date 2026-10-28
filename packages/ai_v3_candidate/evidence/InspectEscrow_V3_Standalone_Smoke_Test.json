@@ -1,0 +1,33 @@
+{
+  "schema": "InspectEscrow.V3StandaloneSmokeTest.v1",
+  "status": "DRAFT_DIAGNOSTIC_ONLY",
+  "created_at_utc": "2026-10-28T07:45:25.827714+00:00",
+  "runtime_source_sha256": "7f12246d59373827dbde44bb03040cc31ae08badb02c2bdf62b4568720755db8",
+  "test_source_sha256": "b07f53ca5f9a1a081693d21246a84bb7e02a26b30792fc4184f7a3e0fd4ec2ad",
+  "model_sha256": "8ab4beeb37242a742bac75c8f697d4af625eaf5acda339c887d6c77c9f6bd36b",
+  "policy_sha256": "63f1aa4ba3b937e9be82f4984b998e5188fbfd5737e38c8c86adcb2ca7d226ef",
+  "unit_tests_passed": 9,
+  "cpu_state_verified": 267,
+  "gpu_state_verified": 267,
+  "positive_cases": [
+    {
+      "image": "demo/good/000.png",
+      "cpu_scaled": 38146175,
+      "gpu_scaled": 38146202,
+      "difference_scaled": 27,
+      "decision": "PASS",
+      "replay_diagnostic": "SCORE_CONSISTENT_DIAGNOSTIC_ONLY"
+    },
+    {
+      "image": "demo/scratch/022.png",
+      "cpu_scaled": 49201775,
+      "gpu_scaled": 49201843,
+      "difference_scaled": 68,
+      "decision": "REVIEW_REQUIRED",
+      "replay_diagnostic": "SCORE_CONSISTENT_DIAGNOSTIC_ONLY"
+    }
+  ],
+  "negative_tests_passed": 3,
+  "formal_replay_authorized": false,
+  "onchain_transaction_sent": false
+}
