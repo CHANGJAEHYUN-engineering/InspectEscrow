@@ -1,166 +1,75 @@
-# InspectEscrow — FINAL EVIDENCE INDEX
+# InspectEscrow — 기술·실증 증거 색인
 
-Status: **WORKING INDEX / authoritative pointers only**  
-Last updated: 2026-10-23
+최종 갱신: **2026-10-31**  
+본 문서는 공개 저장소의 원본 근거와, 아직 로컬에 있는 증거를 구분한다.
 
-This file exists so reviewers do not need to guess which artifact is authoritative.
+## 1. 실제 Sepolia — PATCH2 / Model A 분쟁 종료
 
-## A. Proven baseline — PHASE2-PATCH2
+- 실제 계약: [`0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9`](https://sepolia.etherscan.io/address/0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9)
+- Trade ID: `0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c`
+- 0.005 Sepolia ETH
+- Supplier PASS → Buyer REVIEW → Primary timeout → Backup Replay CONSISTENT → Inspector REFUND_TO_BUYER → Buyer Withdraw
+- 최종 `accountingConserved()=true`
+- [실제 거래 실행 JSON](../packages/phase3b_20261010/results/FINAL_SEPOLIA_E2E_20261011.json)
+- [거래 단계 상세](STATUS_20261011_KO.md)
 
-- Contract version: `PHASE2-PATCH2`
-- Sepolia contract: `0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9`
-- Completed trade: `0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c`
-- Escrow: `0.005 ETH`
-- Final state: `REFUNDED`
-- Buyer withdraw: completed
-- `accountingConserved() = true`
+입력은 공개 MVTec `metal_nut` 기반의 서로 다른 정상/이상 이미지다. 동일 실물 부품의 출하→입고 이력을 실증한 거래로 소개하지 않는다.
 
-Authoritative machine-readable record:
-- `packages/phase3b_20261010/results/FINAL_SEPOLIA_E2E_20261011.json`
+## 2. 실제 Sepolia — PATCH3 배포
 
-Human-readable status:
-- `docs/STATUS_20261011_KO.md`
+- Escrow: [`0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905`](https://sepolia.etherscan.io/address/0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905)
+- Registry: [`0xc715A0263B752c9D0Be99379b7939466Af5fd20e`](https://sepolia.etherscan.io/address/0xc715A0263B752c9D0Be99379b7939466Af5fd20e)
+- 배포 TX는 [PATCH3 배포 및 Model B 검증 기록](PATCH3_SEPOLIA_AND_MODEL_B_20261031_KO.md) 참고.
+- [PATCH3 Solidity source](../packages/phase3c_hardening_20261023/contracts/)
+- [정책 생성·서명·배포 검증 스크립트](../packages/phase3c_hardening_20261023/scripts/)
+- [Red-Team 테스트 소스](../packages/phase3c_hardening_20261023/test/)
 
-## B. Frozen AI / policy values used by the completed Sepolia trade
+## 3. 실제 Sepolia — PATCH3 / Model B S05 정상 거래
 
-- policyVersion: `1`
-- policyHash: `0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11`
-- modelBundleHash: `0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e`
-- scoreSchemaId: `0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8`
-- thresholdScaled: `57904037`
-- scoreScaleExponent: `6`
-- replayToleranceScaled: `222`
+- Trade ID: `0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e`
+- 2026-10-29: 팀의 발표용 거래 기록상 **12건의 성공 트랜잭션**, 0.001 Sepolia ETH
+- Supplier PASS `36302902`; Buyer PASS `37078381`
+- `RELEASED(17)`, Supplier Withdraw, `claimable=0`
+- 로컬 증거: `2E_INTEGRATED_E2E_REDTEAM_REPORT_KO.md` 및 Sepolia 실행 영수증·발표자료의 12 TX 표.
+- **전체 12개 TX 해시를 정리한 공개 원본 인덱스는 아직 추가되지 않았음.** 검증된 12건 개별 영수증을 게시하기 전까지 이 문서는 요약본이다.
 
-Authoritative policy commitment:
-- `packages/ai_20261010/ai/policy/INSPECTION_POLICY_V1_1_COMMITMENT.json`
+S05의 온체인 검증 대상은 **정상 → 정상** 거래다. 아래 S03 스크래치 비교와 결합해 하나의 Sepolia 분쟁 거래처럼 표시하지 않는다.
 
-Model-bundle integration clarification:
-- `packages/ai_20261010/ai/policy/FINAL_POLICY_INTEGRATION_CLARIFICATION_V1.json`
+## 4. 실제 실물 AI·Replay — Windows Local
 
-## C. AI result provenance
+- Model B: 직접 촬영한 육각너트 S01~S08
+- S03 정상 `35534252` PASS / 깊은 스크래치 `52572132` REVIEW_REQUIRED (별도 비교 실험)
+- S05 Supplier `36302902`, Buyer `37078381` 점수 동등 재추론
+- Windows 실제 Model B 동일 runtime Replay **20/20 PASS** (로컬 보고서)
+- AI 입력은 TOP 뷰; FRONT/SIDE는 증거·검증용
+- 모델 체크포인트·대형 원본 사진은 이 GitHub에 포함하지 않음
 
-Supplier:
-- input: `demo/good/000.png`
-- raw score: `55.442035675048828`
-- scaled: `55442036`
-- outcome: `ADMISSIBLE_PASS`
-- evidencePackageHash: `0x73f141e55ac41d24eb81574ae6ffcaf406bd331f14abe49081dd439f0be5d986`
+## 5. 로컬 Anvil / Fork 보안 검증
 
-Buyer:
-- input: `demo/scratch/022.png`
-- raw score: `60.138172149658203`
-- scaled: `60138172`
-- outcome: `ADMISSIBLE_REVIEW`
-- evidencePackageHash: `0x59a8b83d7674fbce7e776fc341d7fc06c8cd13d34deb3223146b341a73af1d43`
+- Local Anvil PATCH3 Red-Team: **36/36 PASS**
+- Local Anvil Model B 합성 E2E: **16/16 PASS, 70 local TX**, 이 suite 자체의 `physicalAiExecuted=false`
+- 2A 거래 workspace **14/14**, 2B Evidence Import **21/21**, 2D Resolution **23/23**
+- 2E release readiness **30/30**, `SEPOLIA_READ_ONLY`
+- Sepolia fork settlement **13/13**, 실제 Sepolia 전송 **0 TX**
+- [보안 검증 매트릭스](SECURITY_VALIDATION_MATRIX_20261031_KO.md)
 
-AI freeze manifest:
-- `packages/ai_20261010/ai/core/FINAL_AI_FREEZE_MANIFEST.json`
+위 항목들은 별도 환경에서 실행한 과거 기록이다. GitHub 최신화 과정에서 다시 실행한 결과가 아니다.
 
-Important evaluation caveat:
-- V2 89-image result is **POST_HOC COMPARATIVE**, not an untouched held-out test.
+## 6. 별도 PATCH3 진행 거래·후보
 
-## D. Replay evidence
+- 기존 별도 funded 거래: `0x8e07587390de665a8a3c0fe81e1e7298541847acd244db5ea98e5dc3acb3f9db`, `FUNDED(4)`
+- 신규 Model B REVIEW 후보: `0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff`, `PROPOSED(1)` 및 DRAFT 정책
+- 이 거래들을 S05의 `RELEASED` 거래와 합쳐 표시하지 않는다.
 
-- replayReportHash: `0x18cb6feb5af67a5907a1c9f4fc3dcfaf7dcc19b1063da337174daca752d0bd1d`
-- final result: CONSISTENT
-- verified runtime pair: CPU ↔ NVIDIA Tesla T4 CUDA
-- full-demo observed max scaled difference: `111`
-- frozen tolerance: `222`
-- universal cross-machine guarantee: **NO**
+## 7. 구현 버전과 공개 파일
 
-Artifacts:
-- `packages/ai_20261010/ai/reproducibility/E3_CPU_VS_CUDA_CROSS_RUNTIME_REPLAY.json`
-- `packages/ai_20261010/ai/reproducibility/E3_FULL_DEMO_CPU_CUDA_ENVELOPE.json`
-- `packages/ai_20261010/ai/policy/AI_REPLAY_TOLERANCE_POLICY_V1.json`
+| 자료 | 저장소 |
+|---|---|
+| PATCH2 실제 TX·AI 코드 | `packages/phase3b_20261010/`, `packages/ai_20261010/` |
+| PATCH3 스마트컨트랙트·테스트 | `packages/phase3c_hardening_20261023/` |
+| 보안 설계 | [PATCH3 security & liveness](PATCH3_SECURITY_AND_LIVENESS_KO.md) |
+| 권한·신뢰 경계 | [Trust assumptions](PATCH3_TRUST_ASSUMPTION_REGISTER_KO.md) |
+| 실물 촬영 절차 | [Physical capture](PHYSICAL_CAPTURE_PROTOCOL_V1_KO.md) |
+| 최신 통합 웹사이트 2A~2F | 로컬 개발본. **P0 동적 Trade ID/릴리스 검증 후 별도 공개 예정** |
 
-Lineage note:
-- the replay-tolerance artifact retains a predecessor modelBundleHash for provenance;
-  the active final Model Bundle for the Sepolia trade is `0x64f335...`.
-
-## E. Public transaction trail
-
-- proposeTrade: `0xa9116ec4f58803f1985924665e6bfb46a455c2d732c7ec531092c779c40e889c`
-- supplier.acceptPolicy: `0xad8d3e74de6b5675003854d2d1561780a4d0ec0832ce171017593d74abf8cceb`
-- activate: `0xe8df43a483e336133d2083987a8584e78005edb8d389d889823d58fa080d9150`
-- Supplier submitInspection: `0x29d71a9fccb4a062ea4fb627d07d2724ad91287f370c2b10fbc5ee3b3b33e98e`
-- Buyer submitInspection: `0x8cf9fa20824d588a1896f4f3d43eb98a0c0b536bc64debf9a06f685f4763a994`
-- activateBackupInspector: `0x8d26b9669fe8ee41db0353b20e456908dc41c5703c8f61c2d7456fda6540a823`
-- Backup replay: `0x5a018554bac8ca8876c6ef84f8732436b0ef9db0d922a8c017cedfb16c6a2be0`
-- Backup decision: `0x3a94aa420901aa1d061c23e5cf40f669eb8f89e88e760a214aba8fa62be48674`
-- Buyer withdraw: `0x5183318aafe01643879771af8d66820dc3e2bfeb206ec9881323d7735c168bd2`
-
-## F. Hardening candidate — NOT YET A PROVEN REPLACEMENT
-
-PATCH3 design:
-- `docs/PATCH3_MENTOR_HARDENING_SPEC_KO.md`
-
-Development branch:
-- `patch3-mentor-hardening`
-
-Candidate workspace:
-- `packages/phase3c_hardening_20261023/`
-
-Until PATCH3 tests, audits and a new funded E2E pass, **PHASE2-PATCH2 remains the proven baseline**.
-
-## G. Final red-team source of truth
-
-- `docs/FINAL_RED_TEAM_MASTER_20261023_KO.md`
-
-Every critical attack must be closed as one of:
-- DESIGN FIX
-- EVIDENCE
-- CLAIM BOUNDARY
-
-## H. Still-open final submission evidence
-
-- [~] Physical Capture Protocol spec frozen; actual same-specimen capture still pending
-- [~] pre-inference ordered image commitment protocol frozen; implementation/capture pending
-- [ ] blind physical-specimen frozen-model result
-- [ ] PatchCore vs baseline comparison
-- [x] PATCH3 finite-liveness tests — local/CI 36-pass red-team
-- [x] credential suspend/revoke tests — signature rejection + no direct Escrow state mutation
-- [x] Primary/Backup/Arbitrator key-separation tests
-- [x] policy-tamper rejection — local funded-state negative test
-- [x] replay-mismatch → EXECUTION_HOLD → finite exit — local hostile test
-- [x] Python ↔ JS ↔ Solidity golden interop vector
-- [ ] discoverable public Foundry test suite / reproduction commands
-- [ ] external hosting/release of large frozen model artifacts + checksum
-- [ ] final 8-minute pitch + hostile 2-minute Q&A
-- [ ] backup demo recording
-
-No unchecked item may silently be presented as completed.
-
-
-## I. PATCH3 hardening evidence — 2026-10-23
-
-Current PATCH3 candidate lives on branch `patch3-mentor-hardening`.
-
-Verified local/CI gates:
-- hostile Anvil red-team: **36 PASS / 0 FAIL**
-- Solidity 0.8.26 compile PASS
-- InspectEscrowPatch3 runtime: **22,669 bytes**
-- CredentialRegistryPatch3 runtime: **1,494 bytes**
-- Python ↔ JavaScript ↔ Solidity golden interop PASS
-- ABI SHA256 + five EIP-712 typehash equality PASS
-- Slither project-source untriaged High/Medium blocking findings: **0**
-- independent professional audit / formal verification / production certification: **NO**
-
-Durable interface candidate:
-- `packages/phase3c_hardening_20261023/PATCH3_INTERFACE_FREEZE_CANDIDATE.json`
-
-Sepolia hard gate:
-- `packages/phase3c_hardening_20261023/PATCH3_SEPOLIA_DEPLOYMENT_PRECHECK_KO.md`
-
-PATCH3 policy rule:
-- PATCH2 policyHash must **not** be reused.
-- PATCH3 uses policy schema v1.2 / policyVersion 2.
-- final policyHash is generated only after actual PATCH3 verifyingContract, CredentialRegistry, fresh tradeId and role addresses are known.
-- local policy generator/self-hash gate PASS; local smoke hash is not a Sepolia production/demo trade hash.
-
-Trust assumptions:
-- `docs/PATCH3_TRUST_ASSUMPTION_REGISTER_KO.md`
-
-Physical capture:
-- `docs/PHYSICAL_CAPTURE_PROTOCOL_V1_KO.md`
-
-PATCH3 remains **NOT DEPLOYED** until the deployment hard gate is satisfied.
+추가 외부 감사, 실제 제조기업과의 파일럿, 다른 PC에 설치한 모델·증거 전체 재현성은 아직 이번 공개 저장소의 검증 결과가 아니다.
