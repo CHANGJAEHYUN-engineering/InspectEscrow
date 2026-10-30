@@ -1,3 +1,5 @@
+> **구현 경과 (2026-10-31):** 이 문서는 10월 23일에 정의한 촬영 절차 설계안이다. 본문 예시 `IE-DEMO-001` 및 동일 시편 Normal→Scratch 과정은 설계 프로토콜이며, 10월 29일 Sepolia S05 검증은 **Supplier PASS / Buyer PASS 정상 거래**이다. S03 정상/스크래치 비교는 별도 실물 실험이다. 전체 촬영 체인의 하드웨어 진위·동일 시편 운송 이력 검증을 완료한 것으로 해석하지 않는다. 구체적 이력은 [실제 배포·Model B 기록](PATCH3_SEPOLIA_AND_MODEL_B_20261031_KO.md)을 참조한다.
+
 # InspectEscrow Physical Capture Protocol V1
 
 Date: 2026-10-23
