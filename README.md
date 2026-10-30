@@ -46,7 +46,7 @@ Economic   거래 조건 합의 → 예치 → 검사 → 분쟁·Replay
 - **분쟁 처리:** Independent Replay는 실행 일관성을 확인하고 Inspector는 정산 방향을 별도 판단
 - **정산:** 자금 수령 권리를 `claimable`에 기록한 뒤 수령자가 `withdraw()` 실행
 
-[시스템 아키텍처](docs/architecture.md) · [PATCH3 보안·종료 규칙](docs/PATCH3_SECURITY_AND_LIVENESS_KO.md)
+[시스템 아키텍처](docs/architecture.md) · [PATCH3 보안·종료 규칙](docs/PATCH3_SECURITY_AND_LIVENESS_KO.md) · [PATCH3 Solidity CI](https://github.com/CHANGJAEHYUN-engineering/InspectEscrow/actions/runs/41096637460) · [Slither 정적 분석](https://github.com/CHANGJAEHYUN-engineering/InspectEscrow/actions/runs/41096816045)
 
 ## 검증된 Sepolia 배포
 
