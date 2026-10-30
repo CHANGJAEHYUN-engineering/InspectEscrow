@@ -15,6 +15,18 @@
 
 보안 검토 주제: 해시·정책·모델 불일치, Station 서명 및 권한 위반, nonce 재사용, 잘못된 chain/domain, 유효시간 위반, Replay 점수 불일치 시 EXECUTION_HOLD, Credential 정지, 중재·fallback, 중복 정산·인출, 회계 보존.
 
+## GitHub Actions 재검증 (2026-10-31)
+
+- [PATCH3 Solidity CI — SUCCESS](https://github.com/CHANGJAEHYUN-engineering/InspectEscrow/actions/runs/41096637460): 공개 `main`의 실제 소스 재컴파일, hostile Local Anvil Red-Team, JS/Python interop, 인터페이스·정책 테스트 및 바이트코드 검사 통과.
+- [PATCH3 Static Analysis — SUCCESS](https://github.com/CHANGJAEHYUN-engineering/InspectEscrow/actions/runs/41096816045): pinned Slither 정적 분석 게이트 통과.
+- 위 CI의 Anvil 트랜잭션은 **로컬 테스트용**이며 실제 Sepolia 트랜잭션은 발생시키지 않는다.
+
+## 공개 결과 JSON
+
+- [Model B local E2E (16 checks)](results/MODEL_B_LOCAL_E2E_20261029.json)
+- [Windows Model B Replay (20 checks)](results/MODEL_B_REPLAY_20261030_PUBLIC.json)
+- [PATCH3 Sepolia deployment public manifest](../packages/phase3c_hardening_20261023/results/PATCH3_SEPOLIA_DEPLOYMENT_PUBLIC.json)
+
 ## 코드 근거
 
 - [PATCH3 Solidity 계약](../packages/phase3c_hardening_20261023/contracts/)
@@ -29,4 +41,4 @@
 - Local Anvil이나 Fork에서 완주한 분쟁은 실제 Sepolia Model B 분쟁 E2E 완료를 뜻하지 않는다.
 - 전문 제3자 보안감사, 형식검증, 생산 현장 운영인증을 실시했다는 주장은 하지 않는다.
 - 모델 체크포인트, 사진 원본, test runtime의 외부 배포·독립 PC 재현성은 별도 인계 패키지와 추가 검증이 필요하다.
-- 이 표는 2026-10-30에 작성된 실행 결과를 옮긴 것으로, 2026-10-31 GitHub 게시 시 모든 시험을 다시 실행한 기록은 아니다.
+- 위 표는 2026-10-30 로컬 실행 이력을 포함한다. 공개 `main`의 계약 컴파일·Red-Team·정적 분석은 상단 GitHub Actions에서 별도 재실행 후 성공했으며, Windows Model B 실추론·현장 촬영·실제 Sepolia 거래를 GitHub Actions에서 재현했다는 의미는 아니다.
