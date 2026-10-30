@@ -1,0 +1,43 @@
+{
+  "schema": "inspectescrow.modelb-local-e2e/1.0.0",
+  "scope": "LOCAL_ANVIL_SYNTHETIC_EVIDENCE_ONLY",
+  "chainId": 31339,
+  "contract": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+  "credentialRegistry": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "modelBundleHash": "0x3670ae2c0c89892018c8120fc13dc31d7415463e48dfce7eff3d626839d351af",
+  "artifactCommitmentHash": "0x6c0e08376f9303b787484f5cc81398101d8b73f2b8a9bac8fd012419f3f4e354",
+  "thresholds": {
+    "local": 38280373,
+    "contract": 38280374
+  },
+  "replayToleranceScaled": 0,
+  "physicalAiExecuted": false,
+  "sepoliaTransactionsSent": 0,
+  "checks": 16,
+  "transactions": 70,
+  "results": [
+    "Actor, Station, Authority and attacker addresses are all distinct",
+    "five Station credentials ACTIVE",
+    "Buyer Actor cannot submit Supplier Station evidence",
+    "Model B score 38280373 maps to contract PASS",
+    "Station signature cannot be replayed in a later state",
+    "NORMAL flow settled and withdrawn",
+    "Model B score 38280374 maps to contract REVIEW and dispute",
+    "Inspector decision before Replay is rejected",
+    "DISPUTE flow replay, decision and withdraw complete",
+    "Primary timeout fails over to Backup and withdraws",
+    "Replay inconsistency enters EXECUTION_HOLD without payout",
+    "EXECUTION_HOLD exits via signed external arbitration",
+    "Suspended Station signature is rejected without state mutation",
+    "Credential failure exits by timeout with escrow conserved",
+    "Model B replay tolerance is frozen to exact integer equality in same-runtime scope",
+    "All local Model B funds conserved with zero outstanding liability"
+  ],
+  "finalAccounting": {
+    "totalFunded": "5000000000000000",
+    "totalWithdrawn": "5000000000000000",
+    "unsettledEscrow": "0",
+    "outstandingClaimable": "0",
+    "accountingConserved": true
+  }
+}
