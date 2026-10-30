@@ -38,7 +38,11 @@
 
 모델 가중치 및 원본 사진은 공용 GitHub에 일괄 업로드하지 않았다. 별도 아티팩트의 체크섬과 사용 조건을 확인해 공유해야 한다.
 
-## 4. 구분해야 할 네 가지 증거
+## 4. 공개 가능한 측정치와 운영비 검증
+
+2026-10-30 발표 초안에는 정상 Sepolia 거래의 **12 TX 가스비 합계 약 0.00770 Sepolia ETH**가 기록되어 있다. 이는 테스트넷에서의 관측 결과로, 실제 서비스의 거래당 상용 운영비나 절감률로 환산하지 않는다. 파일럿에서는 배포·거래 단계별 가스/수수료, 처리시간과 분쟁 비용을 별도로 측정해야 한다.
+
+## 5. 구분해야 할 네 가지 증거
 
 | 검증 묶음 | 실제 환경 | 확보 결과 |
 |---|---|---|
@@ -47,7 +51,7 @@
 | PATCH3 Model B 분쟁·보류 | **Local Anvil / 통제된 Replay** | 분쟁, HOLD, 재현 불일치, 예외 종료 및 차단 검증 |
 | PATCH3 신규 REVIEW 후보 | **Sepolia 후보·정책 초안** | `PROPOSED(1)` 기록; 분쟁부터 출금까지 완주한 거래 아님 |
 
-PATCH2 실제 거래는 [기존 E2E 기록](../packages/phase3b_20261010/results/FINAL_SEPOLIA_E2E_20261011.json)에서 확인 가능하며, PATCH3의 기존 별도 funded 거래는 [2026-10-27 증거 기록](https://github.com/CHANGJAEHYUN-engineering/InspectEscrow/blob/feat/ai-v3-standalone-diagnostic-20261028/packages/phase3c_hardening_20261023/results/PATCH3_FUNDED_ONCHAIN_EVIDENCE_20261027.md)을 참조한다.
+PATCH2 실제 거래는 [기존 E2E 기록](../packages/phase3b_20261010/results/FINAL_SEPOLIA_E2E_20261011.json)에서 확인 가능하며, PATCH3의 기존 별도 funded 거래는 [2026-10-27 증거 기록](../packages/phase3c_hardening_20261023/results/PATCH3_FUNDED_ONCHAIN_EVIDENCE_20261027.md)을 참조한다.
 
 ### 기록의 출처 및 시점
 
