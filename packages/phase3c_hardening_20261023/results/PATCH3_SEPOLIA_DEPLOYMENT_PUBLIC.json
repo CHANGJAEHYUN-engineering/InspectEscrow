@@ -1,0 +1,63 @@
+{
+  "schema": "inspectescrow.patch3-sepolia-deployment-public/1.0.0",
+  "status": "DEPLOYED_AND_READBACK_VERIFIED",
+  "chainId": 11155111,
+  "deployedAt": "2026-10-26T15:26:13.368Z",
+  "contractVersion": "PHASE2-PATCH3-CANDIDATE",
+  "contracts": {
+    "CredentialRegistryPatch3": {
+      "address": "0xc715A0263B752c9D0Be99379b7939466Af5fd20e",
+      "deploymentTxHash": "0x309d40b2af8aff9e47a7b14dde7ed07fe9bf5615a3d310263643f9914886ffc4",
+      "deploymentBlock": 11998867,
+      "runtimeCodeHash": "0x9b2c499441beb2414877fabc7ef65d54cecf752ef1c3963e5bf5a059ab275262"
+    },
+    "InspectEscrowPatch3": {
+      "address": "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",
+      "deploymentTxHash": "0x57707c3241fe0e8c0be057012fb8f884d8aa5fa4ba11a6cb0d0faff5c41efc59",
+      "deploymentBlock": 11998874,
+      "runtimeCodeHash": "0x5a606383f54c6ebeb52316927343ee802ecdd4774a1a2978de08bf9ee981bdd9",
+      "credentialRegistryReadback": "0xc715A0263B752c9D0Be99379b7939466Af5fd20e"
+    }
+  },
+  "credentialRegistrations": [
+    {
+      "key": "supplierStation",
+      "station": "0x02883F2C472E6d82B88373448E54a209C27A6779",
+      "txHash": "0x218f40575972ee04aec836a400707c3336ba90ed0ccaf9ab139f0cbe56b5d729",
+      "blockNumber": 11998868
+    },
+    {
+      "key": "buyerStation",
+      "station": "0xD5acfa7301BD73FfcBb3f73705E4dA4a2548faab",
+      "txHash": "0x819b98d4c672e4c32e822261118c8add9b24aa81f8902dda4d4000a5337dc465",
+      "blockNumber": 11998869
+    },
+    {
+      "key": "primaryInspectorStation",
+      "station": "0x0d9B5d1caf10e7E66AE1F63A4085387F707d092d",
+      "txHash": "0x5995595fd73781f81672356b3abd0735b2c393faad908d13b3291865d7366c20",
+      "blockNumber": 11998871
+    },
+    {
+      "key": "backupInspectorStation",
+      "station": "0x0d88B2aB0E6Aa39c73599C2115b8Ba0C34094a97",
+      "txHash": "0x3c93feba59a6d39344f4515f7d76150b082bedf8addf752bb9fc4610ba5ec609",
+      "blockNumber": 11998872
+    },
+    {
+      "key": "externalArbitratorStation",
+      "station": "0x6D62A42C2328846778e7120A72b02C90c2eEb8eE",
+      "txHash": "0xda10c1caac5045d54311be9a8fc97549cda89c4dfec09f9ffa1dbb268ddf2186",
+      "blockNumber": 11998873
+    }
+  ],
+  "assertions": {
+    "sepoliaChainId": true,
+    "fiveStationsActive": true,
+    "contractVersionReadback": true,
+    "registryPointerReadback": true,
+    "authorityReadback": true,
+    "onchainCodePresent": true
+  },
+  "provenanceNote": "Curated public export from local verified deployment manifest; excludes internal branch, wallet-management metadata and secrets."
+}
