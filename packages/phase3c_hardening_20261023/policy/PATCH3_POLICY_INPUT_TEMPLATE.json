@@ -1,0 +1,37 @@
+{
+  "schema": "inspectescrow.patch3-policy-input/1.0.0",
+  "status": "INPUT_REQUIRED",
+  "chainId": 11155111,
+  "verifyingContract": null,
+  "credentialRegistry": null,
+  "credentialAuthority": null,
+  "tradeId": null,
+  "escrowAmountWei": "5000000000000000",
+  "roles": {
+    "supplier": null,
+    "buyer": null,
+    "primaryInspector": null,
+    "backupInspector": null,
+    "externalArbitrator": null,
+    "supplierStation": null,
+    "buyerStation": null,
+    "primaryInspectorStation": null,
+    "backupInspectorStation": null,
+    "externalArbitratorStation": null
+  },
+  "fallbackPolicy": {
+    "buyerInspectionTimeout": "RELEASE_TO_SUPPLIER",
+    "executionHold": "REFUND_TO_BUYER",
+    "evidenceHold": "REFUND_TO_BUYER",
+    "inspectorEscalated": "REFUND_TO_BUYER"
+  },
+  "windowsSeconds": {
+    "supplierInspection": 3600,
+    "buyerInspection": 3600,
+    "buyerAcceptance": 1800,
+    "primaryInspector": 3600,
+    "backupInspector": 3600,
+    "mutualResolution": 3600,
+    "externalArbitration": 3600
+  }
+}
