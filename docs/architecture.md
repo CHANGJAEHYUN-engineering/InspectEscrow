@@ -1,6 +1,6 @@
 # InspectEscrow architecture and explicit trust boundaries
 
-**Source of design:** Team 창지환's 16-page upgraded proposal for mentoring (2026-10-10). This page documents target design, not completed integration.
+**Scope:** This document records the system architecture and trust boundaries for the technical prototype. Implementation status and verified outcomes are tracked separately.
 
 | Layer | Intended data or behavior | It does NOT prove |
 |---|---|---|
