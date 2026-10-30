@@ -1,0 +1,18 @@
+# PATCH3 Sepolia FINALIZATION — example only.
+# Copy values into your local shell or a local .env file.
+# Never commit real private keys or RPC credentials.
+
+PATCH3_RPC_URL=
+PATCH3_DEPLOYER_PRIVATE_KEY=
+
+# Optional only when Credential Registry Authority is a different wallet from deployer.
+# If omitted, deployer must equal credentialRegistryAuthority in PATCH3_ROLE_PLAN.json.
+PATCH3_AUTHORITY_PRIVATE_KEY=
+
+PATCH3_ROLE_PLAN=packages/phase3c_hardening_20261023/PATCH3_ROLE_PLAN.json
+PATCH3_DEPLOYMENT_OUT=packages/phase3c_hardening_20261023/results/PATCH3_SEPOLIA_DEPLOYMENT.json
+PATCH3_DEPLOYMENT_MANIFEST=packages/phase3c_hardening_20261023/results/PATCH3_SEPOLIA_DEPLOYMENT.json
+PATCH3_POLICY_INPUT_OUT=packages/phase3c_hardening_20261023/policy/PATCH3_POLICY_INPUT.json
+
+# Optional. If blank, build-patch3-policy-input.mjs creates a fresh random bytes32.
+PATCH3_TRADE_ID=
