@@ -1,115 +1,94 @@
-# InspectEscrow — AI Quality Inspection × Blockchain Escrow
+# InspectEscrow
 
-> 2026 AI × BLOCKCHAIN Hackathon · TRACK 4 · Team **창지환**
->
-> **Evidence snapshot: 2026-10-11.** The audited Colab AI package and Phase3B Web/Solidity package are committed under `packages/`. A funded **Sepolia end-to-end DISPUTE flow has now completed through Buyer withdraw**, including Supplier/Buyer AI evidence, Primary Inspector timeout, Backup failover, replay consistency, Inspector refund decision, pull-payment credit and final withdrawal.
+**AI 제조 품질검사의 신뢰·분쟁 해결을 위한 블록체인 에스크로 시스템**  
+2026 AI × Blockchain Hackathon · Track 4 · 팀 창지환
 
-InspectEscrow addresses disagreement between **Supplier outbound** and **Buyer inbound** AI-supported manufacturing inspections. Pre-agreed model, threshold, capture protocol, signed evidence, independent replay, inspector authority and blockchain escrow prevent unilateral mutation of active settlement rules while preserving explicit human responsibility for the final real-world decision.
+> AI가 불량을 발견하면, 대금은 누가 결정할까?
 
-## Final Sepolia E2E status
+InspectEscrow는 공급기업(Supplier)의 출하검사와 구매기업(Buyer)의 입고검사가 서로 다른 결과를 보일 때, 검사 근거를 검증하고 합의된 절차에 따라 대금을 지급하거나 환급하도록 연결하는 제조 B2B PoC입니다. 실제 이미지의 AI 검사, 원본·정책·모델의 증거 결합, Station 서명, 독립 Replay, 스마트컨트랙트 에스크로를 결합했습니다.
 
-| Item | Result |
-|---|---|
-| Network | Sepolia · chainId `11155111` |
-| Contract | `0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9` |
-| Trade | `0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c` |
-| Escrow | `0.005 ETH` |
-| Supplier AI | `good/000` → `55442036` → `ADMISSIBLE_PASS` |
-| Buyer AI | `scratch/022` → `60138172` → `ADMISSIBLE_REVIEW` |
-| Dispute | `DISPUTED_PRIMARY` → Primary timeout → `DISPUTED_BACKUP` |
-| Replay | Backup `ReplayResultRecorded`, `consistent=true` |
-| Inspector decision | `REFUND_TO_BUYER` |
-| Final state | `18 (REFUNDED)` |
-| Buyer claimable after withdraw | `0 wei` |
-| totalWithdrawn | `5,000,000,000,000,000 wei (0.005 ETH)` |
-| outstandingClaimable | `0 wei` |
-| accountingConserved() | `true` |
+## 주요 실증 결과
 
-### Key public transaction trail
+| 검증 시나리오 | 환경 | 확인된 결과 |
+|---|---|---|
+| **Model A / PATCH2 분쟁 처리** | **Ethereum Sepolia** | 공개 MVTec `metal_nut` 기반 Supplier PASS → Buyer REVIEW → Primary timeout → Backup Replay → Inspector Buyer 환급 → **0.005 ETH Withdraw** |
+| **Model B / PATCH3 정상 거래** | **Ethereum Sepolia** | 직접 촬영한 너트 S05의 Supplier/Buyer PASS → 정상 인수 → Supplier 정산 및 **0.001 ETH Withdraw**. 2026-10-29 실행 기록: **12건 성공 TX** |
+| **Model B 실물 AI 검사** | Windows local | S01~S08 실물 너트 촬영, PatchCore 추론. S03 정상/스크래치 비교, S05 재추론 기록 |
+| **PATCH3 공격·예외 처리** | **Local Anvil** | Red-Team **36/36 PASS**. 재현 불일치 HOLD, 자격·서명·역할·기한 검증, 중재 및 종료 경로 |
+| **독립 Model B Replay** | Windows local | S05 Supplier `36302902`, Buyer `37078381` 재추론 정수 점수 일치, 동일 실행환경의 Replay **20/20 PASS** |
+
+**검증 범위:** Model A는 Sepolia 분쟁·환급 완료, Model B의 Sepolia 실증은 S05 정상 거래·출금 완료입니다. Model B의 분쟁/HOLD·중재 예외 흐름은 로컬에서 확인했으며, 이를 Model B 실물 분쟁의 Sepolia 전체 완주라고 표현하지 않습니다.
+
+## 전체 아키텍처
 
 ```text
-activate
-0xe8df43a483e336133d2083987a8584e78005edb8d389d889823d58fa080d9150
-→ AWAIT_SUPPLIER
-
-Supplier submitInspection
-0x29d71a9fccb4a062ea4fb627d07d2724ad91287f370c2b10fbc5ee3b3b33e98e
-→ ADMISSIBLE_PASS → AWAIT_BUYER
-
-Buyer submitInspection
-0x8cf9fa20824d588a1896f4f3d43eb98a0c0b536bc64debf9a06f685f4763a994
-→ ADMISSIBLE_REVIEW → DISPUTED_PRIMARY
-
-activateBackupInspector
-0x8d26b9669fe8ee41db0353b20e456908dc41c5703c8f61c2d7456fda6540a823
-→ DISPUTED_BACKUP
-
-Backup recordReplayResult
-0x5a018554bac8ca8876c6ef84f8732436b0ef9db0d922a8c017cedfb16c6a2be0
-→ consistent=true
-
-Backup submitInspectorDecision
-0x3a94aa420901aa1d061c23e5cf40f669eb8f89e88e760a214aba8fa62be48674
-→ REFUND_TO_BUYER → REFUNDED
-
-Buyer withdraw
-0x5183318aafe01643879771af8d66820dc3e2bfeb206ec9881323d7735c168bd2
-→ claimable=0, totalWithdrawn=0.005 ETH
+Supplier / Buyer / Inspector
+           │
+           ▼
+Physical   실물 제품 · TOP/FRONT/SIDE 촬영 · 제품 식별
+           │
+AI         PatchCore · anomaly score · threshold · heatmap
+           │
+Evidence   원본 해시 · Model Bundle · Policy · Station EIP-712 서명
+           │
+Trust      MetaMask / Web3 → Sepolia
+           │             ├─ CredentialRegistryPatch3
+           │             └─ InspectEscrowPatch3
+           ▼
+Economic   거래 조건 합의 → 예치 → 검사 → 분쟁·Replay
+           → Inspector 판단 / 예외 종료 → claimable → withdraw()
 ```
 
-Full machine-readable record: [FINAL_SEPOLIA_E2E_20261011.json](packages/phase3b_20261010/results/FINAL_SEPOLIA_E2E_20261011.json)
+- **사전합의:** `policyHash`, `modelBundleHash`, `captureProfileHash`, `productSpecHash`, `requiredViewSetHash` 및 `thresholdScaled` 고정
+- **증거 연결:** 원본 이미지와 검사 결과의 hash 및 EIP-712 Station 서명 검증
+- **역할 분리:** Actor 지갑과 Station 서명자, Primary/Backup Inspector, 외부 중재자 구분
+- **검사 판단:** 계약이 등록된 점수와 임계값을 비교하여 PASS/REVIEW 분기
+- **분쟁 처리:** Independent Replay는 실행 일관성을 확인하고 Inspector는 정산 방향을 별도 판단
+- **정산:** 자금 수령 권리를 `claimable`에 기록한 뒤 수령자가 `withdraw()` 실행
 
-## Frozen AI ↔ Contract handoff
+[시스템 아키텍처](docs/architecture.md) · [PATCH3 보안·종료 규칙](docs/PATCH3_SECURITY_AND_LIVENESS_KO.md)
 
-| Field | Frozen value |
+## 검증된 Sepolia 배포
+
+| 계약 | 주소 |
 |---|---|
-| policyVersion | `1` |
-| policyHash | `0x85cd60bd89d1c82d39a313443723997283d79a46ec415c4c1064088ffe3f9d11` |
-| modelBundleHash | `0x64f3359a4e9a276a5f0abef0e5305f42b513dbae1ac5698cb08c9e066962383e` |
-| scoreSchemaId | `0xcf1476a2ae70ac5fad6ba79a7f55bab4b4c4973dd892d65de9a887bf08d1f1f8` |
-| thresholdScaled | `57904037` |
-| scoreScaleExponent | `6` |
-| Supplier evidencePackageHash | `0x73f141e55ac41d24eb81574ae6ffcaf406bd331f14abe49081dd439f0be5d986` |
-| Buyer evidencePackageHash | `0x59a8b83d7674fbce7e776fc341d7fc06c8cd13d34deb3223146b341a73af1d43` |
-| Backup replayReportHash | `0x18cb6feb5af67a5907a1c9f4fc3dcfaf7dcc19b1063da337174daca752d0bd1d` |
+| PATCH2 Escrow / Model A 분쟁 | [`0x270e3E8a…42fFa9`](https://sepolia.etherscan.io/address/0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9) |
+| PATCH3 Escrow / Model B 정상 | [`0x0a4721CF…73B905`](https://sepolia.etherscan.io/address/0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905) |
+| PATCH3 Credential Registry | [`0xc715A026…fd20e`](https://sepolia.etherscan.io/address/0xc715A0263B752c9D0Be99379b7939466Af5fd20e) |
 
-## Five-layer design
+- PATCH2 완료 거래: `0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c`
+- PATCH3 Model B S05 정상 거래: `0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e`
+- PATCH3 별도 과거 보호 거래: `0x8e07587390de665a8a3c0fe81e1e7298541847acd244db5ea98e5dc3acb3f9db` — `FUNDED`, 정상 거래 완료로 합산하지 않음
 
-```text
-PHYSICAL — specimen / camera / capture conditions
-      ↓
-AI — PatchCore score & heatmap / frozen threshold
-      ↓
-EVIDENCE — raw image hash / package hash / Station attestation
-      ↓
-TRUST — Web + Wallet → Sepolia smart contract / role & state rules
-      ↓
-ECONOMIC — escrow lock / independent replay / inspector decision / withdraw
-```
+[배포 및 Model B 실증 세부 기록](docs/PATCH3_SEPOLIA_AND_MODEL_B_20261031_KO.md) · [전체 증거 색인](docs/FINAL_EVIDENCE_INDEX.md)
 
-**Responsibility split:** 창재현 — Google Colab AI, model bundle, evidence and replay; 김지환 — website, wallet/transactions, Sepolia contract integration and settlement UI.
+## 공개 저장소 구조
 
-## What this demo proves — and does not prove
+| 위치 | 내용 |
+|---|---|
+| `packages/ai_20261010/` | PATCH2 모델 A AI 추론·정책·증거 및 재현성 자료 |
+| `packages/phase3b_20261010/` | PATCH2 Web3·Solidity 코드 및 10월 11일 실제 Sepolia 분쟁 E2E |
+| `packages/phase3c_hardening_20261023/` | **PATCH3 Solidity 계약**, 정책 생성·배포·검증 스크립트, Red-Team 테스트 |
+| `packages/physical_capture_v1/` | 촬영 프로토콜 관련 기술 자료 |
+| `docs/` | 아키텍처, 배포 이력, 테스트·보안 설계, 검증 범위, 출처 및 라이선스 |
+| `index.html` / `app.js` | **예선 당시 정적 인터랙티브 시뮬레이션**. 최종 통합 웹사이트의 실행 파일이 아님 |
 
-The completed flow demonstrates a real testnet transaction chain connecting actual PatchCore inference outputs to signed evidence, escrow state transitions, replay gating, inspector failover, human settlement authority and pull-payment accounting.
+**통합 Windows Model B 웹사이트(2A~2F)**는 로컬 개발본에 존재하며, 동적 Trade ID 연결과 독립 PC 실행 패키지의 최종 검증이 진행 중입니다. 그 코드는 공개 `main`에 아직 반영되지 않았으므로 현재 저장소를 통합 웹사이트의 독립 실행 릴리스라고 안내하지 않습니다.
 
-It **does not** prove that a physical item is genuine, that Supplier and Buyer images are the same physical specimen, that public MVTec data has production custody provenance, or that replay consistency is a universal cross-machine guarantee. The current replay evidence is a controlled artifact-reload consistency check; the human Inspector remains responsible for the final settlement judgment.
+## 기술 문서
 
-## Documents
+- [프로젝트 아키텍처 및 역할별 흐름](docs/architecture.md)
+- [구현·배포·검증 상태표](docs/implementation-status.md)
+- [Sepolia 배포 및 Model B 결과](docs/PATCH3_SEPOLIA_AND_MODEL_B_20261031_KO.md)
+- [보안·회귀 검증 매트릭스](docs/SECURITY_VALIDATION_MATRIX_20261031_KO.md)
+- [PATCH3 안전성 및 종료 규칙](docs/PATCH3_SECURITY_AND_LIVENESS_KO.md)
+- [신뢰 가정과 권한 경계](docs/PATCH3_TRUST_ASSUMPTION_REGISTER_KO.md)
+- [원본 촬영·증거 관리 프로토콜](docs/PHYSICAL_CAPTURE_PROTOCOL_V1_KO.md)
+- [PATCH2 Sepolia 원본 E2E JSON](packages/phase3b_20261010/results/FINAL_SEPOLIA_E2E_20261011.json)
+- [참고자료·라이선스](docs/references.md)
 
-- [Final evidence index](docs/FINAL_EVIDENCE_INDEX.md)
-- [Final red-team master](docs/FINAL_RED_TEAM_MASTER_20261023_KO.md)
-- [PATCH3 security and liveness design](docs/PATCH3_SECURITY_AND_LIVENESS_KO.md)
-- [PATCH3 trust assumptions](docs/PATCH3_TRUST_ASSUMPTION_REGISTER_KO.md)
-- [Physical Capture Protocol V1](docs/PHYSICAL_CAPTURE_PROTOCOL_V1_KO.md)
-- [2026-10-11 final Korean status](docs/STATUS_20261011_KO.md)
-- [2026-10-11 final audit](docs/LATEST_AUDIT_20261011.json)
-- [Architecture and trust boundaries](docs/architecture.md)
-- [Implementation status](docs/implementation-status.md)
-- [AI ↔ Web ↔ Smart Contract handoff](docs/integration-contract.md)
-- [Negative tests and acceptance checks](docs/validation-matrix.md)
-- [Release checklist](docs/release-checklist.md)
+## 적용과 확장
 
-## Security and provenance
+우선 적용 대상은 품질 검사결과 불일치가 실제 정산 지연이나 분쟁 비용으로 이어지는 정밀 부품 공급망입니다. 기존 MES/QMS를 대체하기보다 검사·증거·정산 연결 계층으로 연동하는 방향을 검토합니다. 현장 도입에는 제품 ID, 촬영 표준화, 증거 보존, Inspector 거버넌스, 운영비·가스비 검증이 필요합니다.
 
-Never commit wallet private keys, mnemonics, secrets, RPC tokens, private production images, full raw datasets, or large weights. Dataset MVTec AD is **CC BY-NC-SA 4.0** and the present demo is a public-dataset simulation, not a commercial production dataset claim.
+**데이터 사용 및 보안:** 공개 MVTec 데이터의 라이선스 조건을 준수하고, 별도 Model B 모델 가중치·원본 사진·민감한 서명 자료와 개인키·시드·토큰을 공개 저장소에 올리지 않습니다. 블록체인 기록의 무결성과 제품 자체의 물리적 진실성은 구분합니다.
