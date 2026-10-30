@@ -1,3 +1,5 @@
+> **구현 경과 (2026-10-31):** 이 문서의 주요 본문은 PATCH3 배포 이전인 10월 23일의 설계·보안 강화 명세를 기록한다. 이후 PATCH3 Escrow 및 CredentialRegistry는 **10월 26일 Sepolia 배포**되었고, Model B S05 **10월 29일 정상 거래·정산·Withdraw** 기록을 확보했다. 분쟁·HOLD의 실제 Model B Sepolia 전체 완주는 별도이며, [최신 검증 근거](PATCH3_SEPOLIA_AND_MODEL_B_20261031_KO.md)와 [로컬 공격 검증](SECURITY_VALIDATION_MATRIX_20261031_KO.md)에서 구분한다.
+
 # InspectEscrow PATCH3 Security and Liveness Design Specification
 
 Status: **DESIGN FREEZE CANDIDATE**  
