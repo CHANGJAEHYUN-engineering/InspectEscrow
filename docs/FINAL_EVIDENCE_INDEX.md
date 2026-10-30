@@ -40,18 +40,18 @@ S05의 온체인 검증 대상은 **정상 → 정상** 거래다. 아래 S03 �
 - Model B: 직접 촬영한 육각너트 S01~S08
 - S03 정상 `35534252` PASS / 깊은 스크래치 `52572132` REVIEW_REQUIRED (별도 비교 실험)
 - S05 Supplier `36302902`, Buyer `37078381` 점수 동등 재추론
-- Windows 실제 Model B 동일 runtime Replay **20/20 PASS** (로컬 보고서)
+- Windows 실제 Model B 동일 runtime Replay **20/20 PASS** — [공개 결과 JSON](results/MODEL_B_REPLAY_20261030_PUBLIC.json)
 - AI 입력은 TOP 뷰; FRONT/SIDE는 증거·검증용
 - 모델 체크포인트·대형 원본 사진은 이 GitHub에 포함하지 않음
 
 ## 5. 로컬 Anvil / Fork 보안 검증
 
 - Local Anvil PATCH3 Red-Team: **36/36 PASS**
-- Local Anvil Model B 합성 E2E: **16/16 PASS, 70 local TX**, 이 suite 자체의 `physicalAiExecuted=false`
+- Local Anvil Model B 합성 E2E: **16/16 PASS, 70 local TX** — [공개 결과 JSON](results/MODEL_B_LOCAL_E2E_20261029.json); 이 suite 자체의 `physicalAiExecuted=false`
 - 2A 거래 workspace **14/14**, 2B Evidence Import **21/21**, 2D Resolution **23/23**
 - 2E release readiness **30/30**, `SEPOLIA_READ_ONLY`
 - Sepolia fork settlement **13/13**, 실제 Sepolia 전송 **0 TX**
-- [보안 검증 매트릭스](SECURITY_VALIDATION_MATRIX_20261031_KO.md)
+- [보안 검증 매트릭스 및 GitHub Actions 결과](SECURITY_VALIDATION_MATRIX_20261031_KO.md)
 
 위 항목들은 별도 환경에서 실행한 과거 기록이다. GitHub 최신화 과정에서 다시 실행한 결과가 아니다.
 
