@@ -1,0 +1,35 @@
+"use strict";
+const fs=require("node:fs"),path=require("node:path");
+const {Contract,JsonRpcProvider,hexlify,randomBytes}=require("ethers");
+const builder=require("./trade-builder-endpoints.cjs");
+const project=path.resolve(__dirname,"..","..","..");
+const abi=JSON.parse(fs.readFileSync(path.join(project,".patch3-build","InspectEscrowPatch3.sol_InspectEscrowPatch3.abi"),"utf8"));
+const provider=new JsonRpcProvider(process.env.INSPECTESCROW_SEPOLIA_RPC||"https://ethereum-sepolia-rpc.publicnode.com",11155111,{staticNetwork:true});
+const contract=new Contract("0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",abi,provider);
+const checks=[];const check=(name,pass,detail="")=>{checks.push({name,pass:Boolean(pass),detail:String(detail)});if(!pass)throw Error(name+" · "+detail);};
+function expect(name,fn,pattern){try{fn();check(name,false,"NO_ERROR");}catch(e){check(name,pattern.test(String(e.message)),e.message);}}
+(async()=>{
+ const defaults=await builder.defaults({provider,contract}),tradeId=hexlify(randomBytes(32));
+ const base={tradeId,escrowEth:"0.001",productName:"2F Test Nut",productSku:"2F-NUT-001",inspectionSubject:"TOP Model B score and three-view evidence define the inspection record.",operatorReference:"LOCAL-READONLY-TEST",roles:{...defaults.roles},windows:{...defaults.windows},policyRiskAccepted:false,approvalTimestamp:null};
+ check("01_DEFAULT_CHAIN_AND_CONTRACT",defaults.chainId===11155111&&defaults.contract==="0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905");
+ check("02_TEN_DISTINCT_DEFAULT_ROLE_ADDRESSES",new Set(Object.values(defaults.roles).map(x=>x.toLowerCase())).size===10);
+ const normalized=builder.normalize(base),draft1=builder.buildDraft(normalized),draft2=builder.buildDraft(normalized);
+ check("03_DRAFT_HASH_DETERMINISTIC",draft1.policyHash===draft2.policyHash,draft1.policyHash);
+ check("04_PRODUCT_AND_ROLE_BOUND",draft1.policy.business.productSku==="2F-NUT-001"&&draft1.policy.trade.roles.buyer===base.roles.buyer);
+ check("05_FIXED_MODEL_COMMITMENTS",draft1.terms.modelBundleHash===defaults.fixedCommitments.modelBundleHash&&draft1.terms.thresholdScaled===defaults.fixedCommitments.thresholdScaled);
+ const prepared=await builder.prepare({provider,contract},base);
+ check("06_UNUSED_TRADE_ID",prepared.existing===false,prepared.existingState);
+ check("07_FIVE_STATION_CREDENTIALS_ACTIVE",prepared.allStationsActive&&prepared.credentials.length===5);
+ check("08_PROPOSE_STATICCALL_PASS",prepared.staticCall==="PASS"&&BigInt(prepared.gasEstimate)>0n,prepared.staticError||prepared.gasEstimate);
+ check("09_DRAFT_NOT_BROADCASTABLE",prepared.technicalReady===true&&prepared.broadcastReady===false&&prepared.blockers.includes("EXPLICIT_POLICY_RISK_ACCEPTANCE_REQUIRED"));
+ const accepted={...base,policyRiskAccepted:true,approvalTimestamp:"2026-10-30T12:00:00.000Z"},approved=await builder.prepare({provider,contract},accepted);
+ check("10_APPROVAL_CHANGES_POLICY_HASH",approved.policyHash!==prepared.policyHash,approved.policyHash);
+ check("11_APPROVAL_RECORD_HASHED",/^0x[0-9a-f]{64}$/i.test(approved.approvalRecordHash)&&approved.approvalRecord.signature===null,approved.approvalRecordHash);
+ check("12_APPROVED_TECHNICALLY_READY",approved.broadcastReady===true&&approved.staticCall==="PASS");
+ check("13_NO_SERVER_TRANSACTION",approved.transactionsSent===0&&prepared.transactionsSent===0);
+ expect("14_DUPLICATE_ACTOR_BLOCKED",()=>builder.normalize({...base,roles:{...base.roles,buyer:base.roles.supplier}}),/ACTOR_STATION_ADDRESSES_MUST_ALL_BE_DISTINCT/);
+ expect("15_PROTECTED_TRADE_BLOCKED",()=>builder.normalize({...base,tradeId:"0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff"}),/PROTECTED_OR_EXISTING_PROJECT_TRADE_ID_FORBIDDEN/);
+ expect("16_INVALID_WINDOW_BLOCKED",()=>builder.normalize({...base,windows:{...base.windows,buyerInspection:1}}),/BUYER_WINDOW_INVALID/);
+ const result={suite:"INSPECTESCROW_2F_DYNAMIC_TRADE_BUILDER",generatedAtUtc:new Date().toISOString(),source:"SEPOLIA_READ_ONLY_STATICCALL",tradeId,policyHashes:{draft:prepared.policyHash,approved:approved.policyHash},gasEstimate:approved.gasEstimate,allPass:checks.every(x=>x.pass),checksPassed:checks.filter(x=>x.pass).length,checksTotal:checks.length,transactionsSent:0,checks};
+ fs.writeFileSync(path.join(__dirname,"2F_TRADE_BUILDER_RESULTS.json"),JSON.stringify(result,null,2)+"\n");console.log(JSON.stringify(result,null,2));
+})().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>provider.destroy());

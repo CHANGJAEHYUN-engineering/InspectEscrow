@@ -1,0 +1,17 @@
+"use strict";
+const fs=require("node:fs"),path=require("node:path");
+const root=__dirname,checks=[];
+const add=(name,pass,detail="")=>checks.push({name,pass:Boolean(pass),detail});
+const read=name=>fs.readFileSync(path.join(root,name),"utf8");
+const live=read("live.js"),evidence=read("evidence.js"),replay=read("replay.js");
+add("live forwards Trade ID to evidence",/evidence\?tradeId=/.test(live));
+add("live forwards Trade ID to replay",/replay\?mode=offchain&tradeId=/.test(live));
+add("live forwards Trade ID to e2e",/e2e\?tradeId=/.test(live));
+add("evidence prefers URL or global active trade",/function selectedTrade\(\)/.test(evidence)&&/URLSearchParams\(location\.search\)/.test(evidence)&&/inspectescrow\.activeTrade\.v1/.test(evidence));
+add("evidence refuses silent prior-trade selection",/다른 거래의 과거 증거는 자동 선택하지 않습니다/.test(evidence));
+add("evidence links preserve selected trade",/function syncLinks\(tradeId\)/.test(evidence));
+add("replay prefers URL or global active trade",/const selected=/.test(replay)&&/inspectescrow\.activeTrade\.v1/.test(replay));
+add("replay refuses silent prior-trade selection",/다른 거래의 Replay 결과는 자동 선택하지 않습니다/.test(replay));
+const result={suite:"FINAL_WEB_RELEASE_V2_TRADE_CONTEXT",generatedAtUtc:new Date().toISOString(),checksPassed:checks.filter(x=>x.pass).length,checksTotal:checks.length,allPass:checks.every(x=>x.pass),transactionsSent:0,checks};
+fs.writeFileSync(path.join(root,"FINAL_WEB_V2_TRADE_CONTEXT_RESULTS.json"),JSON.stringify(result,null,2)+"\n");
+console.log(JSON.stringify(result,null,2));if(!result.allPass)process.exitCode=1;

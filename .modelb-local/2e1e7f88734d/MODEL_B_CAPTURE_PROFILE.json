@@ -1,0 +1,16 @@
+{
+  "schema": "inspectescrow.modelb-capture-profile/2.0.0",
+  "status": "PILOT_NOT_PRODUCTION_VALIDATED",
+  "specimenIdScheme": "OPERATOR_CHOSEN_LABEL",
+  "physicalViews": [
+    "TOP",
+    "FRONT",
+    "SIDE"
+  ],
+  "topViewFeedsAi": true,
+  "originalByteIntegrity": "SHA256_PER_FILE_PLUS_CANONICAL_MANIFEST_KECCAK",
+  "captureStationSignatureRequired": true,
+  "captureSignatureVerification": "STATION_ATTESTATION_SIGNS_SPECIMEN_MANIFEST_HASH",
+  "doNotClaim": "PHYSICAL_ORIGIN_AND_CHAIN_OF_CUSTODY_PROVEN",
+  "requiredViewSetHash": "0x51e32fbf19b0d13c1d4b02b740cd1e65ec38f69197fc59f4cc9467a852f64ff6"
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "inspectescrow.recording-readiness/2f-1",
+  "verifiedAtUtc": "2026-10-30T12:27:00Z",
+  "actualSepoliaTransactionsSent": 0,
+  "browser": {
+    "source": "BROWSER_TEST",
+    "url": "http://127.0.0.1:8770",
+    "profilesAvailableToAutomation": ["ChatGPT in-app browser"],
+    "metamaskProfileSeparationVerified": false,
+    "consoleIssues": 0
+  },
+  "actors": {
+    "supplier": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
+    "buyer": "0x5B52D3B71dD5B4637B828Fd2a0e8bC78346709eE",
+    "primaryInspector": "0xb60F55bC142a078781199C6a1689Bd7a86d4f6a8",
+    "backupInspector": "0xeE9652D5F77ffee10aFeb7854E88f7B83bDAF7dd",
+    "externalArbitrator": "0x9E3bA22795068b82B3D7C2A998cd40294520c8Ce"
+  },
+  "scenarios": [
+    {
+      "id": 1,
+      "verdict": "BLOCKED",
+      "mode": "SEPOLIA_WITH_USER_APPROVAL_OR_FUTURE_LOCAL_UI_MODE",
+      "startUrl": "/new-trade",
+      "recordableWithoutTransaction": ["trade form", "canonical policy hash", "staticCall", "role dashboard", "AI inference", "evidence integrity"],
+      "blocked": ["dynamic trade is not selectable by fixed-candidate role/e2e endpoints", "policy approval", "five Actor wallets", "two Station signatures", "12 user-approved transactions"]
+    },
+    {
+      "id": 2,
+      "verdict": "PARTIALLY_READY",
+      "mode": "BROWSER_OFFCHAIN_REPLAY_PLUS_LOCAL_ANVIL_CONTRACT_PROOF",
+      "startUrl": "/evidence",
+      "browserProof": {"status":"CONSISTENT","reportHash":"0x8a853c158ebbab0e723fb49398e621cd1a7f5d0aa71ee7991c99112cf517b4e7","supplierErrorScaled":"0","buyerErrorScaled":"0","submissionGate":"BLOCKED_TRADE_STATE"},
+      "blocked": ["no browser-accessible DISPUTED_PRIMARY trade", "recordReplayResult and Decision disabled"]
+    },
+    {
+      "id": 3,
+      "verdict": "PARTIALLY_READY",
+      "mode": "BROWSER_ACTUAL_MODEL_PLUS_LOCAL_ANVIL_CONTRACT_PROOF",
+      "startUrl": "/live",
+      "browserProof": {"source":"ARCHIVED_S03_COMPARISON_NOT_NEW_CAPTURE","scoreRaw":52.5721321105957,"scoreScaled":"52572132","decision":"REVIEW_REQUIRED","topSha256":"a6f9827f2b2d19ada3e6143a2b6983784afd4b4d22c28d6e45d65fbed036a370","evidenceComplete":false},
+      "blocked": ["no browser-accessible AWAIT_SUPPLIER trade", "SUPPLIER_HOLD action unavailable in current state"]
+    },
+    {
+      "id": 4,
+      "verdict": "PARTIALLY_READY",
+      "mode": "CONTROLLED_RED_TEAM_BROWSER_REPLAY_PLUS_LOCAL_ANVIL_CONTRACT_PROOF",
+      "startUrl": "/replay",
+      "browserProof": {"status":"INCONSISTENT","claimedScoreScaled":"36302903","actualReplayScoreScaled":"36302902","absoluteErrorScaled":"1","toleranceScaled":"0","reportHash":"0xbab3777639b2e187f086a2eeff1005dc15ed4c288563d787d9deca7a69e45aa3","submissionGate":"BLOCKED_CONTROLLED_RED_TEAM_TEST_ONLY"},
+      "blocked": ["controlled report intentionally cannot be signed/submitted", "EXECUTION_HOLD is not reached from this browser flow"]
+    },
+    {
+      "id": 5,
+      "verdict": "PARTIALLY_READY",
+      "mode": "BROWSER_PREFLIGHT_REJECTION_PLUS_LOCAL_ANVIL_SOLIDITY_REVERT",
+      "startUrl": "/evidence",
+      "browserProof": {"wrongTradeBundle":"S05 original bundle imported against rebound trade","result":"POLICY_HASH_MISMATCH","replayEligible":false},
+      "blocked": ["browser rejects before a contract call", "Solidity revert is evidenced by local Red-Team rather than an interactive browser transaction"]
+    }
+  ],
+  "p0": [
+    "Remove fixed candidate constants from role-action and e2e endpoints; resolve verified on-chain terms by selected tradeId.",
+    "Add an explicitly labeled Local Anvil recording profile using the same ABI and isolated test accounts.",
+    "Seed separate A-E local trades and expose them through the shared active-trade selector.",
+    "Verify user-controlled Actor and Station accounts in separate MetaMask profiles without sharing keys.",
+    "Use truthful independent three-view capture sessions for any transaction claimed as physical Supplier/Buyer evidence."
+  ]
+}

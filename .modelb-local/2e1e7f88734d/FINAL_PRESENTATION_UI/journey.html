@@ -1,0 +1,15 @@
+<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>InspectEscrow | 2F 본선 실행 센터</title><link rel="stylesheet" href="/journey.css"><script defer src="/journey.js"></script></head>
+<body><div class="shell">
+<header><a href="/trades">← 거래 워크스페이스</a><strong>Inspect<span>Escrow</span> · RELEASE JOURNEY</strong><nav><a href="/new-trade">새 거래</a><a href="/live">LIVE 검사</a><a href="/#roles">역할 실행</a><a href="/stage">3장면 시연</a></nav></header>
+<main>
+<section class="hero"><div><p class="eyebrow">2F · USER JOURNEY · READ-ONLY PREFLIGHT</p><h1>녹화 순서와 실행 게이트를 한 화면에서</h1><p>거래·정책부터 검사, 증거, Replay, Decision, 정산까지 동일 Trade ID의 현재 상태를 유지하며 이동합니다. 이 화면은 지갑·서명·트랜잭션을 요청하지 않습니다.</p></div><button id="refresh">전체 preflight 재조회</button></section>
+<section class="truth"><b>진실성 경계</b><span id="truth">Sepolia와 로컬 검증 산출물을 읽는 중입니다.</span></section>
+<section class="panel"><div class="head"><div><em>LIVE</em><h2>새 너트·새 사진 실시간 검사</h2></div><span class="mode">UPLOAD VERIFIED · CAMERA PERMISSION REQUIRED</span></div><p>TOP 한 장으로 실제 Model B 추론을 시연하고, FRONT·SIDE를 추가하면 동적 Manifest/Evidence hash와 unsigned Station template을 생성합니다. 현재 브라우저의 물리 카메라 권한은 사용자가 직접 허용해야 합니다.</p><a class="step" href="/live"><small>NEW ORIGINAL BYTES</small><b>실시간 검사 시작</b><span>/live → /evidence → /replay</span></a></section>
+<section class="panel"><div class="head"><div><em>01</em><h2>녹화 대상 거래</h2></div><span class="mode">SEPOLIA READ-ONLY</span></div><div class="row"><label>거래 선택<select id="trade-select"><option value="0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff">REVIEW 후보 · 0x49bf…91ff</option><option value="0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e">S05 정상 완료 · 0x2e1e…3d9e</option></select></label><div id="trade-summary" class="facts"></div></div></section>
+<section class="panel"><div class="head"><div><em>02</em><h2>전체 사용자 이동 경로</h2></div><span class="mode">ONE WEBSITE</span></div><div id="journey" class="journey"></div><p class="small">각 화면은 실제 상태를 다시 조회합니다. 단계 링크를 눌러도 자동 서명이나 자동 TX는 발생하지 않습니다.</p></section>
+<section class="panel"><div class="head"><div><em>03</em><h2>실거래 직전 Preflight</h2></div><span class="mode">NO BROADCAST</span></div><div id="preflight" class="checks"></div><div id="blockers" class="blockers"></div><button id="download" disabled>Preflight JSON 저장</button></section>
+<section class="panel"><div class="head"><div><em>04</em><h2>역할·Station·가스 준비</h2></div><span class="mode">ACTOR ≠ STATION</span></div><div id="roles" class="role-grid"></div></section>
+<section class="panel"><div class="head"><div><em>05</em><h2>독립 시나리오 검증 상태</h2></div><span class="mode">SOURCE-LABELED</span></div><div id="scenarios" class="scenario-grid"></div></section>
+<section class="panel"><div class="head"><div><em>06</em><h2>회귀·릴리스 보존</h2></div><span class="mode">NO GIT MUTATION</span></div><div id="artifacts" class="artifact-grid"></div><div id="release" class="release"></div></section>
+</main><footer>LOCALHOST ONLY · 실제 Sepolia 추가 TX 0건 · 정책 승인과 각 MetaMask 승인은 별도</footer>
+</div></body></html>

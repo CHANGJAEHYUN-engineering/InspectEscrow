@@ -1,0 +1,32 @@
+{
+    "checkedUTC":  "2026-10-29T16:17:27.1299100Z",
+    "readOnly":  true,
+    "description":  "Role-based preflight snapshot: no wallet TX sent",
+    "chainId":  11155111,
+    "blockNumber":  12020652,
+    "tradeId":  "0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+    "state":  1,
+    "stateName":  "PROPOSED",
+    "readyActions":  [
+                         "supplier-policy",
+                         "buyer-policy"
+                     ],
+    "waitingActions":  [
+                           "primary-accept",
+                           "backup-accept",
+                           "external-accept",
+                           "buyer-fund",
+                           "supplier-activate"
+                       ],
+    "accountingConserved":  true,
+    "balanceCoversLiabilities":  true,
+    "walletMockTestsPassed":  [
+                                  "SUPPLIER_ROLE",
+                                  "BUYER_ROLE",
+                                  "UNKNOWN_ROLE",
+                                  "WRONG_CHAIN",
+                                  "NO_EXTENSION"
+                              ],
+    "walletMockActualTxCount":  0,
+    "previousProposalTx":  "0xaf26f08f65c0b5541b61ea3c41c51b2af883a5328ed69f5c2da7e75d936c6222"
+}

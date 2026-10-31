@@ -1,0 +1,139 @@
+{
+  "schema": "inspectescrow.dynamic-trade-e2e/1",
+  "source": "LOCAL_ANVIL",
+  "generatedAtUtc": "2026-10-30T18:03:17.566Z",
+  "chainId": 31339,
+  "contract": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+  "credentialRegistry": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "tradeA": {
+    "tradeId": "0x435028b61076135ff7dc9ca3977cc6c1c9c372061bc804c89078c09678a8cc6d",
+    "policyHash": "0x4b65ea2a629ffaaef398df43c15fd9b6e04f519d9369bac817015744aabac60f",
+    "finalState": 17
+  },
+  "tradeB": {
+    "tradeId": "0xc318eb1b7515bffd7fe6e5c847f8dbfe03d05ae166c634a60b6c15f1880447b4",
+    "policyHash": "0xd7f6b346f50bf203e22de9448cf969037acf3c92c52fec29f2d3b0575943548d",
+    "finalState": 1
+  },
+  "checksPassed": 15,
+  "checks": [
+    "Actor, Station, authority and attacker are distinct",
+    "five Station credentials ACTIVE",
+    "two independent Trade IDs and policy hashes proposed",
+    "UI server binds configured Local Anvil contract",
+    "role API isolates A and B at PROPOSED",
+    "missing Trade ID never falls back to Candidate",
+    "A activation does not mutate B",
+    "Supplier EIP-712 digest matches contract",
+    "wrong Actor cannot submit Supplier Station attestation",
+    "Buyer EIP-712 digest matches contract",
+    "A Station signature cannot be reused for B",
+    "duplicate withdraw is blocked",
+    "A released and withdrawn while B remains PROPOSED",
+    "workspace and resolution APIs preserve per-trade isolation and accounting",
+    "trade selection API switches between A and B without fixed Candidate"
+  ],
+  "transactions": 18,
+  "transactionReceipts": [
+    {
+      "label": "credential",
+      "hash": "0x8096d637a2bf5337455b2567051122ba4fd4e8ca6bd09e93819216be02cb5673",
+      "blockNumber": 3
+    },
+    {
+      "label": "credential",
+      "hash": "0x7dadc5fe0bcdf7bd55f63926a5ada24c1c833c471310f6f5936c7955a5a26974",
+      "blockNumber": 4
+    },
+    {
+      "label": "credential",
+      "hash": "0x93b10f0932aba5261a74fb6a96ba767bab808c38f4a4ada56e06cf5615ccba20",
+      "blockNumber": 5
+    },
+    {
+      "label": "credential",
+      "hash": "0xda8450ba53716b0012861612b7eefe3513948dd5fe9f889879250d7e7209287a",
+      "blockNumber": 6
+    },
+    {
+      "label": "credential",
+      "hash": "0xe94414eaa4f97bdb9757c9bb5761b0a4a0056de08d5e8e9861631c70c8698f2d",
+      "blockNumber": 7
+    },
+    {
+      "label": "A propose",
+      "hash": "0x0b79f6c9df5b1921589a67aac3fb95d3ceb4bbf68b8c925ffee751aea931564a",
+      "blockNumber": 8
+    },
+    {
+      "label": "B propose",
+      "hash": "0x8a6503ebea167dc45146456a457d2244de7532e24cdb37730370f8131f3e16cb",
+      "blockNumber": 9
+    },
+    {
+      "label": "A supplier policy",
+      "hash": "0x17a97d0595879e75af97d760a5fd73654f2900c4c25d19af43c0682303f11fec",
+      "blockNumber": 10
+    },
+    {
+      "label": "A buyer policy",
+      "hash": "0xf31b2a1b0fb3f81b68482181b0aac5bde5ee0f345f1595cf3571a60c1e4f770a",
+      "blockNumber": 11
+    },
+    {
+      "label": "A primary",
+      "hash": "0x76d037d9eee1359294ca1f41879036f27333e632609e07bcfde13f03e8e62af1",
+      "blockNumber": 12
+    },
+    {
+      "label": "A backup",
+      "hash": "0xcd28870355775b6b68e6dbafba3753112eeb39b3630072c011cfb926b9471a52",
+      "blockNumber": 13
+    },
+    {
+      "label": "A arbitrator",
+      "hash": "0x409b97650dd2ec88eb65b298943860d12a64c405ad15e9fffe8bf4c0dcf0f41d",
+      "blockNumber": 14
+    },
+    {
+      "label": "A fund",
+      "hash": "0x89bdeed1ebee01373b8d382c67551d39ff391e9eb385d86a3d4ab984ccb7e3c2",
+      "blockNumber": 15
+    },
+    {
+      "label": "A activate",
+      "hash": "0x7fce342aa3e92281e8d152af8f4c6c522e14d10b10f70a88ffde85a128f34f96",
+      "blockNumber": 16
+    },
+    {
+      "label": "A supplier PASS",
+      "hash": "0x314a5b73d2a7a77237d66fe7da38af8c174e732e3d41a20a4e136ed99eb699be",
+      "blockNumber": 17
+    },
+    {
+      "label": "A buyer PASS",
+      "hash": "0x74426e52d3d9f005579b035913b8a32f1159d5d1c1212e0d0ca7c34c151edae9",
+      "blockNumber": 18
+    },
+    {
+      "label": "A settle",
+      "hash": "0x70a1c9380a043fc5130bc2240fd45894a392d485ed58928b1c05acb5f8761703",
+      "blockNumber": 19
+    },
+    {
+      "label": "A withdraw",
+      "hash": "0x572e62806c3e14903c6c8cce0097d33add92e9abd483eb71fbea7c3e51fddd9d",
+      "blockNumber": 20
+    }
+  ],
+  "finalAccounting": {
+    "accountingConserved": true,
+    "balanceCoversLiabilities": true,
+    "totalFunded": "1000000000000000",
+    "totalWithdrawn": "1000000000000000",
+    "outstandingClaimable": "0",
+    "unsettledEscrow": "0"
+  },
+  "sepoliaTransactionsSent": 0,
+  "syntheticEvidenceOnly": true
+}

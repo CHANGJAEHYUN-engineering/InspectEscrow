@@ -1,0 +1,40 @@
+"use strict";
+const fs=require("node:fs"),path=require("node:path");
+const {Contract,JsonRpcProvider,TypedDataEncoder}=require("ethers");
+const {deriveActionMatrix,decisionTypes,arbitrationTypes,mutualTypes,domain}=require("./resolution-endpoints.cjs");
+const project=path.resolve(__dirname,"..","..","..");
+const abi=JSON.parse(fs.readFileSync(path.join(project,".patch3-build","InspectEscrowPatch3.sol_InspectEscrowPatch3.abi"),"utf8"));
+const provider=new JsonRpcProvider(process.env.INSPECTESCROW_SEPOLIA_RPC||"https://ethereum-sepolia-rpc.publicnode.com",11155111,{staticNetwork:true});
+const contract=new Contract(domain.verifyingContract,abi,provider);
+const addresses={supplier:"0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",buyer:"0x5B52D3B71dD5B4637B828Fd2a0e8bC78346709eE",primaryInspector:"0xb60F55bC142a078781199C6a1689Bd7a86d4f6a8",backupInspector:"0xeE9652D5F77ffee10aFeb7854E88f7B83bDAF7dd",externalArbitrator:"0x9E3bA22795068b82B3D7C2A998cd40294520c8Ce",primaryInspectorStation:"0x0d9B5d1caf10e7E66AE1F63A4085387F707d092d",backupInspectorStation:"0x0d88B2aB0E6Aa39c73599C2115b8Ba0C34094a97",externalArbitratorStation:"0x6D62A42C2328846778e7120A72b02C90c2eEb8eE"};
+const h=n=>"0x"+n.repeat(64).slice(0,64),trade=h("1"),checks=[];
+const add=(name,pass,detail)=>checks.push({name,pass:Boolean(pass),detail:String(detail??"")});
+function snap(state,{expired=false,replay=0,policy=true,supplierClaim="0",buyerClaim="0",buyerOutcome=3}={}){return{state,blockTimestamp:1000,deadline:expired?999:1600,policyApproved:policy,roles:addresses,inspections:{supplier:{outcome:2},buyer:{outcome:buyerOutcome}},replay:{status:replay},claimable:{supplier:{wei:supplierClaim},buyer:{wei:buyerClaim}}};}
+const enabled=(s,id,actor="")=>deriveActionMatrix(s,actor).find(x=>x.id===id&&x.enabled);
+async function main(){
+ add("01_NORMAL_ACCEPT_RELEASE_GATE",!!enabled(snap(11,{buyerOutcome:2}),"accept-release",addresses.buyer),"Buyer PASS + ACCEPTANCE_PENDING");
+ add("02_WRONG_ACTOR_BLOCKED",!enabled(snap(11,{buyerOutcome:2}),"accept-release",addresses.supplier),"Supplier cannot acceptAndRelease");
+ add("03_ACCEPTANCE_TIMEOUT_GATE",!!enabled(snap(11,{expired:true,buyerOutcome:2}),"accept-timeout"),"permissionless after deadline");
+ add("04_PRIMARY_REPLAY_GATE",!!enabled(snap(12,{replay:0}),"record-replay",addresses.primaryInspector),"Primary + Replay NONE");
+ add("05_DECISION_REQUIRES_CONSISTENT",!enabled(snap(12,{replay:0}),"inspector-decision",addresses.primaryInspector)&&!!enabled(snap(12,{replay:1}),"inspector-decision",addresses.primaryInspector),"NONE blocked, CONSISTENT enabled");
+ add("06_INCONSISTENT_CANNOT_DECIDE",!enabled(snap(12,{replay:2}),"inspector-decision",addresses.primaryInspector),"Replay INCONSISTENT blocks decision");
+ add("07_PRIMARY_TIMEOUT_BACKUP",!!enabled(snap(12,{expired:true}),"activate-backup"),"deadline expired");
+ add("08_BACKUP_REPLAY_DECISION",!!enabled(snap(13,{replay:0}),"record-replay",addresses.backupInspector)&&!!enabled(snap(13,{replay:1}),"inspector-decision",addresses.backupInspector),"Backup actor/station path");
+ add("09_BACKUP_TIMEOUT_ESCALATES",!!enabled(snap(13,{expired:true}),"backup-timeout"),"deadline expired");
+ add("10_EXECUTION_HOLD_MUTUAL_ONLY_BEFORE_DEADLINE",!!enabled(snap(14),"mutual-resolve")&&!enabled(snap(14),"external-arbitration"),"no automatic payout");
+ add("11_EXECUTION_HOLD_ARBITRATION_AFTER_DEADLINE",!!enabled(snap(14,{expired:true}),"external-arbitration")&&!enabled(snap(14,{expired:true}),"mutual-resolve"),"deadline transition");
+ add("12_ARBITRATOR_AND_FALLBACK_GATES",!!enabled(snap(20),"arbitration-decision",addresses.externalArbitrator)&&!!enabled(snap(20,{expired:true}),"final-fallback"),"arbitration before / fallback after deadline");
+ add("13_SUPPLIER_HOLD_PATHS",!!enabled(snap(7),"supplier-reinspect",addresses.supplier)&&!!enabled(snap(7),"supplier-abandon",addresses.supplier)&&!!enabled(snap(7,{expired:true}),"supplier-hold-timeout"),"retry, abandon, timeout");
+ add("14_SETTLEMENT_AND_WITHDRAW_SEPARATE",!!enabled(snap(17,{supplierClaim:"1000000000000000"}),"withdraw-supplier",addresses.supplier),"terminal state + positive claimable");
+ add("15_DUPLICATE_WITHDRAW_UI_BLOCKED",!enabled(snap(17,{supplierClaim:"0"}),"withdraw-supplier",addresses.supplier),"zero claimable");
+ add("16_DRAFT_POLICY_BLOCKS_DECISION",!enabled(snap(12,{replay:1,policy:false}),"inspector-decision",addresses.primaryInspector),"DRAFT governance gate");
+ const common={tradeId:trade,stage:0,inspectorActor:addresses.primaryInspector,policyHash:h("2"),supplierEvidenceHash:h("3"),buyerEvidenceHash:h("4"),replayReportHash:h("5"),decision:2,reasonCode:h("6"),decisionEvidenceHash:h("7"),nonce:h("8"),issuedAt:1000,validUntil:1600};
+ const decisionDigest=TypedDataEncoder.hash(domain,decisionTypes,common),decisionContract=await contract.hashInspectorDecision(common);add("17_DECISION_EIP712_MATCHES_CONTRACT",decisionDigest.toLowerCase()===decisionContract.toLowerCase(),decisionDigest);
+ const arb={tradeId:trade,arbitratorActor:addresses.externalArbitrator,policyHash:h("2"),supplierEvidenceHash:h("3"),buyerEvidenceHash:h("4"),decision:1,reasonCode:h("6"),decisionEvidenceHash:h("7"),nonce:h("9"),issuedAt:1000,validUntil:1600};const arbDigest=TypedDataEncoder.hash(domain,arbitrationTypes,arb),arbContract=await contract.hashArbitrationDecision(arb);add("18_ARBITRATION_EIP712_MATCHES_CONTRACT",arbDigest.toLowerCase()===arbContract.toLowerCase(),arbDigest);
+ const mutual={tradeId:trade,outcome:2,resolutionNonce:h("a"),deadline:1600},mutualDigest=TypedDataEncoder.hash(domain,mutualTypes,mutual),mutualContract=await contract.hashMutualResolution(mutual);add("19_MUTUAL_EIP712_MATCHES_CONTRACT",mutualDigest.toLowerCase()===mutualContract.toLowerCase(),mutualDigest);
+ const live=await fetch("http://127.0.0.1:8770/api/resolution/context?tradeId=0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff").then(r=>r.json());add("20_LIVE_DRAFT_PROPOSED_READONLY",live.state===1&&live.policyApproved===false&&live.policyHashVerified===true&&live.actions.length===0&&live.serverTransactionsSent===0,live.stateName+" · "+live.policyExecutionGate);
+ const blocked=await fetch("http://127.0.0.1:8770/api/resolution/prepare-replay",{method:"POST",headers:{"Content-Type":"application/json","X-InspectEscrow-Local":"1"},body:JSON.stringify({tradeId:live.tradeId,reportEnvelope:{}})}).then(async r=>({status:r.status,body:await r.json()}));add("21_DRAFT_PREPARATION_SERVER_BLOCK",blocked.status===422&&/DRAFT_POLICY_NOT_APPROVED/.test(blocked.body.error),blocked.body.error);
+ const js=fs.readFileSync(path.join(__dirname,"resolution.js"),"utf8"),html=fs.readFileSync(path.join(__dirname,"resolution.html"),"utf8");add("22_CLIENT_SAFETY_GATES",/staticCall/.test(js)&&/estimateGas/.test(js)&&/RUNTIME_HASH/.test(js)&&/receipt\.status/.test(js)&&/state\.busy/.test(js),"runtime, stale state, staticCall, gas, receipt, duplicate-click gates");const requests=js.match(/eth_requestAccounts/g)||[];add("23_NO_AUTOMATIC_WALLET_REQUEST",requests.length===1&&/async function connectActor\(\)[\s\S]*?eth_requestAccounts/.test(js)&&html.includes("명시적 사용자 동의"),"wallet request exists only in explicit connectActor handler");
+ const result={suite:"INSPECTESCROW_2D_RESOLUTION_UNIT_AND_LIVE_READONLY",generatedAtUtc:new Date().toISOString(),allPass:checks.every(x=>x.pass),checksPassed:checks.filter(x=>x.pass).length,checksTotal:checks.length,actualSepoliaTransactions:0,checks};fs.writeFileSync(path.join(__dirname,"2D_RESOLUTION_TEST_RESULTS.json"),JSON.stringify(result,null,2)+"\n");console.log(JSON.stringify(result,null,2));if(!result.allPass)process.exitCode=1;
+}
+main().catch(error=>{console.error(error);process.exitCode=1;});

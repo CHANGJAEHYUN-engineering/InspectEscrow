@@ -1,0 +1,125 @@
+{
+  "schema": "inspectescrow.model-bundle/3.0.0",
+  "project": "InspectEscrow",
+  "status": "PILOT_NOT_APPROVED_FOR_ONCHAIN",
+  "artifactCommitment": {
+    "schema": "inspectescrow.modelb-artifact-commitment/1.0.0",
+    "status": "PILOT_NOT_APPROVED_FOR_ONCHAIN",
+    "archive": {
+      "fileName": "InspectEscrow_ModelB_BACKUP.zip",
+      "sha256": "8102cedf082c0d8553ad03372d6dd125daab895ed56d2cad77c4ac0342b0206d"
+    },
+    "checkpoint": {
+      "entry": "InspectEscrow_ModelB_PILOT.pt",
+      "sha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+      "bytes": 103090677
+    },
+    "embeddedArtifacts": {
+      "trainingManifestSha256": "c688c14ee5aa4d653aa9444ebb6a92fa2c5e0c3b36e0394c01714e70734805df",
+      "evaluationCsvSha256": "e3029ec3b9ae7535616225e42599ab59ca3aca82c87840cc04aec4e2bd52d85a",
+      "evaluationReportSha256": "9f69c817cbbf680315fb7216970250fbfe20d1d309e0fe4ddc543d702cfa0406",
+      "candidatePolicySha256": "ff22fade6cf4d8c8e70a9d971ffe51046c558b2b7f64a14b0658efd40681b80b"
+    },
+    "runtime": {
+      "serverSourceSha256": "7dfc622bc3a35e747ffe6c6ec85931ba3c6de66c984d6feadabe22c893458ed2",
+      "requirementsSha256": "bb211ad10e50881c09f61337fea34cbb8fe42a57c7afed61b6df27124d8d42a5"
+    },
+    "verifiedConfiguration": {
+      "algorithm": "PatchCore",
+      "backbone": "wide_resnet50_2",
+      "featureLayers": [
+        "layer2",
+        "layer3"
+      ],
+      "memoryBankShape": [
+        551,
+        1536
+      ],
+      "numNeighbors": 9,
+      "trainingSpecimens": [
+        "S01",
+        "S04",
+        "S06"
+      ],
+      "trainingImages": 9,
+      "thresholdScaled": 38280373,
+      "scoreScale": 1000000,
+      "rounding": "ROUND_HALF_UP",
+      "decisionRule": "score_scaled > threshold_scaled => REVIEW_REQUIRED",
+      "preprocessing": {
+        "exif_transpose": true,
+        "color_space": "RGB",
+        "center_square_crop": true,
+        "derived_resize": [
+          700,
+          700
+        ],
+        "patchcore_resize": [
+          320,
+          320
+        ],
+        "patchcore_center_crop": [
+          280,
+          280
+        ],
+        "image_scaling": "uint8_to_float32_divide_by_255"
+      }
+    }
+  },
+  "artifactCommitmentHash": "0x6c0e08376f9303b787484f5cc81398101d8b73f2b8a9bac8fd012419f3f4e354",
+  "checkpointSha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+  "checkpointFile": "InspectEscrow_ModelB_PILOT.pt",
+  "algorithm": "PatchCore",
+  "backbone": "wide_resnet50_2",
+  "featureLayers": [
+    "layer2",
+    "layer3"
+  ],
+  "memoryBankShape": [
+    551,
+    1536
+  ],
+  "numNeighbors": 9,
+  "trainedOnNormalSpecimens": [
+    "S01",
+    "S04",
+    "S06"
+  ],
+  "trainingNormalImages": 9,
+  "coresetRatio": "0.05",
+  "originalPatchCount": 11025,
+  "preprocessing": [
+    "EXIF_TRANSPOSE",
+    "RGB",
+    "CENTER_SQUARE_CROP",
+    "LANCZOS_700x700",
+    "PATCHCORE_RESIZE_320",
+    "PATCHCORE_CENTER_CROP_280",
+    "UINT8_TO_FLOAT32_SCALE"
+  ],
+  "aiInferenceView": "TOP",
+  "scoreSchemaId": "0x9151149c14197cc68d22f98cc55c34160dfde24230fd2e6cc155b4d824f95dd5",
+  "scoreSchema": {
+    "schema": "inspectescrow.modelb-score-schema/2.0.0",
+    "method": "PatchCore",
+    "scoreType": "RAW_FLOAT32_PRED_SCORE",
+    "scoreScaleExponent": 6,
+    "rounding": "ROUND_HALF_UP",
+    "localDecisionRule": "scoreScaled > 38280373 -> REVIEW",
+    "contractDecisionRule": "scoreScaled >= 38280374 -> REVIEW",
+    "localThresholdScaled": 38280373,
+    "contractThresholdScaled": 38280374,
+    "normalization": "NONE",
+    "postprocessing": "NONE",
+    "modelScope": "PHYSICAL_HEX_NUT_PILOT"
+  },
+  "knownRisk": "NORMAL_FALSE_POSITIVE_S05_FIRST_TOP",
+  "dependencyLock": "REQUIREMENTS_SHA256_COMMITTED_IN_ARTIFACT_AUDIT",
+  "replayPolicy": {
+    "toleranceScaled": 0,
+    "scope": "EXACT_INTEGER_SCORE_SAME_ARTIFACT_AND_RUNTIME_ONLY",
+    "decisionMustMatch": true,
+    "crossHardwareValidated": false,
+    "productionToleranceValidated": false
+  }
+}

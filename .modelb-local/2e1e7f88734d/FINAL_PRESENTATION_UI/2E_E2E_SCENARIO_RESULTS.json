@@ -1,0 +1,83 @@
+{
+  "schema": "inspectescrow.2e-scenario-results/1",
+  "generatedAtUtc": "2026-10-30T10:45:00Z",
+  "actualSepoliaTransactionsSentBy2E": 0,
+  "scenarios": [
+    {
+      "id": "A",
+      "name": "NORMAL_S05",
+      "source": ["SEPOLIA_CONFIRMED_TX", "BROWSER_TEST", "LOCAL_ANVIL", "SEPOLIA_FORK"],
+      "status": "PASS",
+      "tradeId": "0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e",
+      "transition": ["AWAIT_SUPPLIER", "AWAIT_BUYER", "ACCEPTANCE_PENDING", "RELEASED", "WITHDRAWN"],
+      "existingSepoliaTransactions": 12,
+      "newSepoliaTransactions": 0,
+      "finalState": "RELEASED(17)",
+      "supplierClaimableWei": "0",
+      "accountingConserved": true
+    },
+    {
+      "id": "B",
+      "name": "BUYER_REVIEW_REPLAY_CONSISTENT",
+      "source": ["LOCAL_ANVIL", "RECORDED_ACTUAL_MODEL_B_REPLAY"],
+      "status": "LOCAL_VERIFIED",
+      "transition": ["DISPUTED_PRIMARY", "REPLAY_CONSISTENT", "INSPECTOR_DECISION", "RELEASED_OR_REFUNDED", "WITHDRAWN"],
+      "supplierReplayErrorScaled": "0",
+      "buyerReplayErrorScaled": "0",
+      "sepoliaStatus": "NOT_EXECUTED"
+    },
+    {
+      "id": "C",
+      "name": "SUPPLIER_REVIEW",
+      "source": ["LOCAL_ANVIL"],
+      "status": "LOCAL_VERIFIED",
+      "transition": ["AWAIT_SUPPLIER", "SUPPLIER_HOLD", "SUPPLIER_REINSPECTION_OR_REFUND"],
+      "buyerInspectionIncorrectlyOpened": false,
+      "sepoliaStatus": "NOT_EXECUTED"
+    },
+    {
+      "id": "D",
+      "name": "CONTROLLED_RED_TEAM_SCORE_MISMATCH",
+      "source": ["BROWSER_TEST", "RECORDED_ACTUAL_MODEL_B_REPLAY", "LOCAL_ANVIL"],
+      "status": "LOCAL_VERIFIED",
+      "actualModelScoreScaled": "37078381",
+      "controlledClaimScoreScaled": "37078382",
+      "absoluteErrorScaled": "1",
+      "transition": ["INCONSISTENT", "EXECUTION_HOLD", "MUTUAL_OR_ARBITRATION"],
+      "automaticPayout": false,
+      "sepoliaStatus": "NOT_EXECUTED"
+    },
+    {
+      "id": "E",
+      "name": "POLICY_AND_EVIDENCE_ATTACKS",
+      "source": ["BROWSER_TEST", "LOCAL_UNIT", "LOCAL_ANVIL"],
+      "status": "PASS",
+      "attackChecks": 21,
+      "patch3RedTeamChecks": 36,
+      "newSepoliaTransactions": 0
+    }
+  ],
+  "browser": {
+    "journeyTradeContextRecovery": "PASS",
+    "supplierEvidenceImport": "PARTIAL_VERIFICATION",
+    "evidenceHashMatch": true,
+    "manifestHashMatch": true,
+    "replayInputEligible": true,
+    "actualModelBInference": {
+      "scoreRaw": 36.302902,
+      "decision": "PASS",
+      "device": "CPU",
+      "topSha256": "0609922596edc39c6f8db095d7a820d36f87c9492e1f6ffd28936e4d9b888991"
+    },
+    "consoleErrorsOrWarnings": 0
+  },
+  "tests": {
+    "releaseReadiness": "30/30",
+    "modelBLocalE2E": "16/16; 70 local transactions",
+    "patch3RedTeam": "36/36; 239 local blocks",
+    "tradeWorkspace": "14/14",
+    "evidenceImport": "21/21",
+    "resolution": "23/23",
+    "sepoliaFork": "13/13; fork block 12026154; fork transactions 0"
+  }
+}

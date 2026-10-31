@@ -1,0 +1,88 @@
+{
+  "suite": "INSPECTESCROW_2D_SETTLEMENT_WITHDRAW_SEPOLIA_FORK_READ_ONLY",
+  "generatedAtUtc": "2026-10-30T12:03:31.174Z",
+  "scope": "LOCAL_ANVIL_FORK_OF_SEPOLIA_READ_ONLY_CALLS",
+  "forkBlockNumber": 12026549,
+  "chainId": 11155111,
+  "contract": "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",
+  "runtimeHash": "0x5a606383f54c6ebeb52316927343ee802ecdd4774a1a2978de08bf9ee981bdd9",
+  "checksPassed": 13,
+  "checksTotal": 13,
+  "allPass": true,
+  "localForkTransactions": 0,
+  "actualSepoliaTransactions": 0,
+  "accounting": {
+    "totalFunded": "7000000000000000",
+    "totalWithdrawn": "1000000000000000",
+    "unsettledFunded": "6000000000000000",
+    "outstandingClaimable": "0",
+    "contractBalance": "6000000000000000"
+  },
+  "checks": [
+    {
+      "name": "01_FORK_CHAIN_ID",
+      "pass": true,
+      "detail": "11155111"
+    },
+    {
+      "name": "02_PATCH3_RUNTIME_HASH",
+      "pass": true,
+      "detail": "0x5a606383f54c6ebeb52316927343ee802ecdd4774a1a2978de08bf9ee981bdd9"
+    },
+    {
+      "name": "03_COMPLETED_S05_RELEASED",
+      "pass": true,
+      "detail": "17"
+    },
+    {
+      "name": "04_COMPLETED_SUPPLIER_WITHDRAWN",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "05_COMPLETED_BUYER_NOT_REFUNDED",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "06_REVIEW_CANDIDATE_PROPOSED",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "07_PROTECTED_MODEL_A_FUNDED",
+      "pass": true,
+      "detail": "4"
+    },
+    {
+      "name": "08_TOTAL_FUNDED",
+      "pass": true,
+      "detail": "7000000000000000"
+    },
+    {
+      "name": "09_TOTAL_WITHDRAWN",
+      "pass": true,
+      "detail": "1000000000000000"
+    },
+    {
+      "name": "10_UNSETTLED_FUNDED",
+      "pass": true,
+      "detail": "6000000000000000"
+    },
+    {
+      "name": "11_OUTSTANDING_CLAIMABLE_ZERO",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "12_ACCOUNTING_CONSERVED",
+      "pass": true,
+      "detail": "true"
+    },
+    {
+      "name": "13_BALANCE_COVERS_LIABILITIES",
+      "pass": true,
+      "detail": "true / 6000000000000000"
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "suite": "INSPECTESCROW_2D_RESOLUTION_UNIT_AND_LIVE_READONLY",
+  "generatedAtUtc": "2026-10-30T18:03:07.380Z",
+  "allPass": true,
+  "checksPassed": 23,
+  "checksTotal": 23,
+  "actualSepoliaTransactions": 0,
+  "checks": [
+    {
+      "name": "01_NORMAL_ACCEPT_RELEASE_GATE",
+      "pass": true,
+      "detail": "Buyer PASS + ACCEPTANCE_PENDING"
+    },
+    {
+      "name": "02_WRONG_ACTOR_BLOCKED",
+      "pass": true,
+      "detail": "Supplier cannot acceptAndRelease"
+    },
+    {
+      "name": "03_ACCEPTANCE_TIMEOUT_GATE",
+      "pass": true,
+      "detail": "permissionless after deadline"
+    },
+    {
+      "name": "04_PRIMARY_REPLAY_GATE",
+      "pass": true,
+      "detail": "Primary + Replay NONE"
+    },
+    {
+      "name": "05_DECISION_REQUIRES_CONSISTENT",
+      "pass": true,
+      "detail": "NONE blocked, CONSISTENT enabled"
+    },
+    {
+      "name": "06_INCONSISTENT_CANNOT_DECIDE",
+      "pass": true,
+      "detail": "Replay INCONSISTENT blocks decision"
+    },
+    {
+      "name": "07_PRIMARY_TIMEOUT_BACKUP",
+      "pass": true,
+      "detail": "deadline expired"
+    },
+    {
+      "name": "08_BACKUP_REPLAY_DECISION",
+      "pass": true,
+      "detail": "Backup actor/station path"
+    },
+    {
+      "name": "09_BACKUP_TIMEOUT_ESCALATES",
+      "pass": true,
+      "detail": "deadline expired"
+    },
+    {
+      "name": "10_EXECUTION_HOLD_MUTUAL_ONLY_BEFORE_DEADLINE",
+      "pass": true,
+      "detail": "no automatic payout"
+    },
+    {
+      "name": "11_EXECUTION_HOLD_ARBITRATION_AFTER_DEADLINE",
+      "pass": true,
+      "detail": "deadline transition"
+    },
+    {
+      "name": "12_ARBITRATOR_AND_FALLBACK_GATES",
+      "pass": true,
+      "detail": "arbitration before / fallback after deadline"
+    },
+    {
+      "name": "13_SUPPLIER_HOLD_PATHS",
+      "pass": true,
+      "detail": "retry, abandon, timeout"
+    },
+    {
+      "name": "14_SETTLEMENT_AND_WITHDRAW_SEPARATE",
+      "pass": true,
+      "detail": "terminal state + positive claimable"
+    },
+    {
+      "name": "15_DUPLICATE_WITHDRAW_UI_BLOCKED",
+      "pass": true,
+      "detail": "zero claimable"
+    },
+    {
+      "name": "16_DRAFT_POLICY_BLOCKS_DECISION",
+      "pass": true,
+      "detail": "DRAFT governance gate"
+    },
+    {
+      "name": "17_DECISION_EIP712_MATCHES_CONTRACT",
+      "pass": true,
+      "detail": "0xda0d069a40a61ee82defb8437ee1229dcd993eaf09d7768e43a681365a17bdc8"
+    },
+    {
+      "name": "18_ARBITRATION_EIP712_MATCHES_CONTRACT",
+      "pass": true,
+      "detail": "0x61b0fdaf805aeed73043fd765125b4261aee485a03728d534ac7d728070374ae"
+    },
+    {
+      "name": "19_MUTUAL_EIP712_MATCHES_CONTRACT",
+      "pass": true,
+      "detail": "0x103c78e12d069d2d96725bd134228706ab7ffae0a18686021c14f1ae47e60571"
+    },
+    {
+      "name": "20_LIVE_DRAFT_PROPOSED_READONLY",
+      "pass": true,
+      "detail": "PROPOSED · BLOCKED_DRAFT_POLICY_USER_DECISION_REQUIRED"
+    },
+    {
+      "name": "21_DRAFT_PREPARATION_SERVER_BLOCK",
+      "pass": true,
+      "detail": "DRAFT_POLICY_NOT_APPROVED_FOR_ONCHAIN"
+    },
+    {
+      "name": "22_CLIENT_SAFETY_GATES",
+      "pass": true,
+      "detail": "runtime, stale state, staticCall, gas, receipt, duplicate-click gates"
+    },
+    {
+      "name": "23_NO_AUTOMATIC_WALLET_REQUEST",
+      "pass": true,
+      "detail": "wallet request exists only in explicit connectActor handler"
+    }
+  ]
+}

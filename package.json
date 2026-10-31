@@ -1,0 +1,17 @@
+{
+  "name": "inspectescrow-final-web-v2",
+  "version": "2.0.0",
+  "private": true,
+  "description": "InspectEscrow PATCH3 final web runtime and verification commands",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ethers": "6.17.0"
+  },
+  "scripts": {
+    "start:web": "node .modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/server.cjs",
+    "test:dynamic": "node .modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/test-dynamic-trade-e2e.mjs",
+    "test:light": "node .modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/test-trade-workspace.cjs && node .modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/test-role-ui-gates.cjs"
+  }
+}

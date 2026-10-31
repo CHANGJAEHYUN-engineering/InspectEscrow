@@ -1,0 +1,66 @@
+{
+  "suite": "INSPECTESCROW_2C_SEPOLIA_STATE_FORK_READ_ONLY",
+  "generatedAtUtc": "2026-10-30T12:03:31.959Z",
+  "scope": "LOCAL_ANVIL_FORK_OF_SEPOLIA_READ_ONLY_CALLS",
+  "forkBlockNumber": 12026549,
+  "chainId": 11155111,
+  "contract": "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",
+  "runtimeHash": "0x5a606383f54c6ebeb52316927343ee802ecdd4774a1a2978de08bf9ee981bdd9",
+  "checksPassed": 10,
+  "checksTotal": 10,
+  "allPass": true,
+  "localForkTransactions": 0,
+  "actualSepoliaTransactions": 0,
+  "checks": [
+    {
+      "name": "01_FORK_CHAIN_ID",
+      "pass": true,
+      "detail": "11155111"
+    },
+    {
+      "name": "02_PATCH3_RUNTIME_PRESENT",
+      "pass": true,
+      "detail": "0x5a606383f54c6ebeb52316927343ee802ecdd4774a1a2978de08bf9ee981bdd9"
+    },
+    {
+      "name": "03_COMPLETED_S05_RELEASED",
+      "pass": true,
+      "detail": "17"
+    },
+    {
+      "name": "04_SUPPLIER_EVIDENCE_ANCHOR",
+      "pass": true,
+      "detail": "0x103703f43d657264d5d5d4f29d14b47a021f47fe3c80787b6e0a57764ead8c75"
+    },
+    {
+      "name": "05_BUYER_EVIDENCE_ANCHOR",
+      "pass": true,
+      "detail": "0x4e79ad908aa98cf4b3b44e255f733cdfe08db7de30d6af5ee3c087bb79fef555"
+    },
+    {
+      "name": "06_COMPLETED_TRADE_REPLAY_UNUSED",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "07_REVIEW_CANDIDATE_PROPOSED",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "08_PROTECTED_MODEL_A_STILL_FUNDED",
+      "pass": true,
+      "detail": "4"
+    },
+    {
+      "name": "09_ACCOUNTING_CONSERVED",
+      "pass": true,
+      "detail": "true"
+    },
+    {
+      "name": "10_BALANCE_COVERS_LIABILITIES",
+      "pass": true,
+      "detail": "true"
+    }
+  ]
+}

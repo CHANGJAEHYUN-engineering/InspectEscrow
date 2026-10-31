@@ -1,0 +1,16 @@
+.camera-diagnostics {
+  display: grid;
+  grid-template-columns: minmax(230px, 1fr) auto minmax(230px, 1fr);
+  align-items: end;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0a151e;
+}
+.camera-diagnostics span { color: var(--muted); padding: 10px 0; }
+.camera-help { margin-top: 10px; color: var(--muted); }
+.camera-help summary { cursor: pointer; color: var(--text); }
+.camera-help code { color: var(--cyan); }
+@media (max-width: 900px) { .camera-diagnostics { grid-template-columns: 1fr; } }

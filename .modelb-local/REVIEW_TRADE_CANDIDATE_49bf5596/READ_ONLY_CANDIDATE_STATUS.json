@@ -1,0 +1,24 @@
+{
+  "schema": "InspectEscrow.ModelB.ReviewTradeCandidate.v1",
+  "status": "READ_ONLY_CANDIDATE_NO_TX",
+  "createdAtUTC": "2026-10-29T15:32:49.755Z",
+  "chainId": 11155111,
+  "contract": "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",
+  "tradeId": "0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+  "policyHash": "0x89ca38f6006723c8ad8c29fea789d48f017fe2b6da62ad43591540b5c88e63d1",
+  "sourceCompletedTradeId": "0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e",
+  "proposalStaticCall": "PASS",
+  "proposalGasEstimate": "2957891",
+  "error": null,
+  "transactionSent": false,
+  "prerequisites": [
+    "Policy review by both parties",
+    "Supplier and Buyer acceptPolicy",
+    "Primary Backup External inspector acceptAssignment",
+    "Buyer fund exactly 0.001 Sepolia test ETH",
+    "Activate",
+    "Supplier PASS from NEW live evidence with NEW policy hash",
+    "Buyer REVIEW from NEW live evidence with NEW policy hash",
+    "Independent Replay and Inspector decision before timeouts"
+  ]
+}

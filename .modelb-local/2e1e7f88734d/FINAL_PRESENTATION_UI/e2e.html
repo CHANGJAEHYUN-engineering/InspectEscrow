@@ -1,0 +1,30 @@
+<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>InspectEscrow | PATCH3 End-to-End Verification</title>
+<link rel="stylesheet" href="/e2e.css">
+<script defer src="/vendor/ethers.umd.min.js"></script><script defer src="/e2e.js"></script></head>
+<body><div class="shell"><header><a href="/trades">← 거래 상세·정책</a><strong>Inspect<span>Escrow</span> · E2E VERIFICATION LAB</strong><span><a href="/journey">2F 실행 센터</a> · <a href="/resolution">분쟁·정산 →</a></span></header>
+<main>
+<section class="hero"><div class="overline">PATCH3 · SELECTED NETWORK · MANUAL APPROVAL ONLY</div><h1>실제 거래 증거 연결 실험실</h1><p>모델 추론·원본 3뷰 검증·Station EIP-712 서명·Actor 거래 제출을 분리합니다. 실제 서명·TX는 역할 계정이 MetaMask에서 직접 승인해야 합니다.</p></section>
+<div class="facts"><div class="fact"><small>NEW TRADE STATUS</small><strong id="trade-state">조회 중</strong></div><div class="fact"><small>DEADLINE REMAINING</small><strong id="deadline">조회 중</strong></div><div class="fact"><small>ACCOUNTING</small><strong id="accounting">조회 중</strong></div></div>
+<div class="toolbar"><div><small>TRADE ID</small><code id="trade-id">거래 검증 중</code></div><button id="refresh" class="button secondary">계약 상태 갱신</button></div>
+<div id="preflight" class="notice">읽기 전용 사전검증 중입니다.</div>
+<section class="work"><div class="step-number">01</div><div class="section-head"><div><h2>Supplier 실제 검사 · 결과는 모델이 결정</h2><p>현재 거래의 TOP·FRONT·SIDE 원본을 지정하고 AI 재추론 후 선택 Trade ID에 바인딩합니다.</p></div><span class="chip">AWAIT_SUPPLIER(5)</span></div>
+<div class="three"><label>TOP JPG/PNG<input id="supplier-top" type="file" accept="image/png,image/jpeg"></label><label>FRONT JPG/PNG<input id="supplier-front" type="file" accept="image/png,image/jpeg"></label><label>SIDE JPG/PNG<input id="supplier-side" type="file" accept="image/png,image/jpeg"></label></div>
+<div class="field"><label>실물 식별 라벨(운영자 선언)<input id="supplier-label" type="text" value="OPERATOR-SUPPLIER-SPECIMEN" maxlength="100"></label></div>
+<label class="checkbox"><input id="supplier-views" type="checkbox"> 세 원본이 서로 다른 TOP·FRONT·SIDE 촬영 뷰에 해당함을 직접 확인했고, 보관 사진이면 보관 사진이라고 명시합니다.</label>
+<div class="actions"><button id="supplier-prepare" class="button primary">실제 AI 재추론·신규 거래 증거 생성</button><button id="supplier-download" class="button secondary" disabled>증거 JSON 저장</button><button id="supplier-sign" class="button secondary" disabled>Supplier Station EIP-712 서명</button><button id="supplier-submit" class="button danger" disabled>Supplier Actor MetaMask 제출</button></div>
+<pre id="supplier-output" class="output" aria-live="polite">사전검증 필요 · 아직 서명 또는 TX 전송 없음</pre></section>
+<section class="work"><div class="step-number">02</div><div class="section-head"><div><h2>Buyer 실제 검사 · 결과는 모델이 결정</h2><p>Buyer 계정으로만 제출할 수 있습니다. 선택한 세 원본이 TOP·FRONT·SIDE 규칙에 맞는지 직접 확인하세요.</p></div><span class="chip">AWAIT_BUYER(8)</span></div>
+<div class="three"><label>TOP JPG/PNG<input id="buyer-top" type="file" accept="image/png,image/jpeg"></label><label>FRONT JPG/PNG<input id="buyer-front" type="file" accept="image/png,image/jpeg"></label><label>SIDE JPG/PNG<input id="buyer-side" type="file" accept="image/png,image/jpeg"></label></div>
+<div class="field"><label>실물 식별 라벨(운영자 선언)<input id="buyer-label" type="text" value="OPERATOR-BUYER-SPECIMEN" maxlength="100"></label></div>
+<label class="checkbox"><input id="buyer-views" type="checkbox"> 세 원본의 뷰·시점·실물 식별 조건을 확인했습니다. 사진 이름만으로 적합하다고 간주하지 않습니다.</label>
+<div class="actions"><button id="buyer-prepare" class="button primary">실제 AI 재추론·동적 증거 생성</button><button id="buyer-download" class="button secondary" disabled>증거 JSON 저장</button><button id="buyer-sign" class="button secondary" disabled>Buyer Station EIP-712 서명</button><button id="buyer-submit" class="button danger" disabled>Buyer Actor MetaMask 제출</button></div>
+<pre id="buyer-output" class="output" aria-live="polite">Supplier PASS가 신규 거래에 기록되기 전에는 실행할 수 없습니다.</pre></section>
+<section class="work"><div class="step-number">03</div><div class="section-head"><div><h2>Inspector Replay · 통제된 불일치 테스트</h2><p>분쟁이 열린 뒤 Inspector가 실행합니다. <strong>이 테스트의 consistent=false는 실제 독립 모델 재실행 결과가 아니라, 예외 처리 검증을 위한 통제된 음성 사례입니다.</strong></p></div><span class="chip">DISPUTED_PRIMARY(12)</span></div>
+<label>테스트 사유·데이터 차이 설명<textarea id="replay-reason" rows="4" maxlength="1500" placeholder="실제 Replay 근거 또는 통제된 예외 상황의 주입 조건과 기대 결과를 구체적으로 적으세요."></textarea></label>
+<label class="checkbox"><input id="replay-ack" type="checkbox"> 이 서명은 실제 AI 재검증 불일치를 입증하지 않는 <b>통제된 테스트넷 음성 사례</b>이며, 테스트 라벨을 명시해 제출한다는 점을 확인합니다.</label>
+<div class="actions"><button id="replay-prepare" class="button primary">Replay 음성 테스트 증거 생성</button><button id="replay-sign" class="button secondary" disabled>Primary Inspector Station 서명</button><button id="replay-submit" class="button danger" disabled>Primary Inspector Actor 제출</button></div>
+<pre id="replay-output" class="output" aria-live="polite">BUYER REVIEW 결과로 실제 분쟁이 열려야 합니다.</pre></section>
+<section class="work"><div class="step-number">04</div><div class="section-head"><div><h2>정책 변조 · 선택 네트워크 읽기 전용 방어 검증</h2><p>거래가 AWAIT_SUPPLIER(5)일 때만 실제 PolicyHashMismatch eth_call 검증이 가능합니다. 그 외 상태는 온체인 고정 해시 비교와 로컬 테스트로 구분합니다.</p></div><span class="chip">READ ONLY</span></div>
+<div class="actions"><button class="button secondary" id="policy-proof">정책 변조 사전검증 (TX 0)</button></div><pre id="policy-output" class="output">검증 전</pre></section>
+<section class="work notice-panel"><h2>실제 거래 승인 원칙</h2><p>Station이 자신의 MetaMask 계정으로 EIP-712 메시지에 서명하고, 이후 Actor가 자신의 MetaMask 지갑으로 거래를 전송합니다. 사이트는 개인키를 저장하거나 서버에서 거래를 대리 전송하지 않습니다. 모든 제출 전 컨트랙트 staticCall과 권한·마감 검증을 다시 수행합니다.</p><p>현재 새 거래는 PROPOSED(1)입니다. Supplier와 Buyer 정책 수락 → Inspector 3개 역할 수락 → Buyer 예치 → 활성화는 <a href="/#roles">역할별 거래 콘솔</a>에서 먼저 수행해야 합니다. <strong>Buyer·Inspector 역할의 서명은 Supplier가 대신할 수 없습니다.</strong></p></section>
+</main></div></body></html>

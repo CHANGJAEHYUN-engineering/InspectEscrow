@@ -1,0 +1,15 @@
+{
+  "schema": "inspectescrow.modelb-required-views/2.0.0",
+  "physicalCaptureRequired": [
+    "TOP",
+    "FRONT",
+    "SIDE"
+  ],
+  "actualAiInputView": "TOP",
+  "multiViewAggregation": false,
+  "captureAndAiInputAreDifferentScopes": true,
+  "notClaimed": [
+    "PHYSICAL_ITEM_IDENTITY_PROOF",
+    "MANUFACTURING_CAMERA_CERTIFICATION"
+  ]
+}

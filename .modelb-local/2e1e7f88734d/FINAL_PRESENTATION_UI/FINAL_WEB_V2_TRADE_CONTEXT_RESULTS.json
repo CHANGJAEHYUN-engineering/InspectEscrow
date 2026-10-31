@@ -1,0 +1,50 @@
+{
+  "suite": "FINAL_WEB_RELEASE_V2_TRADE_CONTEXT",
+  "generatedAtUtc": "2026-10-30T18:03:04.862Z",
+  "checksPassed": 8,
+  "checksTotal": 8,
+  "allPass": true,
+  "transactionsSent": 0,
+  "checks": [
+    {
+      "name": "live forwards Trade ID to evidence",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "live forwards Trade ID to replay",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "live forwards Trade ID to e2e",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "evidence prefers URL or global active trade",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "evidence refuses silent prior-trade selection",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "evidence links preserve selected trade",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "replay prefers URL or global active trade",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "replay refuses silent prior-trade selection",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}

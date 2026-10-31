@@ -1,0 +1,135 @@
+{
+  "schema": "inspectescrow.2eplus-live-evidence-test-results/1",
+  "generatedAtUtc": "2026-10-30T17:02:34.287Z",
+  "sourceImages": {
+    "classification": "ARCHIVED_S03_COMPARISON_NOT_NEW_CAPTURE",
+    "TOP": "d3ae9d3e92a561bd6b29dec89f076db76ed7a8d3715c3a3595b9ac1204f2cd3e",
+    "FRONT": "d74b8be26be7ddb43fc797e8fdb94eae78177e4ee17ecdff8941439061e6601b",
+    "SIDE": "23dc0586629bc5e3c80ead8989b5f81105057789c35e3df644fae077b8a9dfb6"
+  },
+  "actualModelResult": {
+    "scoreRaw": 35.53425216674805,
+    "scoreScaled": "35534252",
+    "decision": "PASS"
+  },
+  "hashes": {
+    "images": {
+      "TOP": "d3ae9d3e92a561bd6b29dec89f076db76ed7a8d3715c3a3595b9ac1204f2cd3e",
+      "FRONT": "d74b8be26be7ddb43fc797e8fdb94eae78177e4ee17ecdff8941439061e6601b",
+      "SIDE": "23dc0586629bc5e3c80ead8989b5f81105057789c35e3df644fae077b8a9dfb6"
+    },
+    "specimenManifestHash": "0x1ab1ac4df658ff3e646c8dc0f4e4620f7a1d1d6e2ecffb662d08ae06f3ffaf45",
+    "evidencePackageHash": "0xc976419963b11491e6fc7caa86be357155ff398c138418d71c95cda624464ceb"
+  },
+  "replay": {
+    "status": "CONSISTENT",
+    "replayReportHash": "0x1d24e5ea3d9925dd342041fe36cfc7969c957ba2af0034908cae283844c10ad6",
+    "absoluteErrorScaled": "0"
+  },
+  "transactionsSent": 0,
+  "checksPassed": 20,
+  "checksTotal": 20,
+  "allPass": true,
+  "tests": [
+    {
+      "name": "candidate stays PROPOSED",
+      "status": "PASS",
+      "detail": "1"
+    },
+    {
+      "name": "governance remains DRAFT",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "onchain submission blocked",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "same bytes same SHA-256",
+      "status": "PASS",
+      "detail": "d3ae9d3e92a561bd6b29dec89f076db76ed7a8d3715c3a3595b9ac1204f2cd3e"
+    },
+    {
+      "name": "one byte change changes SHA-256",
+      "status": "PASS",
+      "detail": "caa62619d522fe34c8788231ab24d0e13e37794851e0749721e464be6e1ad003"
+    },
+    {
+      "name": "TOP actual inference endpoint",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "TOP remains incomplete evidence",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "dynamic specimen identity",
+      "status": "PASS",
+      "detail": "ARCHIVED-S03-NORMAL-DYNAMIC-TEST"
+    },
+    {
+      "name": "frozen runtime compatibility recorded",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "actual Model B score produced",
+      "status": "PASS",
+      "detail": "35.53425216674805"
+    },
+    {
+      "name": "three-view evidence build",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "new manifest and evidence hashes",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "unsigned and unsubmitted truth",
+      "status": "PASS",
+      "detail": "OFFCHAIN_EVIDENCE_PREPARED_UNSIGNED_NOT_SUBMITTED"
+    },
+    {
+      "name": "source classified archived",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "evidence export import integrity",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "unsubmitted import is partial and replay-blocked onchain",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "independent actual Model B replay",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "single evidence replay consistent",
+      "status": "PASS",
+      "detail": "{\"schema\":\"inspectescrow.modelb-offchain-single-replay-report/1\",\"mode\":\"OFFCHAIN_PRE_SUBMISSION_INDEPENDENT_MODEL_B_REPLAY\",\"status\":\"CONSISTENT\",\"consistent\":true,\"independentAiReplayExecuted\":true,\"tradeId\":\"0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff\",\"role\":\"supplier\",\"evidencePackageHash\":\"0xc976419963b11491e6fc7caa86be357155ff398c138418d71c95cda624464ceb\",\"specimenManifestHash\":\"0x1ab1ac4df658ff3e646c8dc0f4e4620f7a1d1d6e2ecffb662d08ae06f3ffaf45\",\"topInputSha256\":\"d3ae9d3e92a561bd6b29dec89f076db76ed7a8d3715c3a3595b9ac1204f2cd3e\",\"checkpointSha256\":\"8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854\",\"submittedScoreScaled\":\"35534252\",\"replayScoreScaled\":\"35534252\",\"absoluteErrorScaled\":\"0\",\"toleranceScaled\":\"0\",\"submittedDecision\":\"PASS\",\"replayDecision\":\"PASS\",\"policyHash\":\"0x89ca38f6006723c8ad8c29fea789d48f017fe2b6da62ad43591540b5c88e63d1\",\"modelBundleHash\":\"0x3670ae2c0c89892018c8120fc13dc31d7415463e48dfce7eff3d626839d351af\",\"runtimeProvenance\":{\"app\":\"InspectEscrow Live Model B\",\"mode\":\"OFFCHAIN_INFERENCE_ONLY\",\"checkpointSha256\":\"8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854\",\"artifactCommitmentVerified\":true},\"onchainEvidenceSubmitted\":false,\"submissionGate\":\"BLOCKED_OFFCHAIN_EVIDENCE_NOT_SUBMITTED\",\"limitations\":[\"This proves same-runtime reproducibility only, not physical specimen identity or custody.\",\"FRONT and SIDE are integrity evidence; Model B input is TOP only.\"],\"generatedAtUtc\":\"2026-10-30T17:02:33.840Z\",\"transactionsSent\":0}"
+    },
+    {
+      "name": "replay remains offchain blocked",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "duplicate view rejected",
+      "status": "PASS",
+      "detail": "DUPLICATE_VIEW_IMAGE_BYTES"
+    }
+  ]
+}

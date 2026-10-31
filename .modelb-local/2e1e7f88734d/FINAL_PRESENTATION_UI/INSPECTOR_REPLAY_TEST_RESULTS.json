@@ -1,0 +1,137 @@
+{
+  "suite": "INSPECTESCROW_2C_INDEPENDENT_MODEL_B_REPLAY",
+  "generatedAtUtc": "2026-10-30T17:02:09.440Z",
+  "allPass": true,
+  "checksPassed": 20,
+  "checksTotal": 20,
+  "transactionsSent": 0,
+  "actualSepoliaTransactions": 0,
+  "tradeId": "0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e",
+  "replayReportHash": "0x9517a30333a977bea22258dec6bb696ea23c2b3696469332acd88c10ef54bedd",
+  "supplier": {
+    "submitted": "36302902",
+    "replay": "36302902",
+    "error": "0",
+    "decision": "PASS"
+  },
+  "buyer": {
+    "submitted": "37078381",
+    "replay": "37078381",
+    "error": "0",
+    "decision": "PASS"
+  },
+  "archivedS03Comparison": {
+    "scope": "ARCHIVED_COMPARISON_ONLY_NOT_TRADE_EVIDENCE",
+    "normal": {
+      "scoreScaled": 35534252,
+      "decision": "PASS"
+    },
+    "deepScratch": {
+      "scoreScaled": 52572132,
+      "decision": "REVIEW_REQUIRED"
+    }
+  },
+  "reportFile": "C:\\Users\\USER\\OneDrive\\바탕 화면\\대학교 활동\\AI 블록체인\\InspectEscrow_PATCH3_DEPLOY\\.modelb-local\\2e1e7f88734d\\FINAL_PRESENTATION_UI\\INSPECTOR_REPLAY_REPORT_S05_SAMPLE.json",
+  "checks": [
+    {
+      "name": "01_ACTUAL_S05_HTTP_REPLAY",
+      "pass": true,
+      "detail": "HTTP 200 · CONSISTENT"
+    },
+    {
+      "name": "02_SUPPLIER_EXACT_SCORE",
+      "pass": true,
+      "detail": "submitted 36302902 replay 36302902"
+    },
+    {
+      "name": "03_BUYER_EXACT_SCORE",
+      "pass": true,
+      "detail": "submitted 37078381 replay 37078381"
+    },
+    {
+      "name": "04_S05_DECISIONS_REPRODUCED",
+      "pass": true,
+      "detail": "Supplier PASS · Buyer PASS"
+    },
+    {
+      "name": "05_TOP_ONLY_AND_EVIDENCE_VIEWS",
+      "pass": true,
+      "detail": "FRONT and SIDE are integrity evidence; Model B inference input is TOP only."
+    },
+    {
+      "name": "06_DIFFERENT_OUTCOMES_CAN_BOTH_REPRODUCE",
+      "pass": true,
+      "detail": "archived comparison only · PASS 35534252 · REVIEW_REQUIRED 52572132"
+    },
+    {
+      "name": "07_ONE_BYTE_TAMPER_UNVERIFIABLE",
+      "pass": true,
+      "detail": "ORIGINAL_IMAGE_HASH_MISMATCH_TOP"
+    },
+    {
+      "name": "08_POLICY_TAMPER_UNVERIFIABLE",
+      "pass": true,
+      "detail": "POLICY_HASH_MISMATCH"
+    },
+    {
+      "name": "09_CHECKPOINT_TAMPER_UNVERIFIABLE",
+      "pass": true,
+      "detail": "MODEL_CHECKPOINT_MISMATCH"
+    },
+    {
+      "name": "10_WRONG_ROLE_UNVERIFIABLE",
+      "pass": true,
+      "detail": "ROLE_MISMATCH_EXPECTED_VS_BUNDLE"
+    },
+    {
+      "name": "11_NO_AI_NO_CONSISTENCY_RESULT",
+      "pass": true,
+      "detail": "BOTH_ROLE_REPLAY_RESULTS_REQUIRED"
+    },
+    {
+      "name": "12_CONTROLLED_SCORE_MISMATCH_DETECTED",
+      "pass": true,
+      "detail": "INCONSISTENT · error 1"
+    },
+    {
+      "name": "13_CONTROLLED_TEST_LABELED_AND_NOT_SUBMITTABLE",
+      "pass": true,
+      "detail": "BLOCKED_CONTROLLED_RED_TEAM_TEST_ONLY"
+    },
+    {
+      "name": "14_INTEGRITY_FAILURE_DISTINCT_FROM_INCONSISTENCY",
+      "pass": true,
+      "detail": "tamper rejected before AI; controlled valid input reached INCONSISTENT"
+    },
+    {
+      "name": "15_REPORT_EXPORT_IMPORT_HASH",
+      "pass": true,
+      "detail": "0x9517a30333a977bea22258dec6bb696ea23c2b3696469332acd88c10ef54bedd"
+    },
+    {
+      "name": "16_REPORT_FIELD_TAMPER_BLOCKED",
+      "pass": true,
+      "detail": "REPLAY_REPORT_HASH_MISMATCH"
+    },
+    {
+      "name": "17_COMPLETED_TRADE_SUBMISSION_BLOCKED",
+      "pass": true,
+      "detail": "RELEASED · BLOCKED_TRADE_STATE"
+    },
+    {
+      "name": "18_RUNTIME_AND_CHECKPOINT_PROVENANCE",
+      "pass": true,
+      "detail": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854"
+    },
+    {
+      "name": "19_ZERO_TRANSACTIONS_AND_NO_SIGNATURE",
+      "pass": true,
+      "detail": "transactionsSent=0; signature absent"
+    },
+    {
+      "name": "20_PHYSICAL_CUSTODY_NOT_CLAIMED",
+      "pass": true,
+      "detail": "Replay consistency proves reproducibility in the recorded runtime, not physical specimen identity or product quality."
+    }
+  ]
+}

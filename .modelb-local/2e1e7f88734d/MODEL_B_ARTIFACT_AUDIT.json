@@ -1,0 +1,74 @@
+{
+  "schema": "inspectescrow.modelb-artifact-audit/1.0.0",
+  "result": "PASS",
+  "scope": "LOCAL_ARTIFACT_BYTES_AND_DECLARED_CONFIGURATION",
+  "limitations": [
+    "DOES_NOT_APPROVE_MODEL_FOR_PRODUCTION_OR_ONCHAIN_USE",
+    "DOES_NOT_PROVE_PHYSICAL_SPECIMEN_IDENTITY",
+    "DOES_NOT_ESTABLISH_CROSS_HARDWARE_REPLAY_TOLERANCE"
+  ],
+  "commitment": {
+    "schema": "inspectescrow.modelb-artifact-commitment/1.0.0",
+    "status": "PILOT_NOT_APPROVED_FOR_ONCHAIN",
+    "archive": {
+      "fileName": "InspectEscrow_ModelB_BACKUP.zip",
+      "sha256": "8102cedf082c0d8553ad03372d6dd125daab895ed56d2cad77c4ac0342b0206d"
+    },
+    "checkpoint": {
+      "entry": "InspectEscrow_ModelB_PILOT.pt",
+      "sha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+      "bytes": 103090677
+    },
+    "embeddedArtifacts": {
+      "trainingManifestSha256": "c688c14ee5aa4d653aa9444ebb6a92fa2c5e0c3b36e0394c01714e70734805df",
+      "evaluationCsvSha256": "e3029ec3b9ae7535616225e42599ab59ca3aca82c87840cc04aec4e2bd52d85a",
+      "evaluationReportSha256": "9f69c817cbbf680315fb7216970250fbfe20d1d309e0fe4ddc543d702cfa0406",
+      "candidatePolicySha256": "ff22fade6cf4d8c8e70a9d971ffe51046c558b2b7f64a14b0658efd40681b80b"
+    },
+    "runtime": {
+      "serverSourceSha256": "7dfc622bc3a35e747ffe6c6ec85931ba3c6de66c984d6feadabe22c893458ed2",
+      "requirementsSha256": "bb211ad10e50881c09f61337fea34cbb8fe42a57c7afed61b6df27124d8d42a5"
+    },
+    "verifiedConfiguration": {
+      "algorithm": "PatchCore",
+      "backbone": "wide_resnet50_2",
+      "featureLayers": [
+        "layer2",
+        "layer3"
+      ],
+      "memoryBankShape": [
+        551,
+        1536
+      ],
+      "numNeighbors": 9,
+      "trainingSpecimens": [
+        "S01",
+        "S04",
+        "S06"
+      ],
+      "trainingImages": 9,
+      "thresholdScaled": 38280373,
+      "scoreScale": 1000000,
+      "rounding": "ROUND_HALF_UP",
+      "decisionRule": "score_scaled > threshold_scaled => REVIEW_REQUIRED",
+      "preprocessing": {
+        "exif_transpose": true,
+        "color_space": "RGB",
+        "center_square_crop": true,
+        "derived_resize": [
+          700,
+          700
+        ],
+        "patchcore_resize": [
+          320,
+          320
+        ],
+        "patchcore_center_crop": [
+          280,
+          280
+        ],
+        "image_scaling": "uint8_to_float32_divide_by_255"
+      }
+    }
+  }
+}

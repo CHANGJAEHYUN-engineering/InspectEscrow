@@ -1,0 +1,14 @@
+{
+  "schema": "inspectescrow.modelb-score-schema/2.0.0",
+  "method": "PatchCore",
+  "scoreType": "RAW_FLOAT32_PRED_SCORE",
+  "scoreScaleExponent": 6,
+  "rounding": "ROUND_HALF_UP",
+  "localDecisionRule": "scoreScaled > 38280373 -> REVIEW",
+  "contractDecisionRule": "scoreScaled >= 38280374 -> REVIEW",
+  "localThresholdScaled": 38280373,
+  "contractThresholdScaled": 38280374,
+  "normalization": "NONE",
+  "postprocessing": "NONE",
+  "modelScope": "PHYSICAL_HEX_NUT_PILOT"
+}

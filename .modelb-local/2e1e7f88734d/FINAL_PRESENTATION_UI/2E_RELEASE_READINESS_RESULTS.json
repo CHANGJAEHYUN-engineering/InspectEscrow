@@ -1,0 +1,172 @@
+{
+  "suite": "INSPECTESCROW_2E_RELEASE_READINESS_LIGHTWEIGHT",
+  "generatedAtUtc": "2026-10-30T12:28:08.695Z",
+  "source": "SEPOLIA_READ_ONLY_AND_RECORDED_LOCAL_ARTIFACTS",
+  "allPass": true,
+  "checksPassed": 30,
+  "checksTotal": 30,
+  "actualSepoliaTransactions": 0,
+  "heavyTestsExecuted": false,
+  "heavyTestBlocker": "NOT_RUN_IN_LIGHTWEIGHT_SUITE_RECORDED_ARTIFACTS_USED",
+  "disk": {
+    "source": "LOCAL_OS_READ_ONLY",
+    "freeBytes": 12265578496,
+    "totalBytes": 235681083392,
+    "freeGiB": 11.42,
+    "minimumGiB": 10,
+    "safeForHeavyTests": true
+  },
+  "tradeId": "0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+  "checks": [
+    {
+      "name": "01_ALL_USER_ROUTES_DECLARED",
+      "pass": true,
+      "detail": "/trades → /new-trade → /#roles → /live → /e2e → /evidence → /replay → /resolution → /stage"
+    },
+    {
+      "name": "02_RELEASE_MANIFEST_COMPLETE",
+      "pass": true,
+      "detail": "69"
+    },
+    {
+      "name": "03_RELEASE_FILE_HASHES",
+      "pass": true,
+      "detail": "69"
+    },
+    {
+      "name": "04_SECRET_AND_MODEL_DENYLIST",
+      "pass": true,
+      "detail": "*.env, *.key, *.pem, *.p12, *.pfx, *.keystore, *.pt, *.pth, *.ckpt, *.onnx, *.safetensors, private evidence images, browser profiles, mnemonic or private keys"
+    },
+    {
+      "name": "05_GIT_NOT_MUTATED",
+      "pass": true,
+      "detail": "NOT_STAGED_OR_COMMITTED_BY_CODEX"
+    },
+    {
+      "name": "06_CHAIN_ID",
+      "pass": true,
+      "detail": "11155111"
+    },
+    {
+      "name": "07_PATCH3_RUNTIME",
+      "pass": true,
+      "detail": "0x5a606383f54c6ebeb52316927343ee802ecdd4774a1a2978de08bf9ee981bdd9"
+    },
+    {
+      "name": "08_CANDIDATE_PROPOSED",
+      "pass": true,
+      "detail": "PROPOSED"
+    },
+    {
+      "name": "09_DRAFT_POLICY_PRESERVED",
+      "pass": true,
+      "detail": "DRAFT_MODEL_B_NOT_APPROVED_FOR_ONCHAIN"
+    },
+    {
+      "name": "10_DRAFT_EXECUTION_GATE",
+      "pass": true,
+      "detail": "BLOCKED_DRAFT_POLICY_USER_DECISION_REQUIRED"
+    },
+    {
+      "name": "11_POLICY_HASH_VERIFIED",
+      "pass": true,
+      "detail": "0x89ca38f6006723c8ad8c29fea789d48f017fe2b6da62ad43591540b5c88e63d1"
+    },
+    {
+      "name": "12_FIVE_STATIONS_ACTIVE",
+      "pass": true,
+      "detail": "1,1,1,1,1"
+    },
+    {
+      "name": "13_ACTOR_STATION_SEPARATION",
+      "pass": true,
+      "detail": "all distinct"
+    },
+    {
+      "name": "14_ROLE_GAS_BALANCES_READ",
+      "pass": true,
+      "detail": "0.040925278647257246,0.007732620941179014,0.003787558985667844,0.002072035966851555,0.002881328997982593"
+    },
+    {
+      "name": "15_ACCOUNTING_INVARIANTS",
+      "pass": true,
+      "detail": "{\"conserved\":true,\"balanceCoversLiabilities\":true,\"totalFundedWei\":\"7000000000000000\",\"totalWithdrawnWei\":\"1000000000000000\",\"outstandingClaimableWei\":\"0\",\"unsettledEscrowWei\":\"6000000000000000\",\"escrowBalanceWei\":\"6000000000000000\"}"
+    },
+    {
+      "name": "16_NO_AUTOMATIC_BROADCAST",
+      "pass": true,
+      "detail": "TX 0"
+    },
+    {
+      "name": "17_USER_APPROVAL_BLOCKER",
+      "pass": true,
+      "detail": "POLICY_USER_APPROVAL_REQUIRED,USER_PER_TRANSACTION_APPROVAL_REQUIRED"
+    },
+    {
+      "name": "18_DISK_GATE_TRUTHFUL",
+      "pass": true,
+      "detail": "11.42 GiB · safe=true"
+    },
+    {
+      "name": "19_MODEL_RUNTIME_GATE_TRUTHFUL",
+      "pass": true,
+      "detail": "ONLINE"
+    },
+    {
+      "name": "20_SCENARIO_A_SEPOLIA_CONFIRMED",
+      "pass": true,
+      "detail": "0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e"
+    },
+    {
+      "name": "21_SCENARIOS_B_TO_E_LOCAL_ONLY",
+      "pass": true,
+      "detail": "LOCAL_ANVIL,LOCAL_ANVIL,LOCAL_ANVIL,LOCAL_ANVIL"
+    },
+    {
+      "name": "22_SOURCE_LABELS_PRESENT",
+      "pass": true,
+      "detail": "SEPOLIA_CONFIRMED_TX,LOCAL_ANVIL,LOCAL_ANVIL,LOCAL_ANVIL,LOCAL_ANVIL"
+    },
+    {
+      "name": "23_REFERENCE_S05_RELEASED",
+      "pass": true,
+      "detail": "{\"tradeId\":\"0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e\",\"state\":17,\"transactionCount\":12}"
+    },
+    {
+      "name": "24_CANDIDATE_SINGLE_PROPOSAL_TX",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "25_PROTECTED_MODEL_A_FUNDED",
+      "pass": true,
+      "detail": "4"
+    },
+    {
+      "name": "26_ALL_RECORDED_ARTIFACTS_PASS",
+      "pass": true,
+      "detail": "16/16,36/36,20/20,23/23,13/13"
+    },
+    {
+      "name": "27_ZERO_RECORDED_SEPOLIA_TEST_TX",
+      "pass": true,
+      "detail": "all test artifacts TX 0"
+    },
+    {
+      "name": "28_JOURNEY_LINKED_FROM_ALL_SCREENS",
+      "pass": true,
+      "detail": "all linked"
+    },
+    {
+      "name": "29_SHARED_TRADE_CONTEXT",
+      "pass": true,
+      "detail": "journey→trades→resolution"
+    },
+    {
+      "name": "30_SERVER_ROUTES_WIRED",
+      "pass": true,
+      "detail": "/journey + /new-trade + /api/release/status"
+    }
+  ]
+}

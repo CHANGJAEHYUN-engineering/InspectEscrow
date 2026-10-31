@@ -1,0 +1,7 @@
+@media(max-width:900px){
+  .topbar{padding:0 12px;gap:10px}
+  .topbar .brand b,.topbar .network{display:none}
+  .topbar nav{display:flex;overflow-x:auto;gap:2px;scrollbar-width:thin}
+  .topbar nav a{white-space:nowrap;padding:8px 7px}
+}
+.new-trade-link{display:inline-block;margin-right:8px;background:#176fca;color:#fff;text-decoration:none;padding:10px 14px;border-radius:8px;font-weight:800;font-size:12px}

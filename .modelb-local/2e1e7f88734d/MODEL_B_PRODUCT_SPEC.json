@@ -1,0 +1,20 @@
+{
+  "schema": "inspectescrow.modelb-product-spec/2.0.0",
+  "status": "PILOT_FOR_DIRECTLY_PHOTOGRAPHED_HEX_NUTS",
+  "productClass": "HEX_NUT",
+  "manufacturer": "UNKNOWN",
+  "dimensions": "NOT_MEASURED",
+  "material": "NOT_VERIFIED",
+  "commercialDefectCriteria": "UNSPECIFIED_HUMAN_INSPECTOR_REVIEW_REQUIRED",
+  "specimens": [
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08"
+  ],
+  "sampleLabelPhysicalIdentityProven": false
+}

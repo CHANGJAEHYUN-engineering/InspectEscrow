@@ -1,5 +1,19 @@
 # InspectEscrow
 
+## 2026-10-31 FINAL WEB RELEASE V2
+
+**Latest integrated web application source is now included in this repository.**
+The top-level `index.html` remains the **earlier conceptual demo**, not the final role-based Windows application.
+
+- [Integrated Windows UI and API code](.modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/)
+- [Dynamic Trade ID P0](.modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/dynamic-trade-context.cjs)
+- [Final release results and reproducibility notes](docs/FINAL_WEB_RELEASE_V2_20261031_KO.md)
+- [Model B inference server source](modelb/)
+- [Windows installation guidance](.modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/INSTALL_WINDOWS_KO.md)
+
+**Scope:** Final Web Release V2 was verified on the development Windows machine and from a separately extracted release ZIP. The portable ZIP (153,387,537 bytes; SHA-256 `B52D02F6AC8A51BFE3267B6562E0A4F4B50293B54A5A77B8579A76D984378C18`) is a private teammate handoff. The repository intentionally excludes model archives, original nut photos, private evidence bundles and credentials, so live Model B inference requires separately provisioned artifacts. Independent installation on the teammate's PC remains unverified. No new Sepolia transactions were sent for this release.
+
+
 **AI 제조 품질검사의 신뢰·분쟁 해결을 위한 블록체인 에스크로 시스템**  
 2026 AI × Blockchain Hackathon · Track 4 · 팀 창지환
 
@@ -73,7 +87,6 @@ Economic   거래 조건 합의 → 예치 → 검사 → 분쟁·Replay
 | `docs/` | 아키텍처, 배포 이력, 테스트·보안 설계, 검증 범위, 출처 및 라이선스 |
 | `index.html` / `app.js` | **예선 당시 정적 인터랙티브 시뮬레이션**. 최종 통합 웹사이트의 실행 파일이 아님 |
 
-**통합 Windows Model B 웹사이트(2A~2F)**는 로컬 개발본에 존재하며, 동적 Trade ID 연결과 독립 PC 실행 패키지의 최종 검증이 진행 중입니다. 그 코드는 공개 `main`에 아직 반영되지 않았으므로 현재 저장소를 통합 웹사이트의 독립 실행 릴리스라고 안내하지 않습니다.
 
 ## 기술 문서
 

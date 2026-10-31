@@ -1,0 +1,97 @@
+{
+  "suite": "INSPECTESCROW_2F_DYNAMIC_TRADE_BUILDER",
+  "generatedAtUtc": "2026-10-30T18:03:07.438Z",
+  "source": "SEPOLIA_READ_ONLY_STATICCALL",
+  "tradeId": "0x7939bd0ec8c10506eab166cb3fca713cfdf754e50c0c4b117cedf093932c812a",
+  "policyHashes": {
+    "draft": "0x3be07ae256887cfc2808edad2beead188757763a3e4eccb37b4affb9382f7b6b",
+    "approved": "0x60ecc26cd4d565c2bf35cce1886ce1174b21fb4ce162631d6401f667803810b1"
+  },
+  "gasEstimate": "2957903",
+  "allPass": true,
+  "checksPassed": 16,
+  "checksTotal": 16,
+  "transactionsSent": 0,
+  "checks": [
+    {
+      "name": "01_DEFAULT_CHAIN_AND_CONTRACT",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "02_TEN_DISTINCT_DEFAULT_ROLE_ADDRESSES",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "03_DRAFT_HASH_DETERMINISTIC",
+      "pass": true,
+      "detail": "0x3be07ae256887cfc2808edad2beead188757763a3e4eccb37b4affb9382f7b6b"
+    },
+    {
+      "name": "04_PRODUCT_AND_ROLE_BOUND",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "05_FIXED_MODEL_COMMITMENTS",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "06_UNUSED_TRADE_ID",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "name": "07_FIVE_STATION_CREDENTIALS_ACTIVE",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "08_PROPOSE_STATICCALL_PASS",
+      "pass": true,
+      "detail": "2957903"
+    },
+    {
+      "name": "09_DRAFT_NOT_BROADCASTABLE",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "10_APPROVAL_CHANGES_POLICY_HASH",
+      "pass": true,
+      "detail": "0x60ecc26cd4d565c2bf35cce1886ce1174b21fb4ce162631d6401f667803810b1"
+    },
+    {
+      "name": "11_APPROVAL_RECORD_HASHED",
+      "pass": true,
+      "detail": "0x5ba8713cba1c52d06373800f6690f51b36f731e602c44d67be5b4c1e2f926d06"
+    },
+    {
+      "name": "12_APPROVED_TECHNICALLY_READY",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "13_NO_SERVER_TRANSACTION",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "14_DUPLICATE_ACTOR_BLOCKED",
+      "pass": true,
+      "detail": "ACTOR_STATION_ADDRESSES_MUST_ALL_BE_DISTINCT"
+    },
+    {
+      "name": "15_PROTECTED_TRADE_BLOCKED",
+      "pass": true,
+      "detail": "PROTECTED_OR_EXISTING_PROJECT_TRADE_ID_FORBIDDEN"
+    },
+    {
+      "name": "16_INVALID_WINDOW_BLOCKED",
+      "pass": true,
+      "detail": "BUYER_WINDOW_INVALID"
+    }
+  ]
+}

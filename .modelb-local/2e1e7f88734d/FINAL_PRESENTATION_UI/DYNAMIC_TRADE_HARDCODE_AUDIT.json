@@ -1,0 +1,34 @@
+{
+  "schema": "inspectescrow.dynamic-trade-hardcode-audit/1",
+  "generatedAtUtc": "2026-10-30T17:06:51.846Z",
+  "executionPathsConverted": [
+    "trade-builder-endpoints.cjs",
+    "new-trade.js",
+    "role-action-endpoints.cjs",
+    "roles.js",
+    "e2e-endpoints.cjs",
+    "e2e.js",
+    "live-evidence-endpoints.cjs",
+    "live.js",
+    "evidence-import-endpoints.cjs",
+    "replay-endpoints.cjs",
+    "resolution-endpoints.cjs",
+    "resolution.js",
+    "trade-workspace-endpoints.cjs",
+    "trades.js",
+    "journey.js"
+  ],
+  "preservedKnownReadOnlyRecords": [
+    "0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+    "0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e"
+  ],
+  "preservedFixtureClasses": [
+    "test-*.cjs and test-*.mjs explicit fixtures",
+    "*_RESULTS.json and sample evidence records",
+    "stage presentation records",
+    "legacy Candidate-only policy preparation view"
+  ],
+  "fallbackRule": "A missing, malformed, nonexistent, or unreadable selected Trade ID is rejected and is never replaced by the Candidate.",
+  "authorityRule": "Browser storage and URL select a convenience context only. Every API reloads TradeTerms, state, inspections, replay, deadlines, settlement and accounting from the configured contract.",
+  "sepoliaTransactionsSent": 0
+}
