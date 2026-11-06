@@ -121,7 +121,7 @@ http.createServer(async(req,res)=>{
   if(pathname.startsWith("/api/registry/"))return registryEndpoints.handle(req,res,{contract:ctr,provider:rpc,registryAbi:REGISTRY_ABI},url);
   if(pathname==="/api/presentation/github-qr.svg"&&req.method==="GET")return serveGithubQr(res);
   if(pathname==="/api/trades"||pathname.startsWith("/api/trades/"))return tradeWorkspaceEndpoints.handle(req,res,{contract:ctr,provider:rpc},url);
-  if(["/","/index.html","/trades","/trades.html","/new-trade","/new-trade.html","/live","/live.html","/evidence","/evidence.html","/e2e","/e2e.html","/replay","/replay.html","/stage","/stage.html","/resolution","/resolution.html","/settlement","/audit"].includes(pathname))return serve(req,res,"platform.html","text/html");
+  if(["/","/index.html","/trades","/trades.html","/new-trade","/new-trade.html","/live","/live.html","/evidence","/evidence.html","/e2e","/e2e.html","/replay","/replay.html","/stage","/stage.html","/resolution","/resolution.html","/settlement","/audit","/assist"].includes(pathname))return serve(req,res,"platform.html","text/html");
   if(pathname==="/tools/home")return serve(req,res,"index.html","text/html");
   if(pathname==="/tools/trades")return serve(req,res,"trades.html","text/html");
   if(pathname==="/tools/new-trade")return serve(req,res,"new-trade.html","text/html");
@@ -157,6 +157,8 @@ http.createServer(async(req,res)=>{
   if(pathname==="/stage.js")return serve(req,res,"stage.js","application/javascript");
   if(pathname==="/styles.css")return serve(req,res,"styles.css","text/css");
   if(pathname==="/platform.css")return serve(req,res,"platform.css","text/css");
+  if(pathname==="/assist.css")return serve(req,res,"assist.css","text/css");
+  if(pathname==="/assist.js")return serve(req,res,"assist.js","application/javascript");
   if(pathname==="/enterprise-design.css")return serve(req,res,"enterprise-design.css","text/css");
   if(pathname==="/enterprise-tools.css")return serve(req,res,"enterprise-tools.css","text/css");
   if(pathname==="/favicon.svg"||pathname==="/favicon.ico")return serve(req,res,"favicon.svg","image/svg+xml");

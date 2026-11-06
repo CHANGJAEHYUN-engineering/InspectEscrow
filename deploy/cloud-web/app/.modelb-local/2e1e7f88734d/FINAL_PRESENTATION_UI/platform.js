@@ -22,6 +22,7 @@ const TOOL_SCRIPTS={trades:"/trades.js","new-trade":"/new-trade.js",live:"/live.
 const TOOL_STYLES={trades:["/trades.css","/trades-2b.css"],"new-trade":["/new-trade.css"],live:["/live.css","/live-camera.css"],evidence:["/evidence.css"],e2e:["/e2e.css"],replay:["/replay.css"],resolution:["/resolution.css"],stage:["/stage.css"]};
 const ROUTES={
   "/":{view:"dashboard"},
+  "/assist":{view:"assist"},
   "/trades":{view:"trades",tool:"trades"},
   "/new-trade":{view:"trades",tool:"new-trade"},
   "/live":{view:"inspection",tool:"live"},
@@ -57,12 +58,16 @@ function saveTrade(id){return TradeContext.write(id);}
 function toast(message,danger=false){const el=$("platform-toast");el.textContent=message;el.classList.toggle("danger",danger);el.hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.hidden=true,4200);}
 function friendlyError(error){const raw=String(error?.shortMessage||error?.reason||error?.message||error||"");const map=[["NETWORK_TRADE_NOT_FOUND","선택한 네트워크에 존재하지 않는 거래입니다."],["TRADE_NOT_FOUND_ON_ACTIVE_NETWORK","선택한 네트워크에 존재하지 않는 거래입니다."],["DeadlinePassed","거래 실행 기한이 지났습니다. 새로운 거래를 준비해 주세요."],["0x70f65caa","거래 실행 기한이 지났습니다. 새로운 거래를 준비해 주세요."],["DEADLINE_EXPIRED_BY_WALL_CLOCK","다음 블록 예상 시각 기준으로 거래 기한이 이미 만료됐습니다. 새로운 거래를 준비해 주세요."],["UnauthorizedAuthority","자격 관리 권한이 없어 조회만 가능합니다."],["UnauthorizedCaller","현재 선택된 지갑은 이 작업의 담당 계정이 아닙니다."],["UnauthorizedStation","현재 서명 지갑은 이 거래에 지정된 검사 장비 계정이 아닙니다."],["InvalidCredentialState","현재 자격 상태에서는 선택한 변경을 실행할 수 없습니다."],["WRONG_CHAIN","MetaMask 네트워크가 현재 InspectEscrow 네트워크와 다릅니다."],["chain mismatch","MetaMask 네트워크가 현재 InspectEscrow 네트워크와 다릅니다."],["AI server","AI 검사 서버에 연결할 수 없습니다. 검사 기능이 일시적으로 제한됩니다."],["unknown custom error","현재 네트워크에서 선택한 거래 상태를 확인할 수 없습니다. Trade ID와 네트워크를 확인해 주세요."],["user rejected","사용자가 MetaMask 요청을 취소했습니다."],["ACTION_REJECTED","사용자가 MetaMask 요청을 취소했습니다."]];return map.find(([token])=>raw.toLowerCase().includes(token.toLowerCase()))?.[1]||raw;}
 async function json(url,options={}){const response=await fetch(url,{cache:"no-store",...options});let body;try{body=await response.json();}catch{throw Error("서버 응답을 해석할 수 없습니다. HTTP "+response.status);}if(!response.ok){const raw=String(body.detail||body.error||"요청 실패"),error=Error(friendlyError(raw));error.technicalDetail=raw;error.httpStatus=response.status;throw error;}return body;}
-function withTrade(path){const url=new URL(path,location.origin),selected=new URLSearchParams(location.search).get("tradeId"),id=validTrade(selected)?selected:state.detail?.id||readSavedTrade();if(validTrade(id)&&!url.searchParams.has("tradeId"))url.searchParams.set("tradeId",id);return url.pathname+url.search+url.hash;}
+function withTrade(path){const url=new URL(path,location.origin);if(url.pathname==="/assist")return "/assist";const selected=new URLSearchParams(location.search).get("tradeId"),id=validTrade(selected)?selected:state.detail?.id||readSavedTrade();if(validTrade(id)&&!url.searchParams.has("tradeId"))url.searchParams.set("tradeId",id);return url.pathname+url.search+url.hash;}
 function navigate(path,replace=false){const target=withTrade(path);history[replace?"replaceState":"pushState"]({},"",target);renderRoute({scrollToTop:true});}
 
 function route(){return ROUTES[location.pathname]||ROUTES["/"];}
 function renderRoute({scrollToTop=false}={}){
   const current=route();state.activeView=current.view;
+  const isAssist=current.view==="assist";
+  document.body.classList.toggle("assist-mode",isAssist);
+  document.querySelectorAll("[data-service-mode]").forEach(button=>{const selected=(button.dataset.serviceMode==="assist")===isAssist;button.classList.toggle("selected",selected);button.setAttribute("aria-pressed",String(selected));});
+  const assistNote=document.querySelector(".assist-sidebar-note");if(assistNote)assistNote.hidden=!isAssist;
   document.querySelectorAll(".platform-view").forEach(view=>{const hidden=view.dataset.view!==current.view;if(view.hidden!==hidden)view.hidden=hidden;});
   document.querySelectorAll(".platform-nav [data-route]").forEach(link=>link.classList.toggle("active",link.dataset.route===current.view));
   document.querySelectorAll(".task-tabs button").forEach(button=>button.classList.toggle("active",button.dataset.tool===current.tool||(button.dataset.native==="roles"&&current.view==="trades"&&!current.tool)));
@@ -227,7 +232,7 @@ async function loadContext(showToast=false){
   try{state.ping=await json("/api/ping");TradeContext.configure(state.ping);renderNetwork();let id=activeTrade(),detail=null,contextNotice="";
     if(validTrade(id)){try{detail=await json("/api/trades/"+encodeURIComponent(id));if(!TradeContext.matches(detail))throw Error("NETWORK_CONTEXT_MISMATCH");}catch(error){TradeContext.clear();contextNotice="이전에 선택한 거래는 선택한 네트워크에 존재하지 않는 거래입니다. 현재 네트워크에서 검증된 거래로 전환했습니다.";id="";}}
     if(!detail){const list=await json("/api/trades");if(!TradeContext.matches(list))throw Error("NETWORK_CONTEXT_MISMATCH");const selected=list.items?.find(item=>item.settled)||list.items?.[0];id=selected?.id||"";if(!validTrade(id))throw Error("현재 네트워크에서 검증된 거래가 없습니다.");detail=await json("/api/trades/"+encodeURIComponent(id));if(!TradeContext.matches(detail))throw Error("NETWORK_CONTEXT_MISMATCH");}
-    saveTrade(id);const currentUrl=new URL(location.href);if(currentUrl.searchParams.get("tradeId")!==id){currentUrl.searchParams.set("tradeId",id);history.replaceState(null,"",currentUrl.pathname+currentUrl.search+currentUrl.hash);}const preflight=await json("/api/e2e/preflight?tradeId="+encodeURIComponent(id)).catch(()=>null);state.detail=detail;state.preflight=preflight;renderContext();const currentRoute=route(),routeIsMounted=state.activeView===currentRoute.view&&(!currentRoute.tool||state.activeTool===currentRoute.tool);if(!routeIsMounted)renderRoute();await refreshWallet(false);
+    saveTrade(id);const currentUrl=new URL(location.href);if(currentUrl.pathname!=="/assist"&&currentUrl.searchParams.get("tradeId")!==id){currentUrl.searchParams.set("tradeId",id);history.replaceState(null,"",currentUrl.pathname+currentUrl.search+currentUrl.hash);}const preflight=await json("/api/e2e/preflight?tradeId="+encodeURIComponent(id)).catch(()=>null);state.detail=detail;state.preflight=preflight;renderContext();const currentRoute=route(),routeIsMounted=state.activeView===currentRoute.view&&(!currentRoute.tool||state.activeTool===currentRoute.tool);if(!routeIsMounted)renderRoute();await refreshWallet(false);
     if(contextNotice){alert.innerHTML=`<strong>${esc(contextNotice)}</strong><span>Chain ID ${esc(detail.chainId)} · Contract ${esc(short(detail.contract,14,10))} · 실행 요청이나 트랜잭션은 발생하지 않았습니다.</span>`;alert.className="platform-alert warning error-message";alert.hidden=false;}if(showToast)toast("거래·지갑·Registry 상태를 갱신했습니다.");}
   catch(error){const message=error.message||String(error),technical=error.technicalDetail||String(error);alert.innerHTML=`<strong>${esc(message)}</strong><span>읽기 전용 사전 조회에서 중단됐으며 트랜잭션은 전송되지 않았습니다.</span><details><summary>기술 상세 보기</summary><code>HTTP ${esc(error.httpStatus||"—")} · ${esc(technical)}</code></details>`;alert.className="platform-alert danger error-message";alert.hidden=false;if(showToast)toast("상태 갱신 실패",true);}
 }
@@ -238,6 +243,7 @@ async function checkWallet(){
 function exportAudit(){if(!state.auditPayload){toast("저장할 감사 데이터가 없습니다.",true);return;}const blob=new Blob([JSON.stringify(state.auditPayload,null,2)+"\n"],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="InspectEscrow_Audit_"+(state.detail?.id||"trade").slice(2,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("감사 JSON을 저장했습니다.");}
 
 document.addEventListener("click",event=>{
+  const mode=event.target.closest("[data-mode-path]");if(mode){event.preventDefault();navigate(mode.dataset.modePath);return;}
   const routeLink=event.target.closest("a[data-route]");if(routeLink){event.preventDefault();navigate(CATEGORY_PATH[routeLink.dataset.route]);return;}
   const sameLink=event.target.closest("a[href]");if(sameLink&&!sameLink.target){const url=new URL(sameLink.href,location.href);if(url.origin===location.origin&&ROUTES[url.pathname]){event.preventDefault();navigate(url.pathname+url.search+url.hash);return;}}
   const go=event.target.closest("[data-go]");if(go){const path=go.dataset.path||CATEGORY_PATH[go.dataset.go];if(path)navigate(path);return;}
