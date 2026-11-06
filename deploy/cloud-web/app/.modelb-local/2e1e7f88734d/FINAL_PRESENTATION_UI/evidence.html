@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>InspectEscrow | 내 검사 기록</title>
   <link rel="stylesheet" href="/evidence.css">
-  <script defer src="/evidence.js"></script>
+  <script defer src="/xai-companion.js"></script><script defer src="/evidence.js"></script>
 </head>
 <body>
 <div class="shell">
@@ -80,6 +80,27 @@
       </div>
       <article class="checks"><h3>검증 항목</h3><div id="checks"></div></article>
       <article class="limitations"><h3>검증 한계</h3><ul id="limitations"></ul></article>
+    </section>
+
+    <section class="panel xai-evidence-panel" id="xai-evidence-panel">
+      <div class="section-title"><div><span>XAI</span><h2>AI 판단 근거 · Evidence 연결 검증</h2></div><span class="mode">OFFCHAIN SIDECAR · READ ONLY</span></div>
+      <p>앞 단계에서 생성한 실제 PatchCore 이상도 지도와 검사 증거를 연결합니다. <b>TOP 원본 SHA-256 · 모델 체크포인트 · AI 점수 · Evidence Package Hash</b>가 일치해야 근거를 보여줍니다.</p>
+      <label class="file-box">선택: XAI 연결 보고서 JSON <small>새 탭·새로고침 후에는 저장한 .sidecar.json을 선택</small>
+        <input id="xai-sidecar-file" type="file" accept=".json,application/json">
+        <span id="xai-sidecar-name">같은 탭 AI 검사에서 넘어오면 자동 연결됩니다.</span>
+      </label>
+      <div id="xai-validation-state" class="progress" aria-live="polite">아직 XAI 근거가 연결되지 않았습니다. Evidence 본 검증과는 독립된 참고 검증입니다.</div>
+      <div class="xai-evidence-view" id="xai-evidence-view" hidden>
+        <div class="xai-evidence-image"><img id="xai-evidence-overlay" alt="PatchCore 상대 이상도 히트맵"><small>빨간색은 정상 특징에서 벗어난 상대적 위치 · 불량 확률 아님</small></div>
+        <div class="xai-evidence-detail">
+          <strong id="xai-evidence-title">XAI 판단 근거</strong>
+          <p id="xai-evidence-score"></p>
+          <div id="xai-evidence-bars"></div>
+          <p id="xai-evidence-binding"></p>
+        </div>
+      </div>
+      <div class="actions"><button type="button" id="xai-sidecar-export" disabled>XAI·Evidence 연결 보고서 JSON 저장</button></div>
+      <p class="xai-warning">XAI 연결 검증은 파일 내용이 현재 검증된 Evidence와 일치하는지 확인하는 것입니다. XAI 이미지의 생성 주체를 독립적으로 인증하지 않으며, XAI 자체는 Station EIP-712 서명·블록체인 해시에 포함되지 않습니다. 법적 판단이나 원본 진위 보장이 아닙니다.</p>
     </section>
 
     <section class="panel">

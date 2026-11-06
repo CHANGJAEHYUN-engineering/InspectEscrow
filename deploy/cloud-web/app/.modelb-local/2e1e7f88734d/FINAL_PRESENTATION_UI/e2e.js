@@ -3,6 +3,31 @@
 const $=id=>document.getElementById(id),e=window.ethers;
 const activeTrade=()=>{const q=new URLSearchParams(location.search).get("tradeId"),saved=window.InspectEscrowContext?.read()||"",id=q||saved;if(!/^0x[0-9a-fA-F]{64}$/.test(id||""))throw Error("선택된 Trade ID가 없습니다. 거래 목록에서 거래를 선택하세요.");window.InspectEscrowContext?.write(id);return id;};
 const state={snapshot:null,packages:{supplier:null,buyer:null,replay:null},signatures:{supplier:null,buyer:null,replay:null},busy:false};
+function renderXaiReference(){
+  const panel=$("e2e-xai-support"),list=$("e2e-xai-items");
+  if(!panel||!list)return;
+  const tradeId=activeTrade(),store=window.__inspectEscrowRoleInspections;
+  if(!store||String(store.tradeId).toLowerCase()!==tradeId.toLowerCase()||!window.InspectEscrowXAI)return;
+  list.innerHTML="";
+  for(const role of ["supplier","buyer"]){
+    const h=store.roles?.[role];
+    if(!h||h.role!==role||String(h.tradeId).toLowerCase()!==tradeId.toLowerCase())continue;
+    if(!window.InspectEscrowXAI.xaiChecks(h.xai,h.bundle).ok)continue;
+    const data=h.xai;
+    const card=document.createElement("article");
+    card.className="e2e-xai-card";
+    const heading=document.createElement("b");
+    heading.textContent=role.toUpperCase()+" · "+data.decision+" · 원본 검사 XAI 참고";
+    const score=document.createElement("p");
+    score.textContent="점수 "+data.scoreRaw+" · TOP "+String(data.originalTopSha256).slice(0,14)+"… · Evidence "+String(h.bundle.evidencePackageHash).slice(0,14)+"…";
+    const img=document.createElement("img");
+    img.alt=role+" 모델 원생 이상도 지도 · 오프체인 참고 이미지";
+    img.src="data:image/png;base64,"+data.overlayPngBase64;
+    card.append(heading,img,score);list.append(card);
+  }
+  panel.hidden=!list.children.length;
+}
+
 function prefillFromLiveInspection(){
  const h=window.__inspectEscrowEvidenceHandoff;
  if(!h||!["supplier","buyer"].includes(h.role)||!["TOP","FRONT","SIDE"].every(v=>h.files?.[v] instanceof File))return;
@@ -244,5 +269,6 @@ for(const role of ["supplier","buyer","replay"]){
  }else $("replay-reason").addEventListener("input",()=>clearRole(role));
 }
 prefillFromLiveInspection();
+renderXaiReference();
 snapshot().catch(err=>$("preflight").textContent="사전검증 실패: "+envErr(err));
 })();

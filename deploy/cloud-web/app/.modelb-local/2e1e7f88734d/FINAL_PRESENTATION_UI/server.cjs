@@ -162,6 +162,7 @@ http.createServer(async(req,res)=>{
   if(pathname==="/enterprise-design.css")return serve(req,res,"enterprise-design.css","text/css");
   if(pathname==="/enterprise-tools.css")return serve(req,res,"enterprise-tools.css","text/css");
   if(pathname==="/favicon.svg"||pathname==="/favicon.ico")return serve(req,res,"favicon.svg","image/svg+xml");
+  if(pathname==="/xai-companion.js")return serve(req,res,"xai-companion.js","application/javascript");
   if(pathname==="/platform.js")return serve(req,res,"platform.js","application/javascript");
   if(pathname==="/app.js")return serve(req,res,"app.js","application/javascript");
   if(pathname==="/proposal.js")return serve(req,res,"proposal.js","application/javascript");

@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>InspectEscrow | LIVE 검사·동적 증거</title><link rel="stylesheet" href="/live.css"><link rel="stylesheet" href="/live-camera.css"><script defer src="/live.js"></script></head>
+<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>InspectEscrow | LIVE 검사·동적 증거</title><link rel="stylesheet" href="/live.css"><link rel="stylesheet" href="/live-camera.css"><script defer src="/xai-companion.js"></script><script defer src="/live.js"></script></head>
 <body><div class="shell"><header><a href="/journey">← 실행 센터</a><strong>Inspect<span>Escrow</span> · LIVE EVIDENCE</strong><nav><a href="/presentation">발표 모드</a><a href="/stage">검증 장면</a><a href="/evidence">증거 검증</a><a href="/replay?mode=offchain">Inspector Replay</a></nav></header><main>
 <section class="hero"><div><p class="eyebrow">REAL MODEL B · NEW BYTES · OFFCHAIN FIRST</p><h1>새 사진에서 시작하는 실시간 검사</h1><p>미리 저장된 점수가 아니라 선택한 TOP 원본 바이트를 고정 Model B에 입력합니다. TOP만으로 AI 시연은 가능하지만, 정식 증거는 서로 다른 TOP·FRONT·SIDE가 모두 필요합니다.</p></div><span id="runtime" class="runtime">런타임 확인 중</span></section>
 <section class="truth"><b>현재 안전 경계</b><span id="truth">DRAFT 정책 · Station 서명 없음 · Sepolia TX 0</span></section>
@@ -35,7 +35,7 @@
 
 <section class="panel xai-panel"><div class="head"><div><em>XAI</em><h2>PatchCore 판단 근거 · 이상 위치 시각화</h2></div><span class="mode">CNN FEATURES + NATIVE ANOMALY MAP</span></div>
 <p class="small">TOP 이미지에서 정상 학습 특징과의 차이가 크게 나타난 위치를 빨간색으로 표시합니다. 빨간 영역은 <b>불량 확률이나 원인 확정이 아닙니다.</b> 이 결과는 오프체인 참고자료이며 별도 서명·제출되지 않습니다.</p>
-<button id="explain" class="primary" type="button" disabled>실제 AI 근거 보기 · 추가 추론</button> <button id="xai-download" type="button" disabled>빨간색 XAI 이미지 PNG 저장</button>
+<button id="explain" class="primary" type="button" disabled>실제 AI 근거 보기 · 추가 추론</button> <button id="xai-download" type="button" disabled>빨간색 XAI 이미지 PNG 저장</button> <button id="xai-sidecar-download" type="button" disabled>XAI·Evidence 연결 보고서 저장</button>
 <div id="xai-progress" class="xai-progress" aria-live="polite">TOP의 실제 AI 추론을 먼저 실행하세요.</div>
 <div id="xai-output" class="xai-output" hidden>
 <div class="xai-figure"><img id="xai-overlay" alt="PatchCore 모델 원본 TOP 이미지의 상대 이상도 빨간색 오버레이"><p>빨강 = 정상 메모리뱅크 특징과의 거리 상대적으로 큼</p></div>
