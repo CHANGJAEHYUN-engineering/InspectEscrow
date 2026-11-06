@@ -33,3 +33,15 @@
 .tool-evidence .xai-evidence-track{display:block;height:12px;border-radius:8px;overflow:hidden;background:#ecf0ed}
 .tool-evidence .xai-evidence-fill{display:block;height:100%;background:linear-gradient(90deg,#f6b675,#da5555);border-radius:8px}
 @media(max-width:740px){.tool-live .xai-output,.tool-evidence .xai-evidence-view{grid-template-columns:1fr!important}}
+
+/* Final-demo photo presets: left of each ordinary upload, never auto-infer. */
+.tool-live .preset-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#f1faf7;border:1px solid #d3ebe3;border-radius:12px;padding:12px 15px;margin:12px 0 16px}
+.tool-live .preset-tools #preset-status{color:#4c7470;font-size:12px;line-height:1.6}
+.tool-live .preset-all{background:#157e70;border:1px solid #157e70;border-radius:9px;color:#fff;padding:10px 13px;font-size:12px;font-weight:800;cursor:pointer}
+.tool-live .preset-all:disabled{opacity:.52;cursor:not-allowed}
+.tool-live .preset-upload-row{display:flex;align-items:stretch;gap:8px;margin:9px 0}
+.tool-live .preset-upload-row .preset-upload-button{flex:0 0 39%;min-width:0;background:#e9f5f0;color:#186e60;border:1px solid #b9d9cc;border-radius:9px;padding:9px 6px;font-size:11px;font-weight:850;line-height:1.45;cursor:pointer}
+.tool-live .preset-upload-row .preset-upload-button:disabled{opacity:.54;cursor:not-allowed}
+.tool-live .preset-upload-row label.pick{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:5px;border:1px solid #d2e3df;border-radius:9px;padding:9px 8px;font-size:11px;background:#fff}
+.tool-live .preset-upload-row label.pick input[type=file]{max-width:100%;min-width:0;font-size:10px}
+@media(max-width:800px){.tool-live .preset-upload-row{flex-wrap:wrap}.tool-live .preset-upload-row .preset-upload-button,.tool-live .preset-upload-row label.pick{flex-basis:100%}}

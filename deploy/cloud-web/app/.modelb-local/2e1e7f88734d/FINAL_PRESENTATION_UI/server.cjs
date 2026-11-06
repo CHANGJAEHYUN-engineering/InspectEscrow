@@ -119,6 +119,18 @@ http.createServer(async(req,res)=>{
   if(pathname.startsWith("/api/live/"))return liveEvidenceEndpoints.handle(req,res,{contract:ctr,provider:rpc},url);
   if(pathname.startsWith("/api/trade-builder/"))return tradeBuilderEndpoints.handle(req,res,{contract:ctr,provider:rpc},url);
   if(pathname.startsWith("/api/registry/"))return registryEndpoints.handle(req,res,{contract:ctr,provider:rpc,registryAbi:REGISTRY_ABI},url);
+  // Only six explicitly assigned product demo files can be publicly retrieved.
+  // Never expose arbitrary local paths from a user-supplied name.
+  if(pathname.startsWith("/demo-presets/nut5/")&&req.method==="GET"){
+    const filename=pathname.slice("/demo-presets/nut5/".length);
+    if(filename==="manifest.json")
+      return serve(req,res,"demo-presets/nut5/manifest.json","application/json");
+    if(/^nut5_(normal|defect)_(TOP|FRONT|SIDE)\.(jpg|jpeg|png)$/i.test(filename)){
+      const mime=filename.toLowerCase().endsWith(".png")?"image/png":"image/jpeg";
+      return serve(req,res,"demo-presets/nut5/"+filename,mime);
+    }
+    return sendJSON(res,404,{error:"DEMO_PRESET_NOT_FOUND"});
+  }
   if(pathname==="/api/presentation/github-qr.svg"&&req.method==="GET")return serveGithubQr(res);
   if(pathname==="/api/trades"||pathname.startsWith("/api/trades/"))return tradeWorkspaceEndpoints.handle(req,res,{contract:ctr,provider:rpc},url);
   if(["/","/index.html","/trades","/trades.html","/new-trade","/new-trade.html","/live","/live.html","/evidence","/evidence.html","/e2e","/e2e.html","/replay","/replay.html","/stage","/stage.html","/resolution","/resolution.html","/settlement","/audit","/assist"].includes(pathname))return serve(req,res,"platform.html","text/html");
