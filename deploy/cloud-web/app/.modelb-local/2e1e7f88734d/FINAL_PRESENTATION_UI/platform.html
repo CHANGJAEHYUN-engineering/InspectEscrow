@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="/enterprise-design.css">
   <link rel="stylesheet" href="/enterprise-tools.css">
   <script defer src="/vendor/ethers.umd.min.js"></script>
+  <link rel="stylesheet" href="/xai-dashboard.css">
   <script defer src="/xai-companion.js"></script>
   <script defer src="/platform.js"></script>
   <script defer src="/roles.js"></script>
@@ -237,7 +238,7 @@
               <button id="assist-explain" class="assist-secondary assist-wide" type="button" disabled>빨간 이상 위치 히트맵 생성 · 실제 모델 재추론</button>
               <div id="assist-xai" class="assist-xai" hidden>
                 <div class="assist-heatmap"><img id="assist-heatmap-image" alt="실제 PatchCore 이상도 지도 오버레이"><small>빨간색: 정상 참조 특징과 상대적으로 큰 차이</small></div>
-                <div id="assist-heatmap-bars" class="assist-bars"></div>
+                <p class="assist-tip">너트 영역의 고정 기준 초과 강도 · 상위 5% 패치 (0~100 지수)</p><div id="assist-heatmap-bars" class="assist-bars"></div>
                 <p id="assist-heatmap-note" class="assist-tip"></p>
               </div>
               <p id="assist-xai-progress" class="assist-progress" aria-live="polite">AI 검사가 완료되면 근거 시각화를 실행할 수 있습니다.</p>

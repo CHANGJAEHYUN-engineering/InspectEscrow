@@ -76,27 +76,58 @@ def explain_original_bytes(data: bytes) -> dict:
     )
     decision = "REVIEW_REQUIRED" if scaled > THRESHOLD_SCALED else "PASS"
 
-    # Per-image display scaling. It MUST NOT be interpreted as defect probability.
-    low, high = (float(v) for v in np.percentile(anomaly, [5, 98]))
-    relative = np.zeros_like(anomaly, dtype=np.float32)
-    if high > low + 1e-9:
-        relative = np.clip((anomaly - low) / (high - low), 0, 1).astype(np.float32)
+    # Transparent, reproducible *visualization* rule. Previously each image
+    # independently stretched p05..p98 to red, so even a normal PASS photo
+    # appeared highly defective. Use the fixed IMAGE-LEVEL score threshold as
+    # a display reference for patch distances, not a calibrated pixel threshold.
+    reference = THRESHOLD_SCALED / SCORE_SCALE
+    excess = np.maximum(anomaly - reference, 0.0)
+    relative = np.clip(excess / 12.0, 0.0, 1.0).astype(np.float32)
+
+    # Visually isolate the metallic nut from the dark textured photo mat.
+    # This is a conservative appearance/position mask, NOT a trained part
+    # segmentation model; preserve underlying raw anomaly_map untouched.
+    from PIL import ImageFilter
     base = np.asarray(visual, dtype=np.float32)
-    alpha = (np.clip((relative - 0.35) / 0.65, 0, 1) * 0.70)[..., None]
+    luminance = base.mean(axis=2)
+    yy, xx = np.ogrid[:280, :280]
+    radius = np.sqrt((yy - 139.5) ** 2 + (xx - 139.5) ** 2)
+    bg = luminance[radius > 119]
+    bg_level = float(np.median(bg))
+    seed = (luminance > bg_level + 35.0) & (radius > 33) & (radius < 117)
+    expanded = Image.fromarray((seed.astype("uint8") * 255), "L").filter(
+        ImageFilter.MaxFilter(7)
+    )
+    # Antialias the mask edge to avoid drawing a hard artificial outline.
+    mask = np.asarray(expanded.filter(ImageFilter.GaussianBlur(2)), dtype=np.float32) / 255.0
+    mask *= (radius > 41) & (radius < 110)
+    if not (0.025 < float(np.mean(mask > 0.15)) < 0.52):
+        # Fail closed: no heatmap if the expected dark-background metal nut
+        # could not be isolated. This does not affect AI PASS/REVIEW.
+        raise RuntimeError("XAI_FOREGROUND_MASK_NOT_RELIABLE")
+
+    alpha_raw = (0.78 * relative ** 1.3) * mask
+    alpha = alpha_raw[..., None]
     red = np.zeros_like(base)
-    red[..., 0], red[..., 1], red[..., 2] = 245, 48, 54
-    overlay = np.clip(base * (1 - alpha) + red * alpha, 0, 255).astype("uint8")
+    red[:, :, 0] = 240
+    red[:, :, 1] = 54
+    red[:, :, 2] = 61
+    overlay = np.clip(base * (1.0 - alpha) + red * alpha, 0, 255).astype("uint8")
     png = io.BytesIO()
     Image.fromarray(overlay, mode="RGB").save(png, "PNG", optimize=True)
 
+    # These are fixed-reference relative display intensities ON THE NUT,
+    # not per-image percentiles, probabilities, or defect area percentages.
+    masked_strength = relative * mask
     half = 140
     zones = (
-        ("좌상", relative[:half, :half]),
-        ("우상", relative[:half, half:]),
-        ("좌하", relative[half:, :half]),
-        ("우하", relative[half:, half:]),
+        ("좌상", masked_strength[:half, :half], mask[:half, :half]),
+        ("우상", masked_strength[:half, half:], mask[:half, half:]),
+        ("좌하", masked_strength[half:, :half], mask[half:, :half]),
+        ("우하", masked_strength[half:, half:], mask[half:, half:]),
     )
-    y, x_peak = np.unravel_index(int(np.argmax(anomaly)), anomaly.shape)
+    limited = np.where(mask > 0.15, anomaly, -np.inf)
+    y, x_peak = np.unravel_index(int(np.argmax(limited)), limited.shape)
     return {
         "schema": "InspectEscrow.ModelB.PatchcoreLocalization.v1",
         "method": "PATCHCORE_NATIVE_ANOMALY_MAP",
@@ -111,15 +142,25 @@ def explain_original_bytes(data: bytes) -> dict:
         "highestAnomalyXRatio": round((int(x_peak) + 0.5) / 280, 4),
         "highestAnomalyYRatio": round((int(y) + 0.5) / 280, 4),
         "quadrants": [
-            {"label": label, "relativeAnomalyIndex": round(float(part.mean() * 100), 1)}
-            for label, part in zones
+            {"label": label, "relativeAnomalyIndex": round(float(np.percentile(part[roi > 0.15], 95) * 100), 1) if np.any(roi > 0.15) else 0.0}
+            for label, part, roi in zones
         ],
         "nativeMapMin": round(float(anomaly.min()), 6),
         "nativeMapMax": round(float(anomaly.max()), 6),
-        "visualNormalization": "PER_IMAGE_P05_P98_RELATIVE_ONLY",
+        "visualNormalization": "FIXED_IMAGE_SCORE_REFERENCE_ROI_ONLY_V2",
+        "visualReferenceRaw": round(float(reference), 6),
+        "visualScaleWidthRaw": 12.0,
+        "quadrantDisplayMethod": "P95_FIXED_REFERENCE_EXCESS_ON_METAL_ROI_NOT_PROBABILITY",
+        "visualObjectMaskMethod": "BRIGHT_CENTRAL_METAL_ON_DARK_BACKGROUND_HEURISTIC",
+        "visualHighlightedPixels": int(np.count_nonzero(alpha_raw > 0.10)),
+        "visualObjectMaskPixels": int(np.count_nonzero(mask > 0.15)),
+        "visualBackgroundPixelsHighlighted": int(np.count_nonzero((mask <= 0.01) & (alpha_raw > 0.01))),
+        "visualizationVersion": 2,
         "calibratedDefectProbability": None,
         "limitations": [
-            "Red regions show relative PatchCore normal-memory distance, not defect probability.",
+            "Only above-reference native patch distances are tinted on a heuristic nut foreground mask.",
+            "The global image-level threshold is a visualization reference, NOT a calibrated pixel-wise defect threshold.",
+            "No red on PASS does not prove that every image patch is free of defects.",
             "Localization alone does not prove cause, physical identity, or original-data authenticity.",
             "XAI is offchain, unsigned, and not included in the contractual evidence commitment.",
         ],

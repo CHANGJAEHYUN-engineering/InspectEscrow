@@ -46,3 +46,17 @@
 - **Sepolia 신규 트랜잭션 전송 0건**. 사용된 검사 결과 및 XAI는 미서명 오프체인 PoC 증거다.
 - Playwright Chrome 실기 테스트 `test-xai-buyer-evidence-prod.cjs`: `PRODUCTION_EVIDENCE_XAI_ALL_PASS`.
 - 모의 UI 변조 테스트: XAI 연결 JSON `scoreScaled` 값을 바꾸면 `SIDECAR_CONTENT_CHANGED`로 거부. 자체 재해싱 가능성 때문에 이는 제3자 서명 인증이 아님.
+
+## 2026-11-06 XAI 히트맵 시각화 보정 (v2)
+
+**문제:** 이전 `patchcore_xai.py`는 각 사진의 위치별 이상도 5~98 백분위를 독립적으로 0~1 정규화했다. 정상 PASS 이미지도 가장 높은 부분이 빨간색으로 칠해지며 배경(검은 매트)까지 붉게 표시됐다. 통합 SPA는 일부 legacy CSS를 의도적으로 제거하므로 사분면 그래프도 세로 텍스트로 나타나는 문제가 있었다.
+
+**수정:**
+- 기존 WideResNet50-2 PatchCore 체크포인트·이상 점수·판정 임계값·Evidence 포맷과 온체인 코드는 변경하지 않는다.
+- 빨간 오버레이는 **고정된 이상 점수 임계값(38.280373 수준)을 위치별 거리의 시각화 참고 기준**으로 사용한다. 원본 원생 anomaly_map에는 손을 대지 않는다. 이미지마다 최고점이 무조건 빨개지는 백분위 정규화를 제거한다.
+- 검은 배경의 이미지 주변부를 제거하기 위해 밝은 금속 너트의 중앙 ROI를 밝기 기반 휴리스틱으로 마스킹한다. **이 마스크는 별도의 학습된 인스턴스 세그멘테이션이 아니며** 너트의 진짜 영역을 보장하지 않는다.
+- 시각화 범위와 강도는 `visualNormalization=FIXED_IMAGE_SCORE_REFERENCE_ROI_ONLY_V2`, `visualReferenceRaw`, `visualObjectMaskMethod`, `visualHighlightedPixels`를 응답에 표시해 감사 가능하게 남긴다.
+- 정상 PASS는 원생 위치별 거리가 참고 임계값 아래라면 붉은 강조가 전혀 표시되지 않을 수 있다. 이는 모든 위치에 결함이 없다는 증명이 아니다.
+- 사분면 그래프는 **너트 시각화 ROI 내 상대 강조 강도의 95백분위 지수**로 변경한다. 0~100 수치는 결함 확률/결함 면적 비율이 아니다.
+- 통합 SPA에서 HTML style/link를 제거하는 특성에 맞춰 별도 `xai-dashboard.css`를 shell에 직접 로드해 XAI 히트맵과 4개 막대 그래프를 정상 레이아웃으로 표시한다.
+- 이 마스크 방법은 밝은 금속 너트 + 어두운 매트 촬영 환경에 한정한다. 다른 상품·배경·조명에 일반화된 제품 분할 모델로 주장하면 안 된다.

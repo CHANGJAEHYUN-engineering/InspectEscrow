@@ -92,11 +92,11 @@
       </label>
       <div id="xai-validation-state" class="progress" aria-live="polite">아직 XAI 근거가 연결되지 않았습니다. Evidence 본 검증과는 독립된 참고 검증입니다.</div>
       <div class="xai-evidence-view" id="xai-evidence-view" hidden>
-        <div class="xai-evidence-image"><img id="xai-evidence-overlay" alt="PatchCore 상대 이상도 히트맵"><small>빨간색은 정상 특징에서 벗어난 상대적 위치 · 불량 확률 아님</small></div>
+        <div class="xai-evidence-image"><img id="xai-evidence-overlay" alt="PatchCore 상대 이상도 히트맵"><small>빨간색은 고정 표시 기준을 넘는 너트 영역 · 불량 확률 아님</small></div>
         <div class="xai-evidence-detail">
           <strong id="xai-evidence-title">XAI 판단 근거</strong>
           <p id="xai-evidence-score"></p>
-          <div id="xai-evidence-bars"></div>
+          <p>영역별 고정 기준 초과 강도 · 상위 5% 패치 (0~100 지수)</p><div id="xai-evidence-bars"></div>
           <p id="xai-evidence-binding"></p>
         </div>
       </div>

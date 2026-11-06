@@ -38,8 +38,8 @@
 <button id="explain" class="primary" type="button" disabled>실제 AI 근거 보기 · 추가 추론</button> <button id="xai-download" type="button" disabled>빨간색 XAI 이미지 PNG 저장</button> <button id="xai-sidecar-download" type="button" disabled>XAI·Evidence 연결 보고서 저장</button>
 <div id="xai-progress" class="xai-progress" aria-live="polite">TOP의 실제 AI 추론을 먼저 실행하세요.</div>
 <div id="xai-output" class="xai-output" hidden>
-<div class="xai-figure"><img id="xai-overlay" alt="PatchCore 모델 원본 TOP 이미지의 상대 이상도 빨간색 오버레이"><p>빨강 = 정상 메모리뱅크 특징과의 거리 상대적으로 큼</p></div>
-<div class="xai-report"><strong id="xai-heading">모델 근거</strong><p id="xai-score"></p><div id="xai-bars" class="xai-bars"></div><p id="xai-provenance" class="small"></p></div>
+<div class="xai-figure"><img id="xai-overlay" alt="PatchCore 모델 원본 TOP 이미지의 상대 이상도 빨간색 오버레이"><p>빨강 = 고정 시각화 기준을 넘은 너트 영역의 PatchCore 이상도 (결함 확정 아님)</p></div>
+<div class="xai-report"><strong id="xai-heading">모델 근거</strong><p id="xai-score"></p><p class="xai-chart-title">영역별 고정 기준 초과 강도 (상위 5% 패치, 0~100 지수)</p><div id="xai-bars" class="xai-bars"></div><p id="xai-provenance" class="small"></p></div>
 </div>
 </section>
 

@@ -204,7 +204,7 @@ function renderXai(){
  }).join("");
  $("xai-provenance").textContent="CNN WideResNet50-2 layer2/layer3 · TOP SHA-256 "+
    short(d.originalTopSha256)+" · 모델 "+short(d.modelCheckpointSha256)+
-   " · 각 막대는 해당 위치의 상대 이상도 지수이며 확률이 아닙니다. 서명·온체인 제출 없음.";
+   " · 각 막대는 너트 영역에서 고정 표시 기준을 넘는 이상도의 시각화 지수(0–100)이며 확률이 아닙니다. 정상 사진은 빨간색이 없을 수 있습니다. 서명·온체인 제출 없음.";
  status.textContent="실제 PatchCore anomaly_map 재추론 완료 · 원본 해시·모델 해시·점수 확인";
 }
 async function explainXai(){
