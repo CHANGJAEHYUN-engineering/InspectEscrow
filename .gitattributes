@@ -1,0 +1,9 @@
+# Keep deployed source byte-identical across Windows/Linux checkouts
+deploy/cloud-web/** text eol=lf
+deploy/modelb-cloud/** text eol=lf
+deploy/**/*.png -text
+deploy/**/*.jpg -text
+deploy/**/*.jpeg -text
+docs/evidence/**/*.png -text
+scripts/*.mjs text eol=lf
+deploy/modelb-cloud/** whitespace=-blank-at-eof,-trailing-space

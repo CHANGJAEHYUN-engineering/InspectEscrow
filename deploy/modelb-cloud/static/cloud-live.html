@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InspectEscrow | Cloud Live Inspection</title>
+<style>
+:root{color-scheme:light;--navy:#102742;--blue:#185a8e;--teal:#0e988e;--bg:#f4f7fa;--line:#dce6ed;--soft:#e9f2f5;--ink:#183147;--muted:#647788}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif}
+header{background:var(--navy);color:white;padding:15px max(22px,calc((100vw - 1200px)/2));display:flex;justify-content:space-between;align-items:center;gap:15px}
+.brand{font-weight:900;letter-spacing:.2px;font-size:19px}header small{color:#bcd3e3}
+main{max-width:1200px;margin:auto;padding:26px 22px 58px}h1{font-size:30px;margin:10px 0 7px;letter-spacing:-.6px}h2{margin:0 0 18px;font-size:19px}p{line-height:1.55}label{font-size:13px;font-weight:750}
+.lead{color:var(--muted);font-size:14px;margin-top:0}.state{font-size:13px;color:var(--muted)}
+.chip{display:inline-block;font-size:12px;font-weight:800;background:#def4ee;color:#13634f;padding:6px 10px;border-radius:30px}
+.caution{color:#845211;background:#fff5e5;padding:12px;border-radius:10px;font-size:12px;line-height:1.6}
+.layout{display:grid;grid-template-columns:1.08fr .92fr;gap:18px;align-items:start}
+.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:23px;box-shadow:0 6px 28px #0a2a4610;min-width:0}
+.stack{display:grid;gap:18px}.eyebrow{font-size:12px;color:var(--teal);font-weight:900;letter-spacing:1.4px;margin-bottom:8px}
+input[type=text],input[type=password],input[type=file]{width:100%;padding:11px 12px;border:1px solid #cbd9e3;border-radius:8px;background:white;color:var(--ink);margin:5px 0 11px}
+button{border:0;border-radius:8px;padding:12px 16px;font-size:14px;font-weight:800;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}.primary{color:white;background:var(--blue)}.secondary{color:var(--navy);background:var(--soft)}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row>button{flex:1}.top-preview{width:100%;height:215px;border-radius:10px;background:#edf3f7;object-fit:contain;border:1px dashed #aac1d1;display:none}
+video{display:none;width:100%;max-height:255px;border-radius:10px;background:#102742}
+.metric{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.metric>div{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fbfdfe}
+.metric span{display:block;font-size:12px;color:var(--muted)}.metric strong{font-size:22px;display:block;margin-top:5px;color:var(--navy)}
+.decision{padding:22px 14px;border:1px dashed #c5d8e1;border-radius:10px;background:#f6fafc;text-align:center;font-size:25px;font-weight:900;color:var(--blue)}
+.decision.review{background:#fff5e5;color:#a0641f;border-color:#e5bd80}.decision.pass{background:#e5f7f0;color:#126a56;border-color:#8fc7b1}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--line);background:#f7fafc;border-radius:8px;padding:12px;font:11px/1.5 Consolas,monospace;max-height:210px;overflow:auto}
+code{overflow-wrap:anywhere;font-size:11px}.status{margin:8px 0 14px;font-size:13px;min-height:20px}
+.good{color:#138266}.bad{color:#b45535}.muted{color:var(--muted)}.divider{height:1px;background:var(--line);margin:18px 0}
+@media(max-width:850px){.layout{grid-template-columns:1fr}header{padding:13px 20px}h1{font-size:25px}.panel{padding:17px}}
+</style>
+</head>
+<body>
+<header><div class="brand">INSPECTESCROW <small> / CLOUD LIVE</small></div><small>Model B · 실제 AI 추론 · 오프체인 증거</small></header>
+<main>
+<div class="eyebrow">LIVE DEMONSTRATION / 2026</div>
+<h1>촬영한 너트를 실제 AI로 검사하고 증거로 남깁니다.</h1>
+<p class="lead">PC와 무관한 클라우드 추론을 목표로 구성한 시연용 화면입니다. TOP 한 장도 추론 가능하며, FRONT·SIDE를 추가하면 3뷰 오프체인 증거를 생성합니다.</p>
+<div class="layout">
+<div class="stack">
+<section class="panel">
+<div class="eyebrow">00 · 접속 확인</div><h2>시연용 접근 코드</h2>
+<label for="token">접근 코드 (배포 시 별도 설정)</label>
+<input type="password" id="token" autocomplete="off" placeholder="행사 시연용 접근 코드">
+<div class="row"><button class="secondary" id="warmBtn" type="button">AI 모델 준비</button><span id="health" class="state">서버 확인 중...</span></div>
+</section>
+<section class="panel">
+<div class="eyebrow">01 · INPUT</div><h2>새 사진 업로드 / 카메라 촬영</h2>
+<label for="label">시편 라벨 (사용자 입력 · 물리적 동일성 미검증)</label>
+<input id="label" type="text" value="LIVE-NUT-001" maxlength="100">
+<label for="top">TOP · 실제 AI 추론 대상 (필수)</label>
+<input id="top" type="file" accept="image/jpeg,image/png">
+<video id="video" autoplay playsinline muted></video><img id="preview" class="top-preview" alt="TOP 검사 이미지">
+<div class="row"><button class="secondary" id="cameraBtn" type="button">카메라 켜기</button><button class="secondary" id="captureBtn" type="button" disabled>현재 화면 촬영</button></div>
+<div class="divider"></div>
+<label for="front">FRONT (3뷰 증거용, 선택)</label>
+<input id="front" type="file" accept="image/jpeg,image/png">
+<label for="side">SIDE (3뷰 증거용, 선택)</label>
+<input id="side" type="file" accept="image/jpeg,image/png">
+<p class="state">TOP만 선택하면 AI 추론은 가능하지만 계약용 필수 3뷰 증거는 미완성으로 표시됩니다. 파일당 최대 8MB.</p>
+<div class="row"><button class="primary" id="inspectBtn" type="button">실제 AI 추론 → Evidence 준비</button></div>
+<div id="progress" class="status muted">사진을 선택하세요.</div>
+</section>
+</div>
+<div class="stack">
+<section class="panel">
+<div class="eyebrow">02 · MODEL B</div><h2>실제 검사 결과</h2>
+<div id="decision" class="decision">READY</div>
+<div class="metric"><div><span>이상 점수</span><strong id="score">—</strong></div><div><span>고정 임계값</span><strong>38.280373</strong></div></div>
+<div class="state">고정 모델: PatchCore · 체크포인트 SHA-256 <code>8320d4ca…a3854</code></div>
+<p id="predictionNote" class="state">미리 저장된 점수를 재생하지 않고 업로드 원본으로 추론합니다.</p>
+</section>
+<section class="panel">
+<div class="eyebrow">03 · EVIDENCE</div><h2>검사 증거 확인</h2>
+<div id="evidenceState" class="chip">추론 전</div>
+<p class="state">원본 이미지 SHA-256, AI 점수, 모델 식별자, 3뷰 정보와 증거 SHA-256을 결합합니다.</p>
+<label>TOP 원본 SHA-256</label><pre id="topHash">—</pre>
+<label>Evidence SHA-256</label><pre id="evidenceHash">—</pre>
+<div class="row"><button id="verifyBtn" class="secondary" type="button" disabled>해시·증거 자체검증</button><button id="saveBtn" class="secondary" type="button" disabled>Evidence JSON 저장</button></div>
+<div id="verification" class="status muted">검증 대기</div>
+<div class="caution"><b>시연 범위</b> — 이 증거는 미서명·오프체인 검사 기록입니다. 실제 PATCH3 Station 서명, 3뷰의 물리적 동일성, 온체인 제출 또는 대금 귀속 판단을 증명하지 않습니다.</div>
+</section>
+</div>
+</div>
+</main>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+let selectedTop=null, stream=null, bundle=null, lastResult=null;
+const setText=(id,s)=>{$(id).textContent=String(s)};
+const fmt=x=>Number(x).toFixed(6);
+async function hashFile(file){
+ const bytes=await file.arrayBuffer();
+ const hash=await crypto.subtle.digest("SHA-256",bytes);
+ return Array.from(new Uint8Array(hash),v=>v.toString(16).padStart(2,"0")).join("");
+}
+function setTop(file){
+ if(!file)return;selectedTop=file;bundle=null;lastResult=null;
+ $("saveBtn").disabled=true;$("verifyBtn").disabled=true;
+ const img=$("preview");if(img.dataset.url)URL.revokeObjectURL(img.dataset.url);
+ img.dataset.url=URL.createObjectURL(file);img.src=img.dataset.url;img.style.display="block";
+ $("video").style.display="none";setText("progress",file.name+" · 선택됨");
+ setText("decision","READY");$("decision").className="decision";
+ setText("topHash","—");setText("evidenceHash","—");setText("evidenceState","추론 전");
+}
+$("top").addEventListener("change",e=>setTop(e.target.files[0]));
+$("cameraBtn").addEventListener("click",async()=>{
+ try{
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;$("video").style.display="none";$("captureBtn").disabled=true;return;}
+  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false});
+  $("video").srcObject=stream;$("video").style.display="block";
+  $("captureBtn").disabled=false;setText("progress","카메라 준비 완료");
+ }catch(e){setText("progress","카메라 사용 실패: "+e.message)}
+});
+$("captureBtn").addEventListener("click",()=>{
+ const v=$("video"),c=document.createElement("canvas");
+ c.width=v.videoWidth;c.height=v.videoHeight;
+ if(!c.width){setText("progress","카메라 영상을 기다려주세요");return;}
+ c.getContext("2d").drawImage(v,0,0);
+ c.toBlob(b=>{if(b)setTop(new File([b],"live_top_"+Date.now()+".png",{type:"image/png"}))},"image/png");
+});
+async function health(){
+ try{const r=await fetch("/api/cloud/health"),j=await r.json();
+ setText("health",j.artifactVerified?"모델 원본 검증됨":"모델 원본 확인 필요");
+ $("health").className="state "+(j.artifactVerified?"good":"bad");
+ }catch(e){setText("health","서버 연결 실패");}
+}
+$("warmBtn").addEventListener("click",async()=>{
+ $("warmBtn").disabled=true;setText("progress","모델 로딩 중...");
+ try{
+  const r=await fetch("/api/cloud/warm",{method:"POST",headers:{"X-Demo-Token":$("token").value}});
+  const j=await r.json();if(!r.ok)throw Error(j.detail||"모델 준비 실패");
+  setText("progress","모델 로딩 완료 · 실제 추론 준비됨");
+ }catch(e){setText("progress",e.message)}finally{$("warmBtn").disabled=false}
+});
+$("inspectBtn").addEventListener("click",async()=>{
+ const top=selectedTop,front=$("front").files[0]||null,side=$("side").files[0]||null;
+ if(!top){setText("progress","TOP 사진이 필요합니다");return;}
+ if(Boolean(front)!==Boolean(side)){setText("progress","FRONT·SIDE는 함께 추가해야 합니다");return;}
+ if([top,front,side].filter(Boolean).some(f=>f.size>8*1024*1024)){setText("progress","각 파일은 8MB 이하이어야 합니다");return;}
+ $("inspectBtn").disabled=true;bundle=null;
+ setText("decision","ANALYZING");$("decision").className="decision";
+ setText("progress","원본 해시 계산 및 실제 AI 추론 요청 중...");
+ try{
+  const hash=await hashFile(top);setText("topHash",hash);
+  const form=new FormData();form.append("top",top,top.name);
+  if(front)form.append("front",front,front.name);
+  if(side)form.append("side",side,side.name);
+  form.append("specimen_label",$("label").value);
+  form.append("expected_top_sha256",hash);
+  const r=await fetch("/api/cloud/inspect",{method:"POST",headers:{"X-Demo-Token":$("token").value},body:form});
+  const j=await r.json();if(!r.ok)throw Error(j.detail||"추론 실패");
+  if(selectedTop!==top||j.bundle.manifest.captureFiles.TOP.sha256!==hash)throw Error("원본 이미지가 바뀌었거나 해시 불일치");
+  lastResult=j;bundle=j.bundle;
+  setText("decision",j.decision);$("decision").className="decision "+(j.decision==="PASS"?"pass":"review");
+  setText("score",fmt(j.scoreRaw));
+  setText("evidenceState",j.completeThreeViewCapture?"3뷰 오프체인 증거 준비":"TOP만 검사 · 3뷰 미완성");
+  setText("evidenceHash",bundle.evidenceSha256);
+  setText("predictionNote","실제 추론 완료 · 원본 SHA-256 확인 · Station 서명 없음 · TX 0건");
+  setText("progress","AI 추론 및 증거 기록 생성 완료");
+  $("verifyBtn").disabled=false;$("saveBtn").disabled=false;
+  setText("verification","생성된 Evidence의 해시 검증을 진행할 수 있습니다.");
+ }catch(e){setText("progress","오류: "+e.message);setText("decision","ERROR");$("decision").className="decision"}
+ finally{$("inspectBtn").disabled=false}
+});
+$("verifyBtn").addEventListener("click",async()=>{
+ if(!bundle||!selectedTop)return;
+ try{
+  const rawHash=await hashFile(selectedTop);
+  if(bundle.manifest.captureFiles.TOP.sha256!==rawHash)throw Error("TOP 원본이 변경됐습니다");
+  const r=await fetch("/api/cloud/verify",{method:"POST",headers:{"Content-Type":"application/json","X-Demo-Token":$("token").value},body:JSON.stringify(bundle)});
+  const j=await r.json();
+  if(!r.ok||!j.internalHashesValid)throw Error("내부 증거 해시 불일치");
+  setText("verification","검증 PASS: TOP 원본 일치 · 내부 해시 일치 (미서명/미제출)");
+  $("verification").className="status good";
+ }catch(e){setText("verification","검증 실패: "+e.message);$("verification").className="status bad"}
+});
+$("saveBtn").addEventListener("click",()=>{
+ if(!bundle)return;
+ const b=new Blob([JSON.stringify(bundle,null,2)+"\n"],{type:"application/json"});
+ const u=URL.createObjectURL(b),a=document.createElement("a");
+ a.href=u;a.download="InspectEscrow_OFFCHAIN_EVIDENCE_"+Date.now()+".json";a.click();
+ setTimeout(()=>URL.revokeObjectURL(u),1000);
+});
+health();
+</script>
+</body>
+</html>

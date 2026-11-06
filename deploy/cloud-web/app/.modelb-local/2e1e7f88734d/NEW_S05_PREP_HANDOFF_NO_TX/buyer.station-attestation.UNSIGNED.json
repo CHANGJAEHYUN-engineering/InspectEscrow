@@ -1,0 +1,98 @@
+{
+  "schema": "inspectescrow.patch3.modelb-unsigned-station-template/2",
+  "status": "READY_FOR_STATION_PREPARATION",
+  "domain": {
+    "name": "InspectEscrow",
+    "version": "1",
+    "chainId": 11155111,
+    "verifyingContract": "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905"
+  },
+  "types": {
+    "StationAttestation": [
+      {
+        "name": "tradeId",
+        "type": "bytes32"
+      },
+      {
+        "name": "role",
+        "type": "uint8"
+      },
+      {
+        "name": "station",
+        "type": "address"
+      },
+      {
+        "name": "attempt",
+        "type": "uint32"
+      },
+      {
+        "name": "sessionNonce",
+        "type": "bytes32"
+      },
+      {
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "modelBundleHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "captureProfileHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "specimenManifestHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "evidencePackageHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "aggregateScoreScaled",
+        "type": "uint128"
+      },
+      {
+        "name": "scoreSchemaId",
+        "type": "bytes32"
+      },
+      {
+        "name": "inspectionValidity",
+        "type": "uint8"
+      },
+      {
+        "name": "invalidReason",
+        "type": "uint8"
+      },
+      {
+        "name": "issuedAt",
+        "type": "uint64"
+      },
+      {
+        "name": "validUntil",
+        "type": "uint64"
+      }
+    ]
+  },
+  "message": {
+    "tradeId": "0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e",
+    "role": 1,
+    "station": "0xD5acfa7301BD73FfcBb3f73705E4dA4a2548faab",
+    "attempt": 1,
+    "sessionNonce": "0x8417ef76fd393e4c967c8d33632042d43a404d6a3cad638b2eb1b080fcbb046f",
+    "policyHash": "0x3a6e3ad272b6bd79312b55fced06e3da3b979d97e7f1cd7c79783e3554be85d6",
+    "modelBundleHash": "0x3670ae2c0c89892018c8120fc13dc31d7415463e48dfce7eff3d626839d351af",
+    "captureProfileHash": "0x757e1e968185a5ffd4f7833e48d12177e1f697f59a196a5512703110ade57c96",
+    "specimenManifestHash": "0x842f6738103b213588a4dd43e12408e49da02191f3fabb50b6dd35696b5e757f",
+    "evidencePackageHash": "0x4e79ad908aa98cf4b3b44e255f733cdfe08db7de30d6af5ee3c087bb79fef555",
+    "aggregateScoreScaled": "37078381",
+    "scoreSchemaId": "0x9151149c14197cc68d22f98cc55c34160dfde24230fd2e6cc155b4d824f95dd5",
+    "inspectionValidity": 0,
+    "invalidReason": 0,
+    "issuedAt": null,
+    "validUntil": null
+  },
+  "signature": null,
+  "transactionsSent": 0
+}

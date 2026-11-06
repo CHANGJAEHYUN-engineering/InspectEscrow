@@ -1,0 +1,59 @@
+{
+  "report": {
+    "schema": "inspectescrow.modelb-inspector-replay-report/1",
+    "mode": "INDEPENDENT_MODEL_B_REPLAY",
+    "status": "CONSISTENT",
+    "consistent": true,
+    "independentAiReplayExecuted": true,
+    "currentRunAiReplayExecuted": false,
+    "replayExecutionStatus": "NOT_RUN_RESOURCE_CONSTRAINT",
+    "tradeId": "0x47369c02e4a50bbd26dedf0a6f355ae832fb12f747a2aa7805532b9eeaea3ee0",
+    "policyHash": "0xe8afa0eb4c17795cce67a633e9b0f8e85783fcc547c55f81df2a7b2fa0c3f8f7",
+    "modelBundleHash": "0x3670ae2c0c89892018c8120fc13dc31d7415463e48dfce7eff3d626839d351af",
+    "captureProfileHash": "0x757e1e968185a5ffd4f7833e48d12177e1f697f59a196a5512703110ade57c96",
+    "scoreSchemaId": "0x9151149c14197cc68d22f98cc55c34160dfde24230fd2e6cc155b4d824f95dd5",
+    "checkpointSha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+    "replayToleranceScaled": "0",
+    "toleranceBasis": "FROZEN_POLICY_EXACT_INTEGER_EQUALITY_SAME_ARTIFACT_AND_RUNTIME_ONLY",
+    "roles": {
+      "supplier": {
+        "evidencePackageHash": "0x227223f931a3b1b5abc86b7a1c542adea238ae83236c5b052493a3b1935425d0",
+        "comparedSubmittedScoreScaled": "36302902",
+        "replayScoreScaled": "36302902",
+        "absoluteErrorScaled": "0",
+        "toleranceScaled": "0",
+        "topInputSha256": "0609922596edc39c6f8db095d7a820d36f87c9492e1f6ffd28936e4d9b888991",
+        "checkpointSha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+        "consistent": true
+      },
+      "buyer": {
+        "evidencePackageHash": "0x679b011ef3847860b4672ba1e011b91724c923a561949e29eaa4498851e4f37e",
+        "comparedSubmittedScoreScaled": "52572132",
+        "replayScoreScaled": "52572132",
+        "absoluteErrorScaled": "0",
+        "toleranceScaled": "0",
+        "topInputSha256": "a6f9827f2b2d19ada3e6143a2b6983784afd4b4d22c28d6e45d65fbed036a370",
+        "checkpointSha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+        "consistent": true
+      }
+    },
+    "archivedProvenance": {
+      "supplierBundleSha256": "6a7b2d36cca29b8a883985523adcb0cd55984d4b42d9e18482ea812b2c61c52e",
+      "reviewWrapperSha256": "a5e1b962c5835fc11ef9483a878c3e3f13c9aab4984d2e35328222861fb8686f",
+      "checkpointSha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+      "supplierTopSha256": "0609922596edc39c6f8db095d7a820d36f87c9492e1f6ffd28936e4d9b888991",
+      "buyerTopSha256": "a6f9827f2b2d19ada3e6143a2b6983784afd4b4d22c28d6e45d65fbed036a370"
+    },
+    "controlledRedTeam": null,
+    "limitations": [
+      "NOT_RUN_RESOURCE_CONSTRAINT: no Model B inference was executed in this fixture run.",
+      "Historical verified Model B outputs are bound by exact source SHA-256 and checkpoint.",
+      "S03 images are archived comparison material, not verified physical capture angles."
+    ],
+    "generatedAtUtc": "2026-11-05T13:36:40.408Z",
+    "transactionsSent": 0
+  },
+  "replayReportHash": "0x8c27eb5f8d25f39c1dae502a2b2dd339c1c6c523379c821e78624479fb69f443",
+  "unsignedAttestation": null,
+  "submissionGate": "READY_FOR_FRESH_STATION_SIGNATURE"
+}

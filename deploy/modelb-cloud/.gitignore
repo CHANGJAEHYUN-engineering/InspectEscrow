@@ -1,0 +1,12 @@
+model/*.zip
+model/*.pt
+model/*.pth
+model/*.ckpt
+model/*.npy
+model/*.npz
+model/*.safetensors
+__pycache__/
+*.pyc
+*.log
+.env
+.env.*

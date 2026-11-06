@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "status": "INCONSISTENT",
+  "mode": "CONTROLLED_RED_TEAM_SCORE_CLAIM_NOT_SIGNED",
+  "report": {
+    "schema": "inspectescrow.modelb-controlled-score-tamper-demo/1",
+    "mode": "CONTROLLED_RED_TEAM_SCORE_CLAIM_NOT_SIGNED",
+    "status": "INCONSISTENT",
+    "originalTopFileName": "S05_normal_repeat2.jpg.jpg",
+    "originalTopSha256": "3ecc6b09569d5e76c3a36f915aff4021021d6b6b66b8ee83b4f3bfc38fe3d007",
+    "originalTopBytes": 2648784,
+    "modelCheckpointSha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+    "aiRunCount": 2,
+    "actualAiInferenceRunsCompleted": true,
+    "baselineScoreScaled": "36185043",
+    "tamperedClaimScoreScaled": "36185044",
+    "replayScoreScaled": "36185043",
+    "replayToleranceScaled": "0",
+    "scoreDeltaScaled": "1",
+    "baselineAndReplayReproducible": true,
+    "thresholdScaled": "38280373",
+    "baselineDecision": "PASS",
+    "replayDecision": "PASS",
+    "tamperedClaimOrigin": "CONTROLLED_PLUS_ONE_IN_MEMORY_NOT_MODEL_OUTPUT",
+    "attackMutatedSignedEvidence": false,
+    "actualSubmittedEvidenceVerified": false,
+    "onchainEvidenceHashLinked": false,
+    "onchainSubmissionAllowed": false,
+    "txSent": 0,
+    "inferenceElapsedMs": {
+      "baseline": 806,
+      "replay": 654
+    },
+    "runtimeVerified": true,
+    "limitations": [
+      "The +1 tampered score is an intentionally modified unsigned claim for the demo; the signed onchain evidence is not modified.",
+      "The original image has no attested binding to the previously completed Sepolia trade.",
+      "This scenario demonstrates detection in an independent inference comparison, not a newly recorded onchain Replay or HOLD transition."
+    ],
+    "generatedAtUtc": "2026-11-05T21:08:14.630Z"
+  },
+  "reportHash": "0x1b9bb8b666bfcb4d21a3246b3e4c6bec88e688f9c5cdf16f6ca14dc2ed8054ff",
+  "actualAiReplayExecuted": true,
+  "transactionsSent": 0,
+  "submissionGate": "CONTROLLED_OFFCHAIN_ONLY_NO_ONCHAIN_RECORD"
+}

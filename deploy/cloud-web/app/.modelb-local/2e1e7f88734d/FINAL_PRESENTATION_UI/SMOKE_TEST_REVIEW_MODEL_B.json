@@ -1,0 +1,31 @@
+{
+  "type": "ARCHIVED S03 SCRATCH EVIDENCE REPLAY, NOT LIVE STAGE CAPTURE",
+  "checkedAt": "2026-10-29T15:12:53.188Z",
+  "result": {
+    "schema": "InspectEscrow.ModelB.LiveLocalInference.v1",
+    "status": "OFFCHAIN_DEMO_NOT_ONCHAIN_APPROVED",
+    "specimen_id": "IE-DEMO-001",
+    "specimen_code": "S05",
+    "specimen_label_source": "USER_SELECTED_UNVERIFIED",
+    "view": "TOP",
+    "file_name": "S03_deep_scratch1.jpg.jpg",
+    "original_image_sha256": "a6f9827f2b2d19ada3e6143a2b6983784afd4b4d22c28d6e45d65fbed036a370",
+    "original_image_bytes": 2588857,
+    "model_checkpoint_sha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+    "preprocessing": "EXIF_transpose_RGB_center_square_700_then_Patchcore_320_center_crop_280",
+    "score_raw": 52.5721321105957,
+    "score_raw_decimal": "52.5721321105957",
+    "score_scaled": 52572132,
+    "score_scale": 1000000,
+    "score_rounding": "ROUND_HALF_UP",
+    "threshold_scaled": 38280373,
+    "threshold_raw": 38.280373,
+    "decision_rule": "score_scaled > threshold_scaled => REVIEW_REQUIRED",
+    "decision": "REVIEW_REQUIRED",
+    "device": "cpu",
+    "inference_elapsed_ms": 1019,
+    "inferred_at_utc": "2026-10-29T15:12:53.170099+00:00",
+    "station_signed_in_this_app": false,
+    "sent_to_blockchain": false
+  }
+}

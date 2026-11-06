@@ -1,0 +1,14 @@
+{
+  "name": "inspectescrow-integrated-cloud",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Isolated copy of full InspectEscrow UI and safe cloud gateway",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "ethers": "6.15.0",
+    "qrcode": "1.5.4",
+    "html2canvas": "1.4.1"
+  }
+}

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="InspectEscrow 제조 B2B 거래·AI 검사·분쟁·정산 통합 플랫폼">
+  <title>InspectEscrow | 제조 거래 운영 플랫폼</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <link id="tool-style-base" rel="stylesheet" href="">
+  <link id="tool-style-extra" rel="stylesheet" href="">
+  <link rel="stylesheet" href="/platform.css">
+  <link rel="stylesheet" href="/enterprise-design.css">
+  <link rel="stylesheet" href="/enterprise-tools.css">
+  <script defer src="/vendor/ethers.umd.min.js"></script>
+  <script defer src="/platform.js"></script>
+  <script defer src="/roles.js"></script>
+</head>
+<body class="platform-body">
+<svg class="platform-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="p-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+  <symbol id="p-trade" viewBox="0 0 24 24"><path d="M4 7h16M7 3v4m10-4v4M5 7v13h14V7M8 12h3m2 0h3m-8 4h3"/></symbol>
+  <symbol id="p-scan" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3M3 12h18"/></symbol>
+  <symbol id="p-dispute" viewBox="0 0 24 24"><path d="M12 3v18M7 6h10M5 10l-3 5h6l-3-5Zm14 0-3 5h6l-3-5ZM8 21h8"/></symbol>
+  <symbol id="p-wallet" viewBox="0 0 24 24"><path d="M4 6h14a2 2 0 0 1 2 2v12H4a2 2 0 0 1-2-2V6a3 3 0 0 1 3-3h12M20 12h-5a2 2 0 0 0 0 4h5"/></symbol>
+  <symbol id="p-audit" viewBox="0 0 24 24"><path d="M7 3h10v4H7zM5 5H3v16h18V5h-2M8 12h8m-8 4h5"/></symbol>
+  <symbol id="p-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M6 9a7 7 0 0 1 12-2l2 5M4 12l2 5a7 7 0 0 0 12-2"/></symbol>
+  <symbol id="p-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M6 9a7 7 0 0 1 12-2l2 5M4 12l2 5a7 7 0 0 0 12-2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 6h14a2 2 0 0 1 2 2v12H4a2 2 0 0 1-2-2V6a3 3 0 0 1 3-3h12"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6zM14 2v6h6M9 13h6m-6 4h6"/></symbol>
+</svg>
+
+<div class="platform-shell">
+  <aside class="platform-sidebar">
+    <a class="platform-brand" href="/" data-route="dashboard"><span>IE</span><div><b>InspectEscrow</b><small>MANUFACTURING TRUST</small></div></a>
+    <p class="nav-label">업무 메뉴</p>
+    <nav class="platform-nav" aria-label="주요 업무">
+      <a href="/" data-route="dashboard"><svg><use href="#p-dashboard"/></svg><span><b>대시보드</b><small>현황과 다음 업무</small></span></a>
+      <a href="/trades" data-route="trades"><svg><use href="#p-trade"/></svg><span><b>거래 관리</b><small>생성·정책·예치</small></span></a>
+      <a href="/live" data-route="inspection"><svg><use href="#p-scan"/></svg><span><b>AI 품질검사</b><small>원본·Evidence·제출</small></span></a>
+      <a href="/replay" data-route="disputes"><svg><use href="#p-dispute"/></svg><span><b>분쟁 해결</b><small>Replay·판단·HOLD</small></span></a>
+      <a href="/resolution" data-route="settlement"><svg><use href="#p-wallet"/></svg><span><b>정산·출금</b><small>지급·환급·Withdraw</small></span></a>
+      <a href="/audit" data-route="audit"><svg><use href="#p-audit"/></svg><span><b>증거·감사 기록</b><small>해시·서명·영수증</small></span></a>
+    </nav>
+    <details class="dev-tools">
+      <summary>개발·시연 도구 <span>＋</span></summary>
+      <a href="/stage">본선 시나리오</a>
+      <a href="/e2e">고급 E2E 콘솔</a>
+      <a href="/presentation">발표 화면</a>
+      <a href="/journey">녹화 실행 센터</a>
+      <a href="/tools/home" target="_blank" rel="noopener">이전 통합 화면 ↗</a>
+    </details>
+    <div class="sidebar-env"><span id="side-env-dot"></span><div><small>현재 네트워크</small><b id="side-network">연결 확인 중</b><code id="side-contract">계약 조회 중</code></div></div>
+    <p class="sidebar-foot">지갑 서명·TX는 항상<br>사용자가 직접 승인합니다.</p>
+  </aside>
+
+  <div class="platform-stage">
+    <header class="platform-topbar">
+      <div class="mobile-brand">InspectEscrow</div>
+      <div class="trade-context"><small>현재 거래</small><button id="trade-context-button" type="button"><code id="current-trade">거래 선택 대기</code><span id="current-state">상태 조회 중</span></button></div>
+      <div class="topbar-actions">
+        <span id="network-badge" class="network-badge">네트워크 확인 중</span>
+        <label class="role-preview"><span>업무 역할</span><select id="role-preview"><option value="buyer">구매·발주사</option><option value="supplier">공급·납품사</option><option value="station">현장 검사 담당자</option><option value="primaryInspector">1차 독립 검증자</option><option value="backupInspector">예비 독립 검증자</option><option value="externalArbitrator">외부 분쟁 중재자</option><option value="operator">플랫폼 운영자</option></select></label>
+        <button id="wallet-check" class="wallet-check" type="button"><span class="wallet-dot"></span><b>지갑 역할 확인</b></button>
+        <button id="global-refresh" class="icon-action" type="button" aria-label="상태 새로고침"><svg><use href="#p-refresh"/></svg></button>
+      </div>
+    </header>
+
+    <main class="platform-main">
+      <div id="platform-alert" class="platform-alert" hidden></div>
+
+      <section class="platform-view" data-view="dashboard">
+        <div class="page-title"><div><p>MANUFACTURING ESCROW OPERATIONS</p><h1>지금 처리할 제조 거래</h1><span>거래·검사·분쟁·정산을 같은 Trade ID로 이어서 처리합니다.</span></div><button class="primary-action" data-go="inspection" type="button">다음 업무 열기 <svg><use href="#p-arrow"/></svg></button></div>
+        <div class="status-strip"><span id="status-dot"></span><b id="status-summary">거래 상태를 확인하고 있습니다.</b><small id="status-detail">체인과 정책을 교차 검증 중입니다.</small></div>
+        <section class="role-command" aria-labelledby="role-command-title">
+          <div class="role-command-head">
+            <div><p>ROLE WORKSPACE</p><h2 id="role-command-title">역할별 업무 준비 상태</h2><span>역할 선택은 화면 구성만 바꾸며 실제 권한은 지갑·거래·Station 자격·기한·사전 시뮬레이션이 결정합니다.</span></div>
+            <button id="role-wallet-connect" class="secondary-action" type="button">MetaMask 계정 확인</button>
+          </div>
+          <div class="role-facts">
+            <div><span>선택한 역할</span><strong id="role-current-label">구매·발주사</strong></div>
+            <div><span>연결된 계정</span><code id="role-wallet-address">연결되지 않음</code></div>
+            <div><span>요구 지갑·자격</span><code id="role-required-wallet">거래 조회 후 표시</code></div>
+            <div><span>현재 거래 상태</span><strong id="role-trade-state">조회 중</strong></div>
+            <div><span>지금 가능한 작업</span><strong id="role-available-action">권한 확인 중</strong></div>
+            <div><span>다음 작업·차단 사유</span><small id="role-block-reason">체인 상태를 읽고 있습니다.</small></div>
+          </div>
+          <div class="role-recommendations"><div><p>이 역할의 추천 업무</p><h3 id="role-mission-title">거래 상태 확인</h3><span id="role-mission-description">현재 거래와 지갑 권한을 확인하고 있습니다.</span></div><div id="role-task-list" class="role-task-list"></div></div>
+          <details class="role-technical"><summary>기술 정보 보기 <span>주소·Station credential·deadline·해시</span></summary><dl id="role-technical-list"></dl></details>
+        </section>
+        <div class="kpi-grid"><article><span>거래 상태</span><strong id="kpi-state">—</strong><small id="kpi-state-note">조회 대기</small></article><article><span>예치금</span><strong id="kpi-escrow">—</strong><small>테스트 ETH</small></article><article><span>Supplier 검사</span><strong id="kpi-supplier">—</strong><small id="kpi-supplier-note">기록 확인 전</small></article><article><span>회계 불변식</span><strong id="kpi-accounting">—</strong><small>Escrow + claimable</small></article></div>
+        <div class="dashboard-grid">
+          <article class="platform-card progress-card"><div class="card-head"><div><p>거래 진행률</p><h2>생성부터 정산까지</h2></div><span id="progress-count">0 / 8</span></div><div id="trade-progress" class="trade-progress"><div class="loading-line"></div></div></article>
+          <article class="platform-card next-card"><div class="card-head"><div><p id="next-kicker">지금 해야 할 작업</p><h2 id="next-title">업무 확인 중</h2></div><span id="next-role">역할 확인</span></div><p id="next-description">현재 거래 상태에 맞는 다음 작업을 찾고 있습니다.</p><div class="action-context"><span><b>필요 지갑</b><code id="next-wallet">확인 중</code></span><span><b>예상 동작</b><small id="next-effect">읽기 전용 사전검증</small></span></div><button id="next-action" class="primary-action" type="button"><span id="next-action-label">업무 화면 열기</span> <svg><use href="#p-arrow"/></svg></button></article>
+          <article class="platform-card trust-card"><div class="card-head"><div><p>검증 기준</p><h2>정책과 증거 바인딩</h2></div><span id="policy-status">확인 중</span></div><dl><div><dt>정책 해시</dt><dd><code id="policy-hash">—</code></dd></div><div><dt>계약 주소</dt><dd><code id="contract-address">—</code></dd></div><div><dt>Replay 상태</dt><dd id="replay-status">기록 없음</dd></div><div><dt>최근 블록</dt><dd id="block-number">—</dd></div></dl></article>
+          <article class="platform-card activity-card"><div class="card-head"><div><p>최근 감사 이력</p><h2>온체인 이벤트</h2></div><button data-go="audit" type="button">전체 보기</button></div><div id="recent-events" class="event-list"><div class="loading-line"></div></div></article>
+        </div>
+        <section id="operator-dashboard" class="operator-dashboard" hidden>
+          <div class="operator-heading"><div><p>PLATFORM OPERATOR</p><h2>운영자 콘솔</h2><span>모든 계정이 현황을 조회할 수 있지만 자격 변경은 Registry Authority 지갑만 MetaMask에서 승인할 수 있습니다.</span></div><span id="operator-access-badge" class="access-badge">권한 확인 중</span></div>
+          <nav class="operator-tabs" aria-label="플랫폼 운영자 기능"><button type="button" data-operator-tab="operations" class="active">운영 현황</button><button type="button" data-operator-tab="credentials">검사 장비 자격 관리</button><button type="button" data-operator-tab="system-audit">거래 및 시스템 감사</button></nav>
+          <div class="operator-panel" data-operator-panel="operations">
+            <div class="operator-kpis"><article><span>Registry</span><code id="registry-address">조회 중</code></article><article><span>Registry Authority</span><code id="registry-authority">조회 중</code></article><article><span>활성 Station</span><strong id="registry-active-count">—</strong></article><article><span>최근 블록</span><strong id="registry-block">—</strong></article></div>
+            <div id="registry-security-boundary" class="security-boundary"></div>
+          </div>
+          <div class="operator-panel" data-operator-panel="credentials" hidden>
+            <div class="credential-toolbar"><div><h3>Station credential</h3><p>거래에 고정된 Supplier·Buyer·Inspector Station을 Registry 상태와 대조합니다.</p></div><button id="registry-refresh" class="secondary-action" type="button">온체인 상태 새로고침</button></div>
+            <div class="credential-table-wrap"><table class="credential-table"><thead><tr><th>Station 유형</th><th>주소</th><th>현재 상태</th><th>변경 시각</th><th>관리</th></tr></thead><tbody id="credential-rows"><tr><td colspan="5">Registry를 조회하고 있습니다.</td></tr></tbody></table></div>
+            <form id="registry-action-form" class="registry-action-form" hidden>
+              <div><span>선택 Station</span><strong id="registry-selected-type">—</strong><code id="registry-selected-address">—</code></div>
+              <label>관리 작업<select id="registry-action-select"></select></label>
+              <label>변경 사유<input id="registry-reason" type="text" minlength="3" maxlength="80" placeholder="예: 정기 점검으로 일시 정지"></label>
+              <label class="registry-ack"><input id="registry-ack" type="checkbox"><span>현재 연결 계정과 예상 상태 전이를 확인했으며 MetaMask에서 직접 승인하겠습니다.</span></label>
+              <div class="registry-form-actions"><button id="registry-simulate" class="secondary-action" type="button">읽기 전용 시뮬레이션</button><button id="registry-submit" class="primary-action" type="button" disabled>MetaMask 승인 요청</button></div>
+              <output id="registry-action-output" class="registry-output">자동으로 트랜잭션을 보내지 않습니다.</output>
+            </form>
+          </div>
+          <div class="operator-panel" data-operator-panel="system-audit" hidden>
+            <div class="credential-toolbar"><div><h3>Credential 변경 이력</h3><p>Registry의 `CredentialStatusChanged` 이벤트를 최신 순으로 표시합니다.</p></div></div>
+            <div id="registry-history" class="registry-history"><div class="loading-line"></div></div>
+          </div>
+        </section>
+      </section>
+
+      <section class="platform-view" data-view="trades" hidden>
+        <div class="page-title"><div><p>TRADE MANAGEMENT</p><h1>거래 생성·정책 승인·예치</h1><span>거래 생성 → 정책 승인 → Buyer 예치 → 활성화 상태를 한 흐름으로 확인합니다.</span></div></div>
+        <nav class="task-tabs" aria-label="거래 관리 단계"><button data-tool="trades">거래 목록</button><button data-tool="new-trade">새 거래 생성</button><button data-native="roles">정책·예치·활성화</button></nav>
+        <div id="roles-native" class="native-panel" hidden>
+          <section id="view-roles" class="view active">
+            <div class="split-heading"><div><span class="pill pill-blue">ROLE-GATED · EXPLICIT APPROVAL</span><h2>각자의 지갑으로 자신의 단계만 승인합니다.</h2><p>화면에서 고른 역할은 미리보기일 뿐이며, 실제 Actor 주소와 계약 상태가 권한을 최종 검증합니다.</p></div><button id="roles-reload" class="btn btn-outline">거래 상태 다시 확인</button></div>
+            <div class="roles-status-grid"><div class="panel roles-status-card"><span>거래 상태</span><strong id="roles-trade-state">조회 중</strong><small id="roles-trade-short">체인 확인 중</small></div><div class="panel roles-status-card"><span>정책 바인딩</span><strong id="roles-policy-status">조회 중</strong><small>해시 일치 여부</small></div><div class="panel roles-status-card"><span>회계 보존</span><strong id="roles-accounting-status">조회 중</strong><small>지급 여력 포함</small></div></div>
+            <div class="panel roles-login"><div class="roles-login-copy"><span class="eyebrow dark">01 / IDENTITY</span><h3>MetaMask 계정으로 역할 확인</h3><p>연결 주소를 계약의 Actor 주소와 비교합니다.</p><div class="role-account-line"><span>현재 계정</span><code id="roles-wallet-address">연결되지 않음</code></div><div class="role-account-line"><span>인식된 역할</span><strong id="roles-wallet-role">지갑 연결 후 확인</strong></div></div><div class="roles-login-actions"><button id="roles-connect" class="btn btn-primary">역할 지갑 연결</button><button id="roles-rescan" class="btn btn-outline">계정·권한 다시 확인</button><p id="roles-connect-status" class="roles-connect-feedback" role="status" aria-live="polite">버튼을 누르면 MetaMask 연결 상태를 확인합니다.</p></div></div>
+            <div class="section-head"><div><h3>02 · 단계별 역할 승인</h3><p>내 지갑·현재 상태가 일치하는 단계만 활성화됩니다.</p></div><span class="pill pill-slate" id="roles-last-block">블록 확인 중</span></div>
+            <div id="roles-actions" class="roles-actions-grid"><div class="panel roles-loading">역할별 상태를 확인하고 있습니다.</div></div>
+            <div class="panel roles-confirm"><div><span class="eyebrow dark">03 / EXPLICIT APPROVAL</span><h3>선택된 거래 실행</h3><p id="roles-selected-hint">실행 전 읽기 전용 시뮬레이션과 가스 추정을 다시 수행합니다.</p></div><label class="proposal-check"><input type="checkbox" id="roles-ack"><span>지갑·정책·예치금과 예상 결과를 확인했고 MetaMask에서 직접 승인하겠습니다.</span></label><button id="roles-execute" class="btn btn-primary" disabled>검증 후 MetaMask 승인 요청</button><div id="roles-output" class="review-result neutral" aria-live="polite">자동으로 트랜잭션을 발송하지 않습니다.</div></div>
+          </section>
+        </div>
+        <div id="tool-host-trades" class="tool-host"></div>
+      </section>
+
+      <section class="platform-view" data-view="inspection" hidden>
+        <div class="page-title"><div><p>AI QUALITY INSPECTION</p><h1>원본에서 Actor 제출까지</h1><span>원본 준비 → AI 검사/보관 검증 → Evidence → Station 서명 → Actor TX → 영수증 확인</span></div></div>
+        <ol class="workflow-steps"><li>원본 준비</li><li>AI 검사·보관 검증</li><li>Evidence 준비</li><li>Station 서명</li><li>Actor 제출</li><li>영수증 확인</li></ol>
+        <nav class="task-tabs"><button data-tool="live">실시간 AI 검사</button><button data-tool="evidence">Evidence 검증</button><button data-tool="e2e">Station·Actor 제출</button></nav>
+        <div id="inspection-clock-warning" class="clock-warning" hidden></div>
+        <div id="tool-host-inspection" class="tool-host"></div>
+      </section>
+
+      <section class="platform-view" data-view="disputes" hidden>
+        <div class="page-title"><div><p>DISPUTE RESOLUTION</p><h1>충돌을 재현하고, 판단은 분리합니다</h1><span>Replay CONSISTENT는 재현성 확인이며 지급·환급을 자동 결정하지 않습니다.</span></div></div>
+        <div class="principle-banner"><b>Replay ≠ 정산 결정</b><span>Inspector가 Replay 근거와 계약·품질 판단을 별도로 검토합니다. 불일치 시 자동 지급 없이 HOLD·Backup·중재 경로로 이동합니다.</span></div>
+        <nav class="task-tabs"><button data-tool="replay">Inspector Replay</button><button data-tool="stage">HOLD·Backup 시나리오</button></nav>
+        <div id="tool-host-disputes" class="tool-host"></div>
+      </section>
+
+      <section class="platform-view" data-view="settlement" hidden>
+        <div class="page-title"><div><p>SETTLEMENT & WITHDRAWAL</p><h1>정산 및 출금</h1><span>정산 결과를 확인하고 실제 대금 인출까지 처리합니다.</span></div><button id="settlement-refresh" class="secondary-action" type="button">최신 상태 재조회</button></div>
+        <div class="principle-banner mint"><b>정산과 출금은 별도 단계입니다</b><span>정산은 claimable 수령권을 기록합니다. 실제 지갑 잔액 이동은 올바른 수령자가 Withdraw를 직접 승인해야 완료됩니다.</span></div>
+        <section class="summary-grid settlement-summary" aria-label="정산 요약">
+          <article><span>현재 정산 상태</span><strong id="settlement-state">조회 중</strong><small id="settlement-state-note">거래 상태 확인 중</small></article>
+          <article><span>지급 또는 환급 대상</span><strong id="settlement-recipient">미결정</strong><small id="settlement-recipient-note">계약 결정 이후 표시</small></article>
+          <article><span>인출 가능한 금액</span><strong id="settlement-claimable">—</strong><small>컨트랙트 claimable 기준</small></article>
+          <article><span>실제 출금 완료</span><strong id="settlement-withdrawn">미완료</strong><small id="settlement-withdrawn-note">Receipt 확인 필요</small></article>
+        </section>
+        <ol class="transaction-progress settlement-progress" aria-label="정산 진행 단계">
+          <li data-settlement-step="decision"><span>1</span><div><b>정산 결정</b><small>Inspector 또는 계약 상태 확인</small></div></li>
+          <li data-settlement-step="claimable"><span>2</span><div><b>수령 가능 금액 반영</b><small>claimable readback</small></div></li>
+          <li data-settlement-step="withdraw"><span>3</span><div><b>Withdraw</b><small>수령자 MetaMask 승인</small></div></li>
+          <li data-settlement-step="receipt"><span>4</span><div><b>영수증 확인</b><small>TX receipt와 잔액 검증</small></div></li>
+        </ol>
+        <section class="action-panel settlement-action-panel" aria-labelledby="settlement-action-title">
+          <div><p class="section-kicker">CURRENT WITHDRAWAL CONTEXT</p><h2 id="settlement-action-title">현재 출금 조건</h2><span id="settlement-action-message">현재 거래와 연결 지갑을 확인하고 있습니다.</span></div>
+          <dl>
+            <div><dt>현재 지갑</dt><dd><code id="settlement-wallet">연결되지 않음</code></dd></div>
+            <div><dt>필요 수령자 지갑</dt><dd><code id="settlement-required-wallet">정산 결과 확인 후 표시</code></dd></div>
+            <div><dt>출금 가능 잔액</dt><dd><strong id="settlement-action-claimable">—</strong></dd></div>
+          </dl>
+          <button id="settlement-open-actions" class="primary-action" type="button">허용된 출금 작업 확인</button>
+        </section>
+        <div id="tool-host-settlement" class="tool-host"></div>
+      </section>
+
+      <section class="platform-view" data-view="audit" hidden>
+        <div class="page-title"><div><p>EVIDENCE & AUDIT</p><h1>거래의 검증 근거와 감사 이력</h1><span>SHA-256, Evidence, 정책 해시, 서명, TX receipt를 한 거래 기준으로 확인합니다.</span></div><button id="export-audit" class="secondary-action" type="button">감사 JSON 저장</button></div>
+        <div class="audit-grid"><article class="platform-card"><div class="card-head"><div><p>고정 값</p><h2>정책·모델 Commitment</h2></div></div><dl id="audit-hashes" class="audit-facts"></dl></article><article class="platform-card"><div class="card-head"><div><p>검사 기록</p><h2>Evidence 상태</h2></div></div><div id="audit-evidence" class="audit-evidence"></div></article></div>
+        <article class="platform-card audit-timeline-card"><div class="card-head"><div><p>Receipt / Event / Readback</p><h2>온체인 감사 타임라인</h2></div><span id="audit-count">0건</span></div><div id="audit-timeline" class="audit-timeline"><div class="loading-line"></div></div></article>
+      </section>
+    </main>
+  </div>
+</div>
+<div id="platform-toast" class="platform-toast" hidden></div>
+</body>
+</html>
