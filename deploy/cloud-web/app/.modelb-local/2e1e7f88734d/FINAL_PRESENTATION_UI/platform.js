@@ -57,7 +57,7 @@ function saveTrade(id){return TradeContext.write(id);}
 function toast(message,danger=false){const el=$("platform-toast");el.textContent=message;el.classList.toggle("danger",danger);el.hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.hidden=true,4200);}
 function friendlyError(error){const raw=String(error?.shortMessage||error?.reason||error?.message||error||"");const map=[["NETWORK_TRADE_NOT_FOUND","선택한 네트워크에 존재하지 않는 거래입니다."],["TRADE_NOT_FOUND_ON_ACTIVE_NETWORK","선택한 네트워크에 존재하지 않는 거래입니다."],["DeadlinePassed","거래 실행 기한이 지났습니다. 새로운 거래를 준비해 주세요."],["0x70f65caa","거래 실행 기한이 지났습니다. 새로운 거래를 준비해 주세요."],["DEADLINE_EXPIRED_BY_WALL_CLOCK","다음 블록 예상 시각 기준으로 거래 기한이 이미 만료됐습니다. 새로운 거래를 준비해 주세요."],["UnauthorizedAuthority","자격 관리 권한이 없어 조회만 가능합니다."],["UnauthorizedCaller","현재 선택된 지갑은 이 작업의 담당 계정이 아닙니다."],["UnauthorizedStation","현재 서명 지갑은 이 거래에 지정된 검사 장비 계정이 아닙니다."],["InvalidCredentialState","현재 자격 상태에서는 선택한 변경을 실행할 수 없습니다."],["WRONG_CHAIN","MetaMask 네트워크가 현재 InspectEscrow 네트워크와 다릅니다."],["chain mismatch","MetaMask 네트워크가 현재 InspectEscrow 네트워크와 다릅니다."],["AI server","AI 검사 서버에 연결할 수 없습니다. 검사 기능이 일시적으로 제한됩니다."],["unknown custom error","현재 네트워크에서 선택한 거래 상태를 확인할 수 없습니다. Trade ID와 네트워크를 확인해 주세요."],["user rejected","사용자가 MetaMask 요청을 취소했습니다."],["ACTION_REJECTED","사용자가 MetaMask 요청을 취소했습니다."]];return map.find(([token])=>raw.toLowerCase().includes(token.toLowerCase()))?.[1]||raw;}
 async function json(url,options={}){const response=await fetch(url,{cache:"no-store",...options});let body;try{body=await response.json();}catch{throw Error("서버 응답을 해석할 수 없습니다. HTTP "+response.status);}if(!response.ok){const raw=String(body.detail||body.error||"요청 실패"),error=Error(friendlyError(raw));error.technicalDetail=raw;error.httpStatus=response.status;throw error;}return body;}
-function withTrade(path){const url=new URL(path,location.origin),id=state.detail?.id||readSavedTrade();if(validTrade(id)&&!url.searchParams.has("tradeId"))url.searchParams.set("tradeId",id);return url.pathname+url.search+url.hash;}
+function withTrade(path){const url=new URL(path,location.origin),selected=new URLSearchParams(location.search).get("tradeId"),id=validTrade(selected)?selected:state.detail?.id||readSavedTrade();if(validTrade(id)&&!url.searchParams.has("tradeId"))url.searchParams.set("tradeId",id);return url.pathname+url.search+url.hash;}
 function navigate(path,replace=false){const target=withTrade(path);history[replace?"replaceState":"pushState"]({},"",target);renderRoute({scrollToTop:true});}
 
 function route(){return ROUTES[location.pathname]||ROUTES["/"];}
@@ -93,13 +93,17 @@ async function showTool(view,tool){
   state.activeTool=tool;host.dataset.tool=tool;host.hidden=false;host.innerHTML='<div class="tool-loading">업무 화면과 최신 거래 컨텍스트를 불러오는 중입니다…</div>';
   try{
     const response=await fetch("/tools/"+tool+location.search,{cache:"no-store"});if(!response.ok)throw Error("업무 화면 HTTP "+response.status);
-    const source=await response.text(),doc=new DOMParser().parseFromString(source,"text/html");
+    const source=await response.text();
+    if(state.activeTool!==tool||host.dataset.tool!==tool||host.hidden)return;
+    const doc=new DOMParser().parseFromString(source,"text/html");
     doc.querySelectorAll("script,link,style").forEach(node=>node.remove());
     const surface=document.createElement("div");surface.className="tool-surface tool-"+tool;surface.innerHTML=doc.body.innerHTML;normalizeButtons(surface);
     if(tool==="e2e"){const overline=surface.querySelector(".overline"),title=surface.querySelector(".hero h1");if(overline)overline.textContent="선택 네트워크 · 사용자 승인 전용";if(title)title.textContent="검사 Evidence 온체인 제출";}
     host.replaceChildren(surface);normalizeToolMessages(surface);
     const scriptResponse=await fetch(TOOL_SCRIPTS[tool],{cache:"no-store"});if(!scriptResponse.ok)throw Error("업무 로직 HTTP "+scriptResponse.status);
-    const script=await scriptResponse.text();Function(script+"\n//# sourceURL="+TOOL_SCRIPTS[tool])();
+    const script=await scriptResponse.text();
+    if(state.activeTool!==tool||host.dataset.tool!==tool||host.hidden)return;
+    Function(script+"\n//# sourceURL="+TOOL_SCRIPTS[tool])();
   }catch(error){host.innerHTML='<div class="platform-alert danger">업무 화면을 열지 못했습니다: '+esc(error.message||error)+'</div>';toast("업무 화면 로드 실패",true);}
 }
 
