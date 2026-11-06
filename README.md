@@ -31,7 +31,8 @@ GitHub의 최종 소스코드를 KoMaP식 검토용 ZIP으로도 제공하며, �
 - **[최신 Railway 배포 매니페스트](docs/DEPLOYMENT_MANIFEST_20261106.json)**
 - **[GitHub·배포 소스 일치성 검사 스크립트](scripts/final_submission_source_parity.mjs)**
 - **[최신 소스 동기화·안전성 검사 결과](docs/SOURCE_SYNC_VERIFIED_20261106_KO.md)**
-- **[실제 Model B +1 Replay 실행 결과·원본 웹 캡처](docs/evidence/MODEL_B_CLOUD_PLUS1_REAL_WEB_SCREENSHOT.png)**
+- **[최신 Railway 통합 웹사이트 실제 화면 2장 — 거래 RELEASED 및 Model B +1 Replay](docs/evidence/presentation/2026-11-06/CURRENT_RAILWAY_INTEGRATED_WEB/)**
+- **[실제 Model B +1 Replay 결과 부분 확대 캡처](docs/evidence/MODEL_B_CLOUD_PLUS1_REAL_WEB_SCREENSHOT.png)**
 - [2026-10-31 과거 README 원문](docs/README_20261031_ARCHIVE.md)
 
 ### 확인된 주요 실증

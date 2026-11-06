@@ -1,0 +1,75 @@
+{
+    "base":  "https://inspectescrow-integrated-web-production.up.railway.app",
+    "tradeId":  "0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+    "sourceInput":  "S05_normal_repeat2.jpg.jpg (private image, not committed)",
+    "results":  [
+                    {
+                        "pageName":  "CURRENT_TRADE",
+                        "url":  "https://inspectescrow-integrated-web-production.up.railway.app/trades?tradeId=0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+                        "http":  200,
+                        "text":  "TRADE MANAGEMENT\n\n거래 생성·정책 승인·예치\n거래 생성 → 정책 승인 → Buyer 예치 → 활성화 상태를 한 흐름으로 확인합니다.\n거래 목록\n새 거래 생성\n정책·예치·활성화\n업무 화면과 최신 거래 컨텍스트를 불러오는 중입니다…"
+                    },
+                    {
+                        "pageName":  "CURRENT_AUDIT",
+                        "url":  "https://inspectescrow-integrated-web-production.up.railway.app/audit?tradeId=0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+                        "http":  200,
+                        "text":  "EVIDENCE \u0026 AUDIT\n\n거래의 검증 근거와 감사 이력\nSHA-256, Evidence, 정책 해시, 서명, TX receipt를 한 거래 기준으로 확인합니다.\n감사 JSON 저장\n\n고정 값\n\n정책·모델 Commitment\nTrade ID\n0x49bf5596d2…cf08c591ff\n정책 해시\n0x89ca38f600…b5c88e63d1\nModel Bundle\n0x3670ae2c0c…6839d351af\nCapture Profile\n0x757e1e9681…10ade57c96\nScore Schema\n0x9151149c14…d824f95dd5\n계약 주소\n0x0a4721CF41…D2db73B905\n\n검사 기록\n\nEvidence 상태\nSupplier Evidence\n0x6f116a28…3981e3d3 · 시도 1\nPASS\nBuyer Evidence\n0x73be7c10…b2d72241 · 시도 1\nREVIEW\nInspector Replay\n0x20fb1064…616dc122\n기록됨\n\nReceipt / Event / Readback\n\n온체인 감사 타임라인\n0건\n\n감사 이벤트가 없습니다.",
+                        "timelineItems":  1
+                    },
+                    {
+                        "pageName":  "CURRENT_REPLAY_PLUS1",
+                        "url":  "https://inspectescrow-integrated-web-production.up.railway.app/replay?tradeId=0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+                        "http":  200,
+                        "result":  {
+                                       "ok":  true,
+                                       "status":  "INCONSISTENT",
+                                       "mode":  "CONTROLLED_RED_TEAM_SCORE_CLAIM_NOT_SIGNED",
+                                       "report":  {
+                                                      "schema":  "inspectescrow.modelb-controlled-score-tamper-demo/1",
+                                                      "mode":  "CONTROLLED_RED_TEAM_SCORE_CLAIM_NOT_SIGNED",
+                                                      "status":  "INCONSISTENT",
+                                                      "originalTopFileName":  "S05_normal_repeat2.jpg.jpg",
+                                                      "originalTopSha256":  "3ecc6b09569d5e76c3a36f915aff4021021d6b6b66b8ee83b4f3bfc38fe3d007",
+                                                      "originalTopBytes":  2648784,
+                                                      "modelCheckpointSha256":  "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+                                                      "aiRunCount":  2,
+                                                      "actualAiInferenceRunsCompleted":  true,
+                                                      "baselineScoreScaled":  "36185043",
+                                                      "tamperedClaimScoreScaled":  "36185044",
+                                                      "replayScoreScaled":  "36185043",
+                                                      "replayToleranceScaled":  "0",
+                                                      "scoreDeltaScaled":  "1",
+                                                      "baselineAndReplayReproducible":  true,
+                                                      "thresholdScaled":  "38280373",
+                                                      "baselineDecision":  "PASS",
+                                                      "replayDecision":  "PASS",
+                                                      "tamperedClaimOrigin":  "CONTROLLED_PLUS_ONE_IN_MEMORY_NOT_MODEL_OUTPUT",
+                                                      "attackMutatedSignedEvidence":  false,
+                                                      "actualSubmittedEvidenceVerified":  false,
+                                                      "onchainEvidenceHashLinked":  false,
+                                                      "onchainSubmissionAllowed":  false,
+                                                      "txSent":  0,
+                                                      "inferenceElapsedMs":  {
+                                                                                 "baseline":  560,
+                                                                                 "replay":  565
+                                                                             },
+                                                      "runtimeVerified":  true,
+                                                      "limitations":  [
+                                                                          "The +1 tampered score is an intentionally modified unsigned claim for the demo; the signed onchain evidence is not modified.",
+                                                                          "The original image has no attested binding to the previously completed Sepolia trade.",
+                                                                          "This scenario demonstrates detection in an independent inference comparison, not a newly recorded onchain Replay or HOLD transition."
+                                                                      ],
+                                                      "generatedAtUtc":  "2026-11-06T06:33:30.544Z"
+                                                  },
+                                       "reportHash":  "0x77ef8c1337ec0972c7a073cd6f9dae30c3293017c1ff74c5718d0aac2d9f5d65",
+                                       "actualAiReplayExecuted":  true,
+                                       "transactionsSent":  0,
+                                       "submissionGate":  "CONTROLLED_OFFCHAIN_ONLY_NO_ONCHAIN_RECORD"
+                                   },
+                        "pageStatus":  "실제 Model B 추론 2회 완료 · INCONSISTENT · 허용오차 0 · Sepolia TX 0 · 비서명 통제 점수 조작"
+                    }
+                ],
+    "errors":  [
+
+               ]
+}
