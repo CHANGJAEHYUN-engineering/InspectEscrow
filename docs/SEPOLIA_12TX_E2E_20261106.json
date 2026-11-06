@@ -1,7 +1,7 @@
 {
   "schema": "inspectescrow-submission-evidence-index/1",
   "asOf": "2026-11-06",
-  "source": "2026-11-06 사용자 실행 결과와 Sepolia/공개 RPC 조회 기록",
+  "source": "2026-11-06 user execution receipts; cross-checked on-chain Sepolia PolicyAccepted logs (including tx 1).",
   "network": "Ethereum Sepolia",
   "chainId": 11155111,
   "contractAddress": "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",
@@ -46,10 +46,10 @@
         "PolicyAccepted"
       ],
       "blockNumber": 12071501,
-      "reportedTransactionHash": "0x18d051656b42625749db59a68e179a21f838a6fcda60feaa57042ef4216959c",
-      "hashFormatVerified": false,
-      "explorerUrl": null,
-      "verificationNote": "제공된 텍스트가 63자리 16진수로 전사됨. 원본 Etherscan에서 64자리 해시 재확인 필요"
+      "reportedTransactionHash": "0x18d0516566b42625749db59a68e179a21f838a6fcda60feaa57042ef4216959c",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0x18d0516566b42625749db59a68e179a21f838a6fcda60feaa57042ef4216959c",
+      "verificationNote": "Confirmed directly from Sepolia on-chain PolicyAccepted event for the selected trade in block 12071501."
     },
     {
       "index": 2,
