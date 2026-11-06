@@ -1,0 +1,20 @@
+{
+  "schema": "InspectEscrow.Nut5PhotoPresets.v1",
+  "note": "Supplier originals registered; Buyer defect set awaiting upload",
+  "roles": {
+    "supplier": {
+      "TOP": {
+        "filename": "nut5_normal_TOP.jpg",
+        "sha256": "0609922596edc39c6f8db095d7a820d36f87c9492e1f6ffd28936e4d9b888991"
+      },
+      "FRONT": {
+        "filename": "nut5_normal_FRONT.jpg",
+        "sha256": "2aca0b3ae7c8caf65783d48da8e921b1c152fff9f6db7f5840f38f2e37e40bf1"
+      },
+      "SIDE": {
+        "filename": "nut5_normal_SIDE.jpg",
+        "sha256": "8ea3490e7fec718fe291780626ca0c6dd12dcc33ca580916d096d4734a0508fe"
+      }
+    }
+  }
+}

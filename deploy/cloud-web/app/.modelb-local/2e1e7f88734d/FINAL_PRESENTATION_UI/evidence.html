@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>InspectEscrow | 내 검사 기록</title>
   <link rel="stylesheet" href="/evidence.css">
-  <script defer src="/evidence.js"></script>
+  <script defer src="/xai-companion.js"></script><script defer src="/evidence.js"></script>
 </head>
 <body>
 <div class="shell">
@@ -18,12 +18,12 @@
     <section class="hero">
       <div class="eyebrow">LOCAL ORIGINALS · LIVE SEPOLIA READBACK · TX 0</div>
       <h1>내 검사 기록과 증거 무결성</h1>
-      <p>JSON 문자열을 신뢰하지 않습니다. 원본 3뷰의 SHA-256, manifest·evidence keccak256, 정책·모델 commitment, EIP-712 구조와 현재 Sepolia 기록을 다시 계산합니다.</p>
+      <p>원본 3뷰의 SHA-256, manifest·evidence keccak256, 정책·모델 commitment, EIP-712 구조를 재검증합니다. 새로운 미서명 검사 결과는 오프체인 검증하고, 기존 제출 증거와의 온체인 일치는 별도 버튼으로 엄격하게 확인합니다.</p>
     </section>
 
     <section class="security-note">
       <strong>브라우저 저장 범위</strong>
-      <p>거래 ID·역할·검증 시각·해시·결과만 선택적으로 저장합니다. 원본 이미지, 증거 JSON 본문, Station 서명, 개인키, 지갑 권한은 저장하지 않습니다. 새로고침 후 원본 파일은 반드시 다시 선택해야 합니다.</p>
+      <p>거래 ID·역할·검증 시각·해시·결과만 선택적으로 저장합니다. 원본 이미지와 증거 JSON은 서버에 영구 저장하지 않습니다. 같은 탭의 AI 검사에서 넘어온 경우 현재 탭 메모리에서 자동 연결되며, 새로고침·새 탭에서는 다시 선택해야 합니다. Station 서명·개인키·지갑 권한은 저장하지 않습니다.</p>
     </section>
 
     <section class="panel import-panel">
@@ -53,13 +53,15 @@
       </div>
       <label class="remember"><input id="remember" type="checkbox" checked> 민감하지 않은 최소 세션 메타데이터만 이 브라우저에 기억</label>
       <div class="actions">
-        <button id="verify" class="primary">원본·해시·Sepolia 재검증</button>
+        <button id="verify" class="primary">새 Evidence 원본·해시 검증 (오프체인)</button>
+        <button id="verify-chain">온체인 제출 증거 엄격 대조</button>
         <button id="save-session">현재 작업 기억</button>
         <button id="download" disabled>검증한 증거 JSON 저장</button>
         <button id="refresh-chain" disabled>현재 Sepolia 제출 상태 재조회</button>
         <button id="clear-session" class="quiet">복구 기록 지우기</button>
       </div>
       <div id="progress" class="progress" aria-live="polite">증거와 원본 파일을 선택하세요.</div>
+      <div id="auto-handoff-note" class="progress" hidden aria-live="polite"></div>
     </section>
 
     <section id="result" class="panel result-panel hidden">
@@ -79,6 +81,27 @@
       </div>
       <article class="checks"><h3>검증 항목</h3><div id="checks"></div></article>
       <article class="limitations"><h3>검증 한계</h3><ul id="limitations"></ul></article>
+    </section>
+
+    <section class="panel xai-evidence-panel" id="xai-evidence-panel">
+      <div class="section-title"><div><span>XAI</span><h2>AI 판단 근거 · Evidence 연결 검증</h2></div><span class="mode">OFFCHAIN SIDECAR · READ ONLY</span></div>
+      <p>앞 단계에서 생성한 실제 PatchCore 이상도 지도와 검사 증거를 연결합니다. <b>TOP 원본 SHA-256 · 모델 체크포인트 · AI 점수 · Evidence Package Hash</b>가 일치해야 근거를 보여줍니다.</p>
+      <label class="file-box">선택: XAI 연결 보고서 JSON <small>새 탭·새로고침 후에는 저장한 .sidecar.json을 선택</small>
+        <input id="xai-sidecar-file" type="file" accept=".json,application/json">
+        <span id="xai-sidecar-name">같은 탭 AI 검사에서 넘어오면 자동 연결됩니다.</span>
+      </label>
+      <div id="xai-validation-state" class="progress" aria-live="polite">아직 XAI 근거가 연결되지 않았습니다. Evidence 본 검증과는 독립된 참고 검증입니다.</div>
+      <div class="xai-evidence-view" id="xai-evidence-view" hidden>
+        <div class="xai-evidence-image"><img id="xai-evidence-overlay" alt="PatchCore 상대 이상도 히트맵"><small>빨간색은 고정 표시 기준을 넘는 너트 영역 · 불량 확률 아님</small></div>
+        <div class="xai-evidence-detail">
+          <strong id="xai-evidence-title">XAI 판단 근거</strong>
+          <p id="xai-evidence-score"></p>
+          <p>영역별 고정 기준 초과 강도 · 상위 5% 패치 (0~100 지수)</p><div id="xai-evidence-bars"></div>
+          <p id="xai-evidence-binding"></p>
+        </div>
+      </div>
+      <div class="actions"><button type="button" id="xai-sidecar-export" disabled>XAI·Evidence 연결 보고서 JSON 저장</button></div>
+      <p class="xai-warning">XAI 연결 검증은 파일 내용이 현재 검증된 Evidence와 일치하는지 확인하는 것입니다. XAI 이미지의 생성 주체를 독립적으로 인증하지 않으며, XAI 자체는 Station EIP-712 서명·블록체인 해시에 포함되지 않습니다. 법적 판단이나 원본 진위 보장이 아닙니다.</p>
     </section>
 
     <section class="panel">

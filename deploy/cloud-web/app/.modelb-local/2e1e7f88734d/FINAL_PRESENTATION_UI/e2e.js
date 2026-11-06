@@ -3,6 +3,49 @@
 const $=id=>document.getElementById(id),e=window.ethers;
 const activeTrade=()=>{const q=new URLSearchParams(location.search).get("tradeId"),saved=window.InspectEscrowContext?.read()||"",id=q||saved;if(!/^0x[0-9a-fA-F]{64}$/.test(id||""))throw Error("선택된 Trade ID가 없습니다. 거래 목록에서 거래를 선택하세요.");window.InspectEscrowContext?.write(id);return id;};
 const state={snapshot:null,packages:{supplier:null,buyer:null,replay:null},signatures:{supplier:null,buyer:null,replay:null},busy:false};
+function renderXaiReference(){
+  const panel=$("e2e-xai-support"),list=$("e2e-xai-items");
+  if(!panel||!list)return;
+  const tradeId=activeTrade(),store=window.__inspectEscrowRoleInspections;
+  if(!store||String(store.tradeId).toLowerCase()!==tradeId.toLowerCase()||!window.InspectEscrowXAI)return;
+  list.innerHTML="";
+  for(const role of ["supplier","buyer"]){
+    const h=store.roles?.[role];
+    if(!h||h.role!==role||String(h.tradeId).toLowerCase()!==tradeId.toLowerCase())continue;
+    if(!window.InspectEscrowXAI.xaiChecks(h.xai,h.bundle).ok)continue;
+    const data=h.xai;
+    const card=document.createElement("article");
+    card.className="e2e-xai-card";
+    const heading=document.createElement("b");
+    heading.textContent=role.toUpperCase()+" · "+data.decision+" · 원본 검사 XAI 참고";
+    const score=document.createElement("p");
+    score.textContent="점수 "+data.scoreRaw+" · TOP "+String(data.originalTopSha256).slice(0,14)+"… · Evidence "+String(h.bundle.evidencePackageHash).slice(0,14)+"…";
+    const img=document.createElement("img");
+    img.alt=role+" 모델 원생 이상도 지도 · 오프체인 참고 이미지";
+    img.src="data:image/png;base64,"+data.overlayPngBase64;
+    card.append(heading,img,score);list.append(card);
+  }
+  panel.hidden=!list.children.length;
+}
+
+function prefillFromLiveInspection(){
+ const h=window.__inspectEscrowEvidenceHandoff;
+ if(!h||!["supplier","buyer"].includes(h.role)||!["TOP","FRONT","SIDE"].every(v=>h.files?.[v] instanceof File))return;
+ let tradeId;
+ try{tradeId=activeTrade();}catch{return;}
+ if(h.tradeId?.toLowerCase()!==tradeId.toLowerCase())return;
+ const role=h.role;
+ for(const view of ["top","front","side"]){
+   const picker=$(role+"-"+view),dt=new DataTransfer();
+   if(!picker)return;
+   dt.items.add(h.files[view.toUpperCase()]);
+   picker.files=dt.files;
+ }
+ const label=$(role+"-label");
+ if(label&&!label.value)label.value=h.specimenId||"";
+ out(role,"실시간 AI 검사에서 사용한 TOP·FRONT·SIDE 원본 3장이 자동 연결됐습니다. 사진과 실물 식별 조건을 다시 확인하고 뷰 확인 체크박스를 직접 선택하세요. 그다음 '실제 AI 재추론·동적 증거 생성'을 눌러 현재 거래에 맞는 새 Evidence를 만듭니다. Station 서명·Actor TX는 자동 실행되지 않습니다.");
+}
+
 const errorKorean={
  "0x70f65caa":"업무 기한이 만료되었습니다(DeadlinePassed). Local Anvil 블록 시간이 멈춘 동안 실제 시간이 기한을 넘었습니다. 기존 서명은 재사용하지 말고 새 거래에서 Evidence를 다시 준비하세요.",
  "0x716dcc39":"Station 서명 유효기간이 만료되었습니다(AttestationExpired). Evidence를 다시 준비하고 새 서명을 받으세요.",
@@ -225,5 +268,7 @@ for(const role of ["supplier","buyer","replay"]){
   for(const view of ["top","front","side"])$(role+"-"+view).addEventListener("change",()=>clearRole(role));
  }else $("replay-reason").addEventListener("input",()=>clearRole(role));
 }
+prefillFromLiveInspection();
+renderXaiReference();
 snapshot().catch(err=>$("preflight").textContent="사전검증 실패: "+envErr(err));
 })();

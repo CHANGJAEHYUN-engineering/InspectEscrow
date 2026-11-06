@@ -13,8 +13,14 @@
   <link rel="stylesheet" href="/enterprise-design.css">
   <link rel="stylesheet" href="/enterprise-tools.css">
   <script defer src="/vendor/ethers.umd.min.js"></script>
+  <link rel="stylesheet" href="/xai-dashboard.css">
+  <script defer src="/xai-companion.js"></script>
   <script defer src="/platform.js"></script>
   <script defer src="/roles.js"></script>
+  <link rel="stylesheet" href="/assist.css">
+  <script defer src="/assist.js"></script>
+  <link rel="stylesheet" href="/xai-anchor-panel.css">
+  <script defer src="/xai-anchor-panel.js"></script>
 </head>
 <body class="platform-body">
 <svg class="platform-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -36,6 +42,15 @@
 <div class="platform-shell">
   <aside class="platform-sidebar">
     <a class="platform-brand" href="/" data-route="dashboard"><span>IE</span><div><b>InspectEscrow</b><small>MANUFACTURING TRUST</small></div></a>
+    <div class="service-mode-switch" role="group" aria-label="InspectEscrow 서비스 모드">
+      <button type="button" class="service-mode-button selected" data-mode-path="/" data-service-mode="escrow" aria-pressed="true">
+        <span class="service-mode-glyph">⬡</span><span><b>에스크로 거래 모드</b><small>제조 B2B · 정산 실증</small></span>
+      </button>
+      <button type="button" class="service-mode-button" data-mode-path="/assist" data-service-mode="assist" aria-pressed="false">
+        <span class="service-mode-glyph">◎</span><span><b>증거·판단 보조 모드</b><small>AI · XAI · 원본 검증</small></span>
+      </button>
+    </div>
+    <p class="assist-sidebar-note" hidden>거래 대금 예치·지갑 서명·정산을 수행하지 않습니다.<br>현재 실증 모델: 금속 너트 Model B<br>중고 상품 일반 판정은 미지원</p>
     <p class="nav-label">업무 메뉴</p>
     <nav class="platform-nav" aria-label="주요 업무">
       <a href="/" data-route="dashboard"><svg><use href="#p-dashboard"/></svg><span><b>대시보드</b><small>현황과 다음 업무</small></span></a>
@@ -180,6 +195,66 @@
           <button id="settlement-open-actions" class="primary-action" type="button">허용된 출금 작업 확인</button>
         </section>
         <div id="tool-host-settlement" class="tool-host"></div>
+      </section>
+
+      <section class="platform-view assist-workspace" data-view="assist" hidden>
+        <div class="assist-header">
+          <div>
+            <p class="assist-eyebrow">INSPECTESCROW · EVIDENCE ADVISORY</p>
+            <h1>증거·판단 보조 모드</h1>
+            <p>거래 대금은 건드리지 않고, 원본 사진을 AI로 분석해 이상 위치와 검증 가능한 증거 자료를 제공합니다.</p>
+          </div>
+          <span class="assist-pill">OFFCHAIN · NO ESCROW · NO TX</span>
+        </div>
+        <div class="assist-boundary">
+          <div><b>현재 실증 범위</b><span>금속 육각너트 · 고정된 CNN PatchCore Model B</span></div>
+          <div><b>중고 거래 확장</b><span>상품별 정상 기준·학습 데이터·촬영 조건이 추가로 필요합니다</span></div>
+          <div><b>법적 책임</b><span>AI 판단만으로 진품·책임·분쟁 결과를 확정하지 않습니다</span></div>
+        </div>
+        <div class="assist-layout">
+          <div class="assist-stack">
+            <article class="assist-card">
+              <div class="assist-card-head"><span class="assist-step">01</span><div><h2>상품 식별 및 원본 3뷰</h2><p>TOP만 AI 추론에 사용 · FRONT/SIDE는 원본 해시 증거</p></div></div>
+              <label class="assist-label" for="assist-label">검사 대상 라벨 <small>사용자 입력 · 실물 신원 미검증</small></label>
+              <input id="assist-label" class="assist-input" value="DEMO-METAL-NUT-001" maxlength="100" autocomplete="off">
+              <div class="assist-views">
+                <label class="assist-image-select"><b>TOP</b><span>AI 검사 입력</span><img id="assist-preview-top" alt="TOP 원본 미리보기" hidden><input id="assist-top" type="file" accept="image/jpeg,image/png"><small id="assist-top-status">사진 선택</small></label>
+                <label class="assist-image-select"><b>FRONT</b><span>증거 원본</span><img id="assist-preview-front" alt="FRONT 원본 미리보기" hidden><input id="assist-front" type="file" accept="image/jpeg,image/png"><small id="assist-front-status">사진 선택</small></label>
+                <label class="assist-image-select"><b>SIDE</b><span>증거 원본</span><img id="assist-preview-side" alt="SIDE 원본 미리보기" hidden><input id="assist-side" type="file" accept="image/jpeg,image/png"><small id="assist-side-status">사진 선택</small></label>
+              </div>
+              <p class="assist-tip">업로드한 3장의 원본은 브라우저 탭에만 유지됩니다. 다른 상품군의 정상·불량 여부는 이 모델로 판정하지 않습니다.</p>
+              <div class="assist-actions"><button id="assist-inspect" type="button" class="assist-primary">실제 AI 검사 + 증거 생성</button><button id="assist-reset" type="button" class="assist-secondary">새 검사</button></div>
+              <p id="assist-progress" class="assist-progress" aria-live="polite">이미지 3장을 선택하세요.</p>
+            </article>
+            <article class="assist-card">
+              <div class="assist-card-head"><span class="assist-step">03</span><div><h2>증거 무결성 확인 및 보고서</h2><p>원본 SHA-256 · 고정 모델 해시 · 생성 결과의 일치 여부</p></div></div>
+              <div id="assist-verify-status" class="assist-result-muted">Evidence 보고서를 생성하면 원본과 비교해 확인할 수 있습니다.</div>
+              <div class="assist-actions"><button id="assist-verify" class="assist-secondary" type="button" disabled>원본 3뷰 해시 재검증</button><button id="assist-export" class="assist-secondary" type="button" disabled>증거·XAI 보고서 JSON 저장</button></div>
+              <p class="assist-tip">이 보고서는 미서명 오프체인 참고자료입니다. 제품의 물리적 동일성·법적 책임·블록체인 제출을 증명하지 않습니다.</p>
+            </article>
+          </div>
+          <div class="assist-stack">
+            <article class="assist-card assist-results-card">
+              <div class="assist-card-head"><span class="assist-step">02</span><div><h2>AI 판정과 XAI 판단 근거</h2><p>이상 점수 ≠ 불량 확률 · 실제 PatchCore 지도</p></div></div>
+              <div id="assist-result" class="assist-result-empty">실제 Model B 추론 결과가 여기에 표시됩니다.</div>
+              <button id="assist-explain" class="assist-secondary assist-wide" type="button" disabled>빨간 이상 위치 히트맵 생성 · 실제 모델 재추론</button>
+              <div id="assist-xai" class="assist-xai" hidden>
+                <div class="assist-heatmap"><img id="assist-heatmap-image" alt="실제 PatchCore 이상도 지도 오버레이"><small>빨간색: 정상 참조 특징과 상대적으로 큰 차이</small></div>
+                <p class="assist-tip">너트 영역의 고정 기준 초과 강도 · 상위 5% 패치 (0~100 지수)</p><div id="assist-heatmap-bars" class="assist-bars"></div>
+                <p id="assist-heatmap-note" class="assist-tip"></p>
+              </div>
+              <p id="assist-xai-progress" class="assist-progress" aria-live="polite">AI 검사가 완료되면 근거 시각화를 실행할 수 있습니다.</p>
+            </article>
+            <article class="assist-card assist-business">
+              <p class="assist-eyebrow">EXTENSION ROADMAP</p>
+              <h2>중고 거래로 확장할 경우</h2>
+              <p>판매자 제시 상태와 구매자 수령 상태의 차이를 설명할 수 있도록, 해당 품목에 맞는 정상 기준과 별도 모델을 구축해야 합니다.</p>
+              <div><span>현재 구현</span><b>금속 너트 검사·위치별 이상도·원본 증거</b></div>
+              <div><span>향후 확장</span><b>상품군별 검증 모델·당사자 증거 비교</b></div>
+              <p class="assist-tip">당근마켓 등 외부 플랫폼과 연동하거나 법적 분쟁을 해결하는 기능은 현재 구현되어 있지 않습니다.</p>
+            </article>
+          </div>
+        </div>
       </section>
 
       <section class="platform-view" data-view="audit" hidden>

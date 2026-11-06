@@ -19,6 +19,7 @@ from server import (
     EXPECTED_MODEL_SHA256, THRESHOLD_SCALED,
     artifact_commitment_status, get_model, infer_original_bytes, sha256
 )
+from patchcore_xai import explain_original_bytes
 
 ROOT = Path(__file__).resolve().parent
 TOKEN = os.environ.get("INSPECTESCROW_DEMO_ACCESS_TOKEN", "")
@@ -151,6 +152,30 @@ async def inspect(
     return {"ok": True, "scoreRaw": score, "scoreScaled": scaled,
             "thresholdScaled": THRESHOLD_SCALED, "decision": decision,
             "completeThreeViewCapture": complete, "bundle": bundle}
+
+@app.post("/api/cloud/explain")
+async def explain(
+    top: UploadFile = File(...),
+    expected_top_sha256: str = Form(...),
+    specimen_label: str = Form(default="LIVE-NUT-001"),
+    x_demo_token: str | None = Header(default=None),
+):
+    """Authenticated, immutable-checkpoint-native localization; never persists pixels."""
+    require_token(x_demo_token)
+    if not 2 <= len(specimen_label) <= 100 or any(ord(c) < 32 for c in specimen_label):
+        raise HTTPException(400, "INVALID_SPECIMEN_LABEL")
+    image = await validate_image(top, "TOP")
+    if not hmac.compare_digest(image["sha256"], expected_top_sha256.lower()):
+        raise HTTPException(400, "TOP_SHA256_MISMATCH")
+    status = await run_in_threadpool(artifact_commitment_status)
+    if not status.get("verified"):
+        raise HTTPException(503, "MODEL_ARTIFACT_NOT_VERIFIED")
+    result = await run_in_threadpool(explain_original_bytes, image["data"])
+    if (result["originalTopSha256"] != image["sha256"]
+            or result["modelCheckpointSha256"] != EXPECTED_MODEL_SHA256):
+        raise HTTPException(503, "XAI_ORIGINAL_OR_CHECKPOINT_MISMATCH")
+    return {"ok": True, **result}
+
 
 @app.post("/api/cloud/verify")
 async def verify(bundle: dict, x_demo_token: str | None = Header(default=None)):

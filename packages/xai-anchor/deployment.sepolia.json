@@ -1,0 +1,17 @@
+{
+  "schema": "InspectEscrow.XAIAnchor.Deployment.v1",
+  "network": "Sepolia",
+  "chainId": 11155111,
+  "status": "DEPLOYED_ONCHAIN_CODE_VERIFIED",
+  "address": "0x16391d0f6e4baA35CC835839e98b85437455ba82",
+  "escrow": "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",
+  "transactionHash": "0x0260e6d67446e5550afdf7feaa97ef6513caf6acee84170b37cc33d2f9561ff0",
+  "blockNumber": 12077201,
+  "transactionStatus": 1,
+  "deployer": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
+  "confirmedSupplierActor": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
+  "deployedRuntimeCodeBytes": 3653,
+  "escrowReadbackVerified": true,
+  "xaiAnchorSubmissionsConfirmed": 0,
+  "notes": "This is the secondary XAI SHA-256 record contract only. Its deployment does not submit any XAI report hash or change InspectEscrow settlement state."
+}

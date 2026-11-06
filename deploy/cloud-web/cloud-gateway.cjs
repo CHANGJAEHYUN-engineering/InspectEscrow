@@ -21,7 +21,7 @@ let activeAICalls=0;
 function protectPublicActions(req,res,pathname){
  if(!["POST","PUT","PATCH","DELETE"].includes(req.method))return false;
  const ip=String(req.headers["x-forwarded-for"]||req.socket.remoteAddress||"unknown").split(",")[0].trim().slice(0,100);
- const heavy=/^\/api\/(?:live\/(?:infer|build|replay)|modelb\/infer|replay\/(?:execute|controlled-score-demo)|e2e\/prepare-|review\/prepare)/.test(pathname);
+ const heavy=/^\/api\/(?:live\/(?:infer|build|replay|explain)|assist\/(?:inspect|explain)|modelb\/infer|replay\/(?:execute|controlled-score-demo)|e2e\/prepare-|review\/prepare)/.test(pathname);
  const windowMs=10*60*1000,now=Date.now();
  for(const [k,v] of publicRequestBudgets)if(now>=v.end)publicRequestBudgets.delete(k);
  function consume(key,max){
@@ -98,6 +98,66 @@ async function aiRequest(method,pathname,body){
  return response.json();
 }
 
+async function advisoryRequest(req,res,url){
+  if(req.method!=="POST"||!["/api/assist/inspect","/api/assist/explain"].includes(url.pathname))
+    return send(res,405,{error:"METHOD_NOT_ALLOWED"});
+  try{
+    const isExplain=url.pathname.endsWith("/explain");
+    const bytes=await readBytes(req,isExplain?9*1024*1024:26*1024*1024);
+    const request=new Request("http://127.0.0.1"+url.pathname,{
+      method:"POST",headers:{"content-type":req.headers["content-type"]||""},body:bytes
+    });
+    const input=await request.formData();
+    const label=String(input.get("specimen_label")||"").trim();
+    if(label.length<2||label.length>100||/[\x00-\x1f]/.test(label))
+      return send(res,400,{error:"INVALID_SPECIMEN_LABEL"});
+    const names=isExplain?["top"]:["top","front","side"];
+    const originals={};
+    for(const name of names){
+      const file=input.get(name);
+      if(!file||typeof file.arrayBuffer!=="function")return send(res,400,{error:"MISSING_VIEW_"+name.toUpperCase()});
+      if(file.size<500||file.size>8*1024*1024)return send(res,413,{error:"INVALID_VIEW_SIZE_"+name.toUpperCase()});
+      if(!/\.(?:jpe?g|png)$/i.test(String(file.name||""))||String(file.name).length>160)
+        return send(res,400,{error:"INVALID_VIEW_FILENAME_"+name.toUpperCase()});
+      const b=Buffer.from(await file.arrayBuffer());
+      const jpeg=b[0]===0xff&&b[1]===0xd8&&b[2]===0xff;
+      const png=b.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]));
+      if(!jpeg&&!png)return send(res,400,{error:"INVALID_VIEW_MAGIC_"+name.toUpperCase()});
+      originals[name]={file,sha256:crypto.createHash("sha256").update(b).digest("hex")};
+    }
+    if(!isExplain&&new Set(names.map(name=>originals[name].sha256)).size!==3)
+      return send(res,400,{error:"DUPLICATE_ORIGINAL_VIEW"});
+    const form=new FormData();
+    for(const name of names)form.append(name,originals[name].file,originals[name].file.name);
+    form.append("expected_top_sha256",originals.top.sha256);
+    form.append("specimen_label",label);
+    const output=await aiRequest("POST",isExplain?"/api/cloud/explain":"/api/cloud/inspect",form);
+    if(isExplain){
+      if(!output.ok||output.method!=="PATCHCORE_NATIVE_ANOMALY_MAP"||
+         output.originalTopSha256!==originals.top.sha256||output.modelCheckpointSha256!==CHECKPOINT)
+        throw Error("ADVISORY_XAI_PROVENANCE_INVALID");
+      return send(res,200,{...output,scope:"METAL_NUT_ONLY",offchain:true,escrowAmountWei:"0",transactionsSent:0});
+    }
+    const captures=output.bundle?.manifest?.captureFiles;
+    if(!output.ok||!output.completeThreeViewCapture||
+      !names.every(name=>captures?.[name.toUpperCase()]?.sha256===originals[name].sha256)||
+      output.bundle?.inference?.modelCheckpointSha256!==CHECKPOINT||
+      output.bundle?.evidence?.stationSigned!==false||
+      output.bundle?.evidence?.onchainSubmitted!==false)
+      throw Error("ADVISORY_EVIDENCE_OR_MODEL_BINDING_INVALID");
+    return send(res,200,{
+      ok:true,scope:"METAL_NUT_ONLY",mode:"OFFCHAIN_ADVISORY_NO_ESCROW",
+      decision:output.decision,scoreRaw:output.scoreRaw,scoreScaled:output.scoreScaled,
+      thresholdScaled:output.thresholdScaled,bundle:output.bundle,
+      originalSha256:Object.fromEntries(names.map(name=>[name.toUpperCase(),originals[name].sha256])),
+      originalImageStoredByServer:false,escrowAmountWei:"0",transactionsSent:0,
+      caveat:"No product authenticity, physical identity, legal responsibility, signature or onchain claim."
+    });
+  }catch(error){
+    return send(res,422,{error:"ADVISORY_REQUEST_FAILED",detail:String(error.message||error).slice(0,180),transactionsSent:0});
+  }
+}
+
 function aiError(res,error){send(res,502,{detail:"CLOUD_AI_ADAPTER_ERROR: "+String(error.message||error).slice(0,180)});}
 async function adapter(req,res){
  const endpoint=new URL(req.url,"http://127.0.0.1").pathname;
@@ -115,7 +175,7 @@ async function adapter(req,res){
      });
    }catch(e){return aiError(res,e);}
  }
- if(endpoint==="/api/infer"&&req.method==="POST"){
+ if((endpoint==="/api/infer"||endpoint==="/api/explain")&&req.method==="POST"){
    try{
      const bytes=await readBytes(req,9*1024*1024);
      const request=new Request("http://127.0.0.1/api/infer",{
@@ -131,7 +191,14 @@ async function adapter(req,res){
      form.append("top",image,image.name||"top.jpg");
      form.append("expected_top_sha256",digest);
      form.append("specimen_label","MODEL_B_CLOUD_BRIDGE");
-     const result=await aiRequest("POST","/api/cloud/inspect",form);
+     const isExplain=endpoint==="/api/explain";
+     const result=await aiRequest("POST",isExplain?"/api/cloud/explain":"/api/cloud/inspect",form);
+     if(isExplain){
+       if(!result.ok||result.originalTopSha256!==digest||result.modelCheckpointSha256!==CHECKPOINT||
+          result.method!=="PATCHCORE_NATIVE_ANOMALY_MAP")throw Error("XAI_ORIGINAL_MODEL_BINDING_FAILED");
+       modelWasUsed=true;
+       return send(res,200,result);
+     }
      if(result.bundle?.manifest?.captureFiles?.TOP?.sha256!==digest||
          result.bundle?.inference?.modelCheckpointSha256!==CHECKPOINT)throw Error("INFERENCE_ORIGINAL_BINDING_FAILED");
      modelWasUsed=true;
@@ -181,5 +248,6 @@ http.createServer(async(req,res)=>{
  if(["POST","PUT","PATCH","DELETE"].includes(req.method)&&!allowedOrigin(req))
    return send(res,403,{error:"CROSS_ORIGIN_REJECTED"});
  if(protectPublicActions(req,res,url.pathname))return;
+ if(url.pathname.startsWith("/api/assist/"))return advisoryRequest(req,res,url);
  return proxy(req,res);
 }).listen(PORT,"0.0.0.0",()=>console.log("INSPECTESCROW_INTEGRATED_CLOUD_GATEWAY_READY",PORT));

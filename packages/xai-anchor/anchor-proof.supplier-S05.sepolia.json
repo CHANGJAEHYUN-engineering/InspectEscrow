@@ -1,0 +1,32 @@
+{
+  "schema": "InspectEscrow.XAIAnchor.OnchainProof.v1",
+  "network": "Sepolia",
+  "chainId": 11155111,
+  "contract": "0x16391d0f6e4baA35CC835839e98b85437455ba82",
+  "escrow": "0x0a4721CF41Ad3f7a9EC9C73049D2db73B905",
+  "transactionHash": "0x23fbae0c5256e01dfc82d698258e5a84aa92421d658dadebf4100b8b731f352f",
+  "status": 1,
+  "blockNumber": 12077704,
+  "blockTimestampUtc": "2026-11-06T16:21:12Z",
+  "attestor": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
+  "tradeId": "0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+  "role": 0,
+  "roleName": "supplier",
+  "evidencePackageHash": "0x2281badc88418b6b78f83a11de0aa4e0a4b51f8b7f0e7004232c08526f1711c1",
+  "xaiSha256": "0xcf3710f2fa746646770de2236e5947fcd35623178ac7ab91def004d1660cb1bb",
+  "xaiReportSchema": "InspectEscrow.XAI.EvidenceDerivedAnchorReport.v1",
+  "hashDefinition": "sha256(utf8(JSON.stringify(report.payload)))",
+  "offchainReportRehashMatch": true,
+  "onchainGetAnchorMatch": true,
+  "onchainVerify": true,
+  "tamperedDigestVerify": false,
+  "verifiedEvent": "XAIAnchored",
+  "gasUsed": 417147,
+  "effectiveGasPriceWei": "1500000014",
+  "feeEth": "0.000625720505840058",
+  "limitations": [
+    "The anchoring is supplemental to escrow trade evidence.",
+    "The underlying evidence bundle remains unsigned and not submitted to InspectEscrow escrow.",
+    "It verifies post-registration content matching, not physical authenticity or capture provenance."
+  ]
+}
