@@ -38,3 +38,17 @@
 - **아직 실 운영 중인 Railway production 서비스를 변경했다고 주장하지 않는다.**
 - 미완료: 실제 Model B 원본과 실거래를 사용한 End-to-End 브라우저 검증, 배포 컨테이너 재빌드·배포 버전 해시 비교, Sepolia 신규 거래 트랜잭션 시험.
 - 본선이 임박했으므로 운영 중인 배포를 덮어쓰기 전에 비운영 미리보기에서 실제 원본 검증/인증/거래 조회를 확인할 것. 기존 완료 거래를 변경하거나 실제 신규 TX를 자동 실행하지 말 것.
+
+## 2026-11-06 추가: Supplier / Buyer 별도 검사 시연
+
+- 통합 AI 검사 화면 상단에 **공급사 출하 검사 / 구매사 입고 검사 비교 카드**를 추가한다.
+- Supplier는 정상 3뷰 → 실제 AI PASS → Evidence A 생성·다운로드한다.
+- Buyer로 처음 전환하면 3개의 업로드 입력을 **모두 비우고 새 검사 세션**을 생성한다. 공급사 원본·추론결과·Evidence를 사용하지 않는다.
+- Buyer는 별도 3뷰 → 실제 AI REVIEW_REQUIRED → Evidence B 생성·다운로드한다.
+- Supplier로 다시 전환하면 **이전에 생성한 Supplier 원본·추론 결과·Evidence A**가 복구된다. Buyer도 동일하게 복구한다.
+- 비교 카드는 두 역할의 점수·Evidence 유무를 동시에 보여주고, Supplier PASS / Buyer REVIEW 조합이면 **검사 결과 충돌 시나리오**로 표시한다.
+- 미서명 오프체인 비교이며 실제 분쟁 전이·Sepolia TX·Inspector 판정은 자동으로 발생하지 않는다. 서로 다른 촬영 사진을 물리적으로 동일한 너트라고 인증하지 않는다.
+- 기존 같은 탭의 Evidence 검증·Station/Actor 자동 연결은 **현재 선택한 역할에 대해서만** 유지된다.
+- 전역 메모리는 활성 Trade ID별로 제한하고, 새 세션을 생성하면 **현재 역할의 기록만** 초기화한다. 영구 저장하지 않는다.
+
+**브라우저 모의 API 테스트:** Supplier PASS → Buyer 최초 전환 원본 입력 0/3 → Buyer REVIEW_REQUIRED → 결과 충돌 → Supplier 복귀 복원 → Buyer 복귀 복원 → Buyer 원본만 Evidence/Station·Actor 전달. 모두 PASS. 검증은 모의 응답을 이용한 UI 테스트이며 실제 Model B 성능이나 실제 온체인 신규 거래 실증이 아니다.
