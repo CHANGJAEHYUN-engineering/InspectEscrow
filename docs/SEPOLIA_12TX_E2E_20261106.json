@@ -1,0 +1,188 @@
+{
+  "schema": "inspectescrow-submission-evidence-index/1",
+  "asOf": "2026-11-06",
+  "source": "2026-11-06 사용자 실행 결과와 Sepolia/공개 RPC 조회 기록",
+  "network": "Ethereum Sepolia",
+  "chainId": 11155111,
+  "contractAddress": "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",
+  "tradeId": "0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+  "tradeOutcome": "RELEASED",
+  "settlement": "RELEASE_TO_SUPPLIER_BY_MUTUAL_RESOLUTION",
+  "escrowEth": "0.001",
+  "supplierWithdrawnEth": "0.001",
+  "supplierScoreScaled": "36302929",
+  "buyerScoreScaled": "51506557",
+  "thresholdScaled": "38280374",
+  "replayOnchainTest": {
+    "type": "CONTROLLED_NEGATIVE",
+    "result": "EXECUTION_HOLD",
+    "independentReplayOnOriginalEvidence": false
+  },
+  "contractAccountingConservedAfterWithdrawal": true,
+  "scoreTamperDemonstration": {
+    "mode": "OFFCHAIN_CONTROLLED_UNSIGNED_PLUS_ONE",
+    "liveModelBTwoRuns": true,
+    "baselineScaled": "36185043",
+    "tamperedClaimScaled": "36185044",
+    "rerunScaled": "36185043",
+    "absoluteDeltaScaled": "1",
+    "toleranceScaled": "0",
+    "result": "INCONSISTENT",
+    "onchainTxSent": 0,
+    "checkpointSha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+    "reportHash": "0x1b9bb8b666bfcb4d21a3246b3e4c6bec88e688f9c5cdf16f6ca14dc2ed8054ff"
+  },
+  "limits": [
+    "온체인 HOLD와 오프체인 +1 조작 시연은 별도 검증이다.",
+    "원본 Evidence JSON 자동 보관이 보장되지 않아 이 거래에서 정식 독립 Replay를 재구성하지 못했다.",
+    "이미지 해시로 물리적 시편의 동일성을 증명하지 않는다.",
+    "이 JSON은 거래 탐색용 색인이며 영수증 원본이 아니다."
+  ],
+  "transactions": [
+    {
+      "index": 1,
+      "step": "Supplier 정책 수락",
+      "events": [
+        "PolicyAccepted"
+      ],
+      "blockNumber": 12071501,
+      "reportedTransactionHash": "0x18d051656b42625749db59a68e179a21f838a6fcda60feaa57042ef4216959c",
+      "hashFormatVerified": false,
+      "explorerUrl": null,
+      "verificationNote": "제공된 텍스트가 63자리 16진수로 전사됨. 원본 Etherscan에서 64자리 해시 재확인 필요"
+    },
+    {
+      "index": 2,
+      "step": "Buyer 정책 수락",
+      "events": [
+        "PolicyAccepted"
+      ],
+      "blockNumber": 12071522,
+      "reportedTransactionHash": "0x1f890c9d221b9b5775261c3fc331e75366e8db2fc9616fb972f2964d4be508b3",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0x1f890c9d221b9b5775261c3fc331e75366e8db2fc9616fb972f2964d4be508b3",
+      "verificationNote": null
+    },
+    {
+      "index": 3,
+      "step": "Primary Inspector 수락",
+      "events": [
+        "InspectorAssignmentAccepted"
+      ],
+      "blockNumber": 12071537,
+      "reportedTransactionHash": "0xd0dc492f9039e0b348cece12884d970c27459a4f82edb0655e327a3642b30831",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0xd0dc492f9039e0b348cece12884d970c27459a4f82edb0655e327a3642b30831",
+      "verificationNote": null
+    },
+    {
+      "index": 4,
+      "step": "Backup Inspector 수락",
+      "events": [
+        "InspectorAssignmentAccepted"
+      ],
+      "blockNumber": 12071545,
+      "reportedTransactionHash": "0xb0d86fca8a7eef6ca089cdb4c69cc83a235cd9a9dc8884f30090a9b8cfbac6cc",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0xb0d86fca8a7eef6ca089cdb4c69cc83a235cd9a9dc8884f30090a9b8cfbac6cc",
+      "verificationNote": null
+    },
+    {
+      "index": 5,
+      "step": "External Arbitrator 수락",
+      "events": [
+        "InspectorAssignmentAccepted"
+      ],
+      "blockNumber": 12071559,
+      "reportedTransactionHash": "0x5ef5da1ba5471c4a9bfbd7e8078f8e78d0986f978b8e11600bc70b8a549723b5",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0x5ef5da1ba5471c4a9bfbd7e8078f8e78d0986f978b8e11600bc70b8a549723b5",
+      "verificationNote": null
+    },
+    {
+      "index": 6,
+      "step": "Buyer 예치 0.001 ETH",
+      "events": [
+        "TradeFunded"
+      ],
+      "blockNumber": 12071579,
+      "reportedTransactionHash": "0xc182b923a3d0ce5e97ef5474a9514f2889608af7437fea80f59a20df4a769ae7",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0xc182b923a3d0ce5e97ef5474a9514f2889608af7437fea80f59a20df4a769ae7",
+      "verificationNote": null
+    },
+    {
+      "index": 7,
+      "step": "거래 활성화",
+      "events": [
+        "TradeActivated"
+      ],
+      "blockNumber": 12071598,
+      "reportedTransactionHash": "0xd3ef59abce7b78607dfabcf1b2d36ae765e7963449e829c135ca110bdd23b1e8",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0xd3ef59abce7b78607dfabcf1b2d36ae765e7963449e829c135ca110bdd23b1e8",
+      "verificationNote": null
+    },
+    {
+      "index": 8,
+      "step": "Supplier 검사 PASS",
+      "events": [
+        "InspectionOutcomeDerived"
+      ],
+      "blockNumber": 12071624,
+      "reportedTransactionHash": "0x590f52b6ee9912513cd2add0d9e7885a89f6a077b02b2ef608a53a1942edf1ad",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0x590f52b6ee9912513cd2add0d9e7885a89f6a077b02b2ef608a53a1942edf1ad",
+      "verificationNote": null
+    },
+    {
+      "index": 9,
+      "step": "Buyer 검사 REVIEW",
+      "events": [
+        "InspectionOutcomeDerived"
+      ],
+      "blockNumber": 12071669,
+      "reportedTransactionHash": "0xd408ada34dace388c0a9ddf46b4d8b02b1b1c340b3b118a45a314f5f0517c63c",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0xd408ada34dace388c0a9ddf46b4d8b02b1b1c340b3b118a45a314f5f0517c63c",
+      "verificationNote": null
+    },
+    {
+      "index": 10,
+      "step": "통제된 불일치 Replay·HOLD",
+      "events": [
+        "ReplayResultRecorded"
+      ],
+      "blockNumber": 12071726,
+      "reportedTransactionHash": "0xda34a4fea6207f9b39104b7644bfeb7f08bda9804a9c2f132e3d80391073acaa",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0xda34a4fea6207f9b39104b7644bfeb7f08bda9804a9c2f132e3d80391073acaa",
+      "verificationNote": null
+    },
+    {
+      "index": 11,
+      "step": "양측 서명 상호 해결·정산",
+      "events": [
+        "MutualResolutionRecorded",
+        "SettlementCredited"
+      ],
+      "blockNumber": 12071863,
+      "reportedTransactionHash": "0x0c3fc2b2b272f3f531b35db65cfbb56f0fcb2d476c5a9a0dafd536e9547d0d96",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0x0c3fc2b2b272f3f531b35db65cfbb56f0fcb2d476c5a9a0dafd536e9547d0d96",
+      "verificationNote": null
+    },
+    {
+      "index": 12,
+      "step": "Supplier 출금 0.001 ETH",
+      "events": [
+        "Withdrawal"
+      ],
+      "blockNumber": 12071922,
+      "reportedTransactionHash": "0x1b8956a1394f389a0644c3c5d53ed0bd166daf92943257ee3c256555c9bc98b1",
+      "hashFormatVerified": true,
+      "explorerUrl": "https://sepolia.etherscan.io/tx/0x1b8956a1394f389a0644c3c5d53ed0bd166daf92943257ee3c256555c9bc98b1",
+      "verificationNote": null
+    }
+  ]
+}
