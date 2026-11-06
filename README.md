@@ -1,107 +1,66 @@
 # InspectEscrow
 
-## 2026-10-31 FINAL WEB RELEASE V2
+**AI 제조 품질검사의 신뢰·분쟁 해결을 위한 블록체인 에스크로 PoC**  
+2026 AI × Blockchain Hackathon · Track 4 · 창지환 팀
 
-**Latest integrated web application source is now included in this repository.**
-The top-level `index.html` remains the **earlier conceptual demo**, not the final role-based Windows application.
+> **AI가 불량을 발견했을 때, 누구의 어떤 증거를 근거로 거래 대금을 지급할 것인가?**
 
-- [Integrated Windows UI and API code](.modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/)
-- [Dynamic Trade ID P0](.modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/dynamic-trade-context.cjs)
-- [Final release results and reproducibility notes](docs/FINAL_WEB_RELEASE_V2_20261031_KO.md)
-- [Model B inference server source](modelb/)
-- [Windows installation guidance](.modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/INSTALL_WINDOWS_KO.md)
+## 실제 운영 중인 프로토타입 — 2026-11-06
 
-**Scope:** Final Web Release V2 was verified on the development Windows machine and from a separately extracted release ZIP. The portable ZIP (153,387,537 bytes; SHA-256 `B52D02F6AC8A51BFE3267B6562E0A4F4B50293B54A5A77B8579A76D984378C18`) is a private teammate handoff. The repository intentionally excludes model archives, original nut photos, private evidence bundles and credentials, so live Model B inference requires separately provisioned artifacts. Independent installation on the teammate's PC remains unverified. No new Sepolia transactions were sent for this release.
+**[InspectEscrow 통합 웹사이트 바로가기](https://inspectescrow-integrated-web-production.up.railway.app/)**
 
+실물 너트 AI 검사(모델 B), 원본·정책·검사 증거, EIP-712 역할별 서명, Sepolia 에스크로, 분쟁·Replay, 당사자 상호 합의, 정산 및 Withdraw를 연결한 **테스트넷 기반 제조 B2B 프로토타입**입니다. 역할별 통합 웹 화면과 별도의 클라우드 Model B 추론 서버로 운영됩니다.
 
-**AI 제조 품질검사의 신뢰·분쟁 해결을 위한 블록체인 에스크로 시스템**  
-2026 AI × Blockchain Hackathon · Track 4 · 팀 창지환
+**중요한 소스 버전 공지:** 이 저장소의 기존 소스는 **2026-10-31 Windows Web Release V2** 기준입니다. **2026-11-06 클라우드에 배포된 최신 코드와의 완전 동기화는 아직 확인되지 않았습니다.** 운영진은 웹 프로토타입을 바로 사용할 수 있지만, GitHub 코드만으로 동일한 최신 클라우드 앱을 재빌드·배포할 수 있다고 주장하지 않습니다. [소스 불일치 및 보완 계획](docs/FINAL_RELEASE_PARITY_20261106_KO.md)을 참고하세요.
 
-> AI가 불량을 발견하면, 대금은 누가 결정할까?
+### 운영진 제출 자료
 
-InspectEscrow는 공급기업(Supplier)의 출하검사와 구매기업(Buyer)의 입고검사가 서로 다른 결과를 보일 때, 검사 근거를 검증하고 합의된 절차에 따라 대금을 지급하거나 환급하도록 연결하는 제조 B2B PoC입니다. 실제 이미지의 AI 검사, 원본·정책·모델의 증거 결합, Station 서명, 독립 Replay, 스마트컨트랙트 에스크로를 결합했습니다.
+- **[운영진용 제출 안내 / 최신 구현·검증 범위](docs/FINAL_SUBMISSION_20261106_KO.md)**
+- **[실제 웹 사용·시연 가이드](docs/ORGANIZER_DEMO_GUIDE_20261106_KO.md)**
+- **[Sepolia 신규 거래 12건 TX 및 결과 JSON](docs/SEPOLIA_12TX_E2E_20261106.json)**
+- **[최종 코드 동기화·UI·보안 점검표](docs/FINAL_RELEASE_PARITY_20261106_KO.md)**
+- [2026-10-31 과거 README 원문](docs/README_20261031_ARCHIVE.md)
 
-## 주요 실증 결과
+### 확인된 주요 실증
 
-| 검증 시나리오 | 환경 | 확인된 결과 |
+| 시나리오 | 실제 실행 환경 | 확인 결과 |
 |---|---|---|
-| **Model A / PATCH2 분쟁 처리** | **Ethereum Sepolia** | 공개 MVTec `metal_nut` 기반 Supplier PASS → Buyer REVIEW → Primary timeout → Backup Replay → Inspector Buyer 환급 → **0.005 ETH Withdraw** |
-| **Model B / PATCH3 정상 거래** | **Ethereum Sepolia** | 직접 촬영한 너트 S05의 Supplier/Buyer PASS → 정상 인수 → Supplier 정산 및 **0.001 ETH Withdraw**. 2026-10-29 실행 기록: **12건 성공 TX** |
-| **Model B 실물 AI 검사** | Windows local | S01~S08 실물 너트 촬영, PatchCore 추론. S03 정상/스크래치 비교, S05 재추론 기록 |
-| **PATCH3 공격·예외 처리** | **Local Anvil** | Red-Team **36/36 PASS**. 재현 불일치 HOLD, 자격·서명·역할·기한 검증, 중재 및 종료 경로 |
-| **독립 Model B Replay** | Windows local | S05 Supplier `36302902`, Buyer `37078381` 재추론 정수 점수 일치, 동일 실행환경의 Replay **20/20 PASS** |
+| 실물 Model B 검사 충돌 및 정산 | **Ethereum Sepolia** | Supplier PASS(36.302929) → Buyer REVIEW(51.506557) → DISPUTED_PRIMARY → **통제 Replay 불일치/EXECUTION_HOLD** → 양측 EIP-712 상호 합의 → RELEASED → Supplier 0.001 Sepolia ETH Withdraw. **12TX** |
+| 실물 Model B 점수 +1 조작 탐지 | **실제 클라우드 추론 / 오프체인** | 원본 TOP 2회 추론 **36,185,043 → 36,185,043**, 비교용 **비서명 점수만 36,185,044로 +1 조작**, 허용오차 0에서 **INCONSISTENT**, 신규 TX 0 |
+| 정상 거래 / Model B | Sepolia | S05 정상 거래 정산·Withdraw (이전 별도 거래) |
+| 기존 분쟁 환급 / Model A PATCH2 | Sepolia | Primary timeout → Backup Replay CONSISTENT → Buyer 환급·Withdraw |
+| PATCH3 Red-Team | Local Anvil | **36/36 PASS** · 역할·서명·정책·기한·예외·회계 등 |
 
-**검증 범위:** Model A는 Sepolia 분쟁·환급 완료, Model B의 Sepolia 실증은 S05 정상 거래·출금 완료입니다. Model B의 분쟁/HOLD·중재 예외 흐름은 로컬에서 확인했으며, 이를 Model B 실물 분쟁의 Sepolia 전체 완주라고 표현하지 않습니다.
+**검증 범위 주의:** 위 신규 Sepolia 거래의 HOLD는 **실제 Model B 독립 원본 Replay가 검출한 불일치 결과가 아니라 통제된 음성 테스트 기록**입니다. 실제 Model B +1 점수 탐지는 **오프체인에서 unsigned 비교 점수만 변경한 별도 실험**입니다. 두 시나리오를 하나의 자동 온체인 조작 탐지 실행처럼 제시하지 않습니다.
 
-## 전체 아키텍처
+### 바로 확인하기
+
+- **[완료된 실증 거래](https://inspectescrow-integrated-web-production.up.railway.app/trades?tradeId=0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff)** — `RELEASED(17)`, 12TX 진행 이력
+- **[Model B +1 Replay](https://inspectescrow-integrated-web-production.up.railway.app/replay?tradeId=0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff)** — 원본 TOP이 필요한 별도 통제 테스트
+- **[정산·Withdraw](https://inspectescrow-integrated-web-production.up.railway.app/resolution?tradeId=0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff)** — 합의 정산·Supplier 출금
+- **[Sepolia 최종 Withdrawal TX](https://sepolia.etherscan.io/tx/0x1b8956a1394f389a0644c3c5d53ed0bd166daf92943257ee3c256555c9bc98b1)**
+
+### 기술 구성과 역할 분리
 
 ```text
-Supplier / Buyer / Inspector
-           │
-           ▼
-Physical   실물 제품 · TOP/FRONT/SIDE 촬영 · 제품 식별
-           │
-AI         PatchCore · anomaly score · threshold · heatmap
-           │
-Evidence   원본 해시 · Model Bundle · Policy · Station EIP-712 서명
-           │
-Trust      MetaMask / Web3 → Sepolia
-           │             ├─ CredentialRegistryPatch3
-           │             └─ InspectEscrowPatch3
-           ▼
-Economic   거래 조건 합의 → 예치 → 검사 → 분쟁·Replay
-           → Inspector 판단 / 예외 종료 → claimable → withdraw()
+실물 제품 촬영 (TOP 추론, FRONT/SIDE 무결성)
+   → PatchCore Model B 점수 / 촬영·모델·정책 Hash
+   → Station EIP-712 검사 증거 서명
+   → Supplier/Buyer Actor Sepolia 제출
+   → 분쟁 상태·Replay/Inspector·HOLD
+   → 양측 합의 또는 정해진 예외 처리
+   → claimable 지급권 확정 → withdraw() 실제 출금
 ```
 
-- **사전합의:** `policyHash`, `modelBundleHash`, `captureProfileHash`, `productSpecHash`, `requiredViewSetHash` 및 `thresholdScaled` 고정
-- **증거 연결:** 원본 이미지와 검사 결과의 hash 및 EIP-712 Station 서명 검증
-- **역할 분리:** Actor 지갑과 Station 서명자, Primary/Backup Inspector, 외부 중재자 구분
-- **검사 판단:** 계약이 등록된 점수와 임계값을 비교하여 PASS/REVIEW 분기
-- **분쟁 처리:** Independent Replay는 실행 일관성을 확인하고 Inspector는 정산 방향을 별도 판단
-- **정산:** 자금 수령 권리를 `claimable`에 기록한 뒤 수령자가 `withdraw()` 실행
+**Station**은 검사 증거를 서명하고 **Actor**는 계약의 거래·정산 동작을 실행합니다. **REVIEW_REQUIRED**는 '불량 확정'이 아니라 검토 필요이며, **Replay CONSISTENT**는 양 당사자의 점수가 서로 같다는 뜻이 아니라 *각자의 원본에서 제출 점수가 재현된다*는 의미입니다.
 
-[시스템 아키텍처](docs/architecture.md) · [PATCH3 보안·종료 규칙](docs/PATCH3_SECURITY_AND_LIVENESS_KO.md) · [PATCH3 Solidity CI](https://github.com/CHANGJAEHYUN-engineering/InspectEscrow/actions/runs/41096637460) · [Slither 정적 분석](https://github.com/CHANGJAEHYUN-engineering/InspectEscrow/actions/runs/41096816045)
+### 공개 코드 구조 (기준: 2026-10-31)
 
-## 검증된 Sepolia 배포
+- `packages/phase3c_hardening_20261023/`: PATCH3 Solidity/EIP-712/보안·Red-Team 테스트
+- `.modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/`: 기존 Windows용 역할 기반 웹 소스
+- `modelb/`: Model B 서버 소스(모델 아티팩트는 외부 관리)
+- `packages/phase3b_20261010/`: 기존 Model A Sepolia 분쟁 경로
+- `docs/`: 아키텍처, 재현성, 정책·보안·실증 기록
+- 루트 `index.html`·`app.js`: **예선 당시 정적 콘셉트 화면이며 최종 통합 웹이 아님**
 
-| 계약 | 주소 |
-|---|---|
-| PATCH2 Escrow / Model A 분쟁 | [`0x270e3E8a…42fFa9`](https://sepolia.etherscan.io/address/0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9) |
-| PATCH3 Escrow / Model B 정상 | [`0x0a4721CF…73B905`](https://sepolia.etherscan.io/address/0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905) |
-| PATCH3 Credential Registry | [`0xc715A026…fd20e`](https://sepolia.etherscan.io/address/0xc715A0263B752c9D0Be99379b7939466Af5fd20e) |
-
-- PATCH2 완료 거래: `0xe021917ece6af29be9a02300cccfe293f484ba685721f49550a98da96d64c94c`
-- PATCH3 Model B S05 정상 거래: `0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e`
-- PATCH3 별도 과거 보호 거래: `0x8e07587390de665a8a3c0fe81e1e7298541847acd244db5ea98e5dc3acb3f9db` — `FUNDED`, 정상 거래 완료로 합산하지 않음
-
-[배포 및 Model B 실증 세부 기록](docs/PATCH3_SEPOLIA_AND_MODEL_B_20261031_KO.md) · [전체 증거 색인](docs/FINAL_EVIDENCE_INDEX.md)
-
-## 공개 저장소 구조
-
-| 위치 | 내용 |
-|---|---|
-| `packages/ai_20261010/` | PATCH2 모델 A AI 추론·정책·증거 및 재현성 자료 |
-| `packages/phase3b_20261010/` | PATCH2 Web3·Solidity 코드 및 10월 11일 실제 Sepolia 분쟁 E2E |
-| `packages/phase3c_hardening_20261023/` | **PATCH3 Solidity 계약**, 정책 생성·배포·검증 스크립트, Red-Team 테스트 |
-| `packages/physical_capture_v1/` | 촬영 프로토콜 관련 기술 자료 |
-| `docs/` | 아키텍처, 배포 이력, 테스트·보안 설계, 검증 범위, 출처 및 라이선스 |
-| `index.html` / `app.js` | **예선 당시 정적 인터랙티브 시뮬레이션**. 최종 통합 웹사이트의 실행 파일이 아님 |
-
-
-## 기술 문서
-
-- [프로젝트 아키텍처 및 역할별 흐름](docs/architecture.md)
-- [구현·배포·검증 상태표](docs/implementation-status.md)
-- [Sepolia 배포 및 Model B 결과](docs/PATCH3_SEPOLIA_AND_MODEL_B_20261031_KO.md)
-- [보안·회귀 검증 매트릭스](docs/SECURITY_VALIDATION_MATRIX_20261031_KO.md)
-- [PATCH3 안전성 및 종료 규칙](docs/PATCH3_SECURITY_AND_LIVENESS_KO.md)
-- [신뢰 가정과 권한 경계](docs/PATCH3_TRUST_ASSUMPTION_REGISTER_KO.md)
-- [원본 촬영·증거 관리 프로토콜](docs/PHYSICAL_CAPTURE_PROTOCOL_V1_KO.md)
-- [PATCH2 Sepolia 원본 E2E JSON](packages/phase3b_20261010/results/FINAL_SEPOLIA_E2E_20261011.json)
-- [참고자료·라이선스](docs/references.md)
-
-## 적용과 확장
-
-우선 적용 대상은 품질 검사결과 불일치가 실제 정산 지연이나 분쟁 비용으로 이어지는 정밀 부품 공급망입니다. 기존 MES/QMS를 대체하기보다 검사·증거·정산 연결 계층으로 연동하는 방향을 검토합니다. 현장 도입에는 제품 ID, 촬영 표준화, 증거 보존, Inspector 거버넌스, 운영비·가스비 검증이 필요합니다.
-
-**데이터 사용 및 보안:** 공개 MVTec 데이터의 라이선스 조건을 준수하고, 별도 Model B 모델 가중치·원본 사진·민감한 서명 자료와 개인키·시드·토큰을 공개 저장소에 올리지 않습니다. 블록체인 기록의 무결성과 제품 자체의 물리적 진실성은 구분합니다.
+비밀키·토큰·시드·서명 원본·개인/제조 데이터는 공개 저장소에 올리지 않습니다. 모델 재현성을 위한 원본 파일, 모델 가중치, API 설정은 별도의 안전한 제공/검증 절차가 필요합니다. 물리적 시편 동일성·양산 품질·법적 중재 완결은 별도 과제입니다.
