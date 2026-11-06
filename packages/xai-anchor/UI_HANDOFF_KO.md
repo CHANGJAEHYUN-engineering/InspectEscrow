@@ -37,3 +37,26 @@
 - **XAI 보고서 해시 실제 저장은 아직 0건 확인.** `anchor(...)` 별도 서명·승인·TX 필요.
 - 검증된 현황 원본: `deployment.sepolia.json`.
 - UI 변경은 별도 채팅방에서만 진행. 코드/ABI/주소는 여기서 인계.
+
+## 2026-11-07 01:21 KST — 첫 실 XAI 해시 등록 확인
+
+Supplier S05 정상 Evidence에 연결한 **XAI Evidence-Derived Anchor Report**의 SHA-256이 실제 Sepolia에 등록되었다.
+
+- 컨트랙트: `0x16391d0f6e4baA35CC835839e98b85437455ba82`
+- 등록 TX: `0x23fbae0c5256e01dfc82d698258e5a84aa92421d658dadebf4100b8b731f352f`
+- 블록 #12077704 / receipt status 1 / `XAIAnchored` 이벤트 발생
+- 거래 ID: `0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff`
+- role: `0` (Supplier)
+- Evidence Package Hash: `0x2281badc88418b6b78f83a11de0aa4e0a4b51f8b7f0e7004232c08526f1711c1`
+- XAI report SHA-256: `0xcf3710f2fa746646770de2236e5947fcd35623178ac7ab91def004d1660cb1bb`
+- Supplier actor: `0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE`
+- `getAnchor(tradeId,0,evidenceHash)` 반환값 4개가 등록 해시·행위자·타임스탬프·블록번호와 일치
+- `verify(...,xaiSha256)` → `true`
+- 마지막 1바이트를 변경한 `verify(...,tamperedSha256)` → `false`
+- 로컬 사용자 제공 JSON 리포트 `localContentSha256`과 UTF-8 `JSON.stringify(report.payload)`의 SHA-256 일치
+- 417,147 gas; 비용 0.000625720505840058 Sepolia ETH (실 트랜잭션 기준)
+- 실 증거 파일은 `inspectescrow.modelb-browser-evidence-bundle/1`이며 **미서명/에스크로 정식 미제출**.
+- 새 보고서 형식은 `InspectEscrow.XAI.EvidenceDerivedAnchorReport.v1`이다. 기존 `InspectEscrow.XAI.OfflineSidecar.v1`와 **다른 스키마**이므로 **UI 수정방은 이 스키마에 맞게 검증/재해싱 구현**. 기존 CLI `tools/xai-anchor.cjs`는 구형 Sidecar 스키마만 인식하며 새 JSON을 그대로 전달하면 거절됨. 임의로 기존 보고서라고 처리하지 말 것.
+- 본 기록은 XAI 보고서에 대한 **별도 온체인 보조 해시 고정**이다. 기존 InspectEscrow 컨트랙트의 EIP-712 Evidence 생성·서명·제출 성공을 의미하지 않는다.
+
+온체인 검증 요약은 `anchor-proof.supplier-S05.sepolia.json`에 보존했고, 큰 히트맵 원본 JSON은 GitHub에 커밋하지 않았다.
