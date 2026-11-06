@@ -1,72 +1,72 @@
 {
-    "schema":  "inspectescrow-submission-deployment-manifest/1",
-    "asOfDate":  "2026-11-06",
-    "environment":  "Railway production",
-    "region":  "sfo",
-    "prototypeUrl":  "https://inspectescrow-integrated-web-production.up.railway.app/",
-    "services":  [
-                     {
-                         "name":  "inspectescrow-integrated-web",
-                         "serviceId":  "d89bb890-47aa-42ec-a939-11bdd5b5b33c",
-                         "deploymentId":  "ed39d2d2-0e87-4d2f-9f7e-1e88c0bdc380",
-                         "statusAtVerification":  "SUCCESS",
-                         "onlineReplicas":  1,
-                         "latestDeploymentCreatedAt":  "2026-11-05T21:07:20.178Z",
-                         "publicDomain":  "inspectescrow-integrated-web-production.up.railway.app"
-                     },
-                     {
-                         "name":  "inspectescrow-modelb-live",
-                         "serviceId":  "0b5745d3-7fd9-472c-8b13-33010741744e",
-                         "deploymentId":  "9b2f3d1f-f880-4408-9124-53a7d6684a1c",
-                         "statusAtVerification":  "SUCCESS",
-                         "onlineReplicas":  1,
-                         "latestDeploymentCreatedAt":  "2026-11-05T16:37:18.653Z",
-                         "publicDomain":  "inspectescrow-modelb-live-production.up.railway.app"
-                     }
-                 ],
-    "httpMetrics8h":  {
-                          "integratedWeb":  {
-                                                "requests":  343,
-                                                "http5xx":  0,
-                                                "client4xx":  16
-                                            },
-                          "modelB":  {
-                                         "requests":  6,
-                                         "http5xx":  0
-                                     }
-                      },
-    "modelBCheckpointSha256":  "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
-    "evm":  {
-                "chainId":  11155111,
-                "chainName":  "Ethereum Sepolia",
-                "contractAddress":  "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",
-                "latestE2eTrade":  "0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
-                "completedTx":  12
-            },
-    "codeSubmission":  {
-                           "repository":  "https://github.com/CHANGJAEHYUN-engineering/InspectEscrow",
-                           "legacyCloudBaseCommit":  "1d8c41c1b5315a071c32b12139c6993128a9f432",
-                           "sourceParityVerified":  true,
-                           "codeCorrespondence":  "PUBLIC_WEB_ASSETS_MATCHED_SOURCE_MIRRORED",
-                           "reason":  "Latest actual integrated cloud web and Model B server source copied into deploy/cloud-web and deploy/modelb-cloud; six public web asset SHA256 match. Fresh Docker build and private Model B model-artifact provisioning were not independently tested.",
-                           "requirements":  [
-                                                "Keep independent model ZIP secret and verify SHA before docker build",
-                                                "No Docker CLI on authorized laptop; fresh rebuild not independently verified",
-                                                "Old completed-trade browser fixtures need update",
-                                                "First transaction hash listed with one missing hex character must be checked"
-                                            ],
-                           "webAssetParityChecked":  6,
-                           "nodeSyntaxChecksPassed":  34,
-                           "pythonCompileChecksPassed":  2,
-                           "readOnlyPublicSmokeChecksPassed":  10,
-                           "privateModelArtifactExcludedFromGit":  true,
-                           "cleanDockerRebuildVerified":  false
-                       },
-    "limitations":  [
-                        "HOLD: controlled negative onchain test, not actual independent replay of this trade",
-                        "+1: actual AI rerun but unsigned offchain comparison, no TX",
-                        "Model B weights, original photos, private keys excluded",
-                        "Physical identity is not proven by hashes"
-                    ],
-    "publicEvidenceIndex":  "docs/SEPOLIA_12TX_E2E_20261106.json"
+  "schema": "inspectescrow-submission-deployment-manifest/1",
+  "asOfDate": "2026-11-06",
+  "environment": "Railway production",
+  "region": "sfo",
+  "prototypeUrl": "https://inspectescrow-integrated-web-production.up.railway.app/",
+  "services": [
+    {
+      "name": "inspectescrow-integrated-web",
+      "serviceId": "d89bb890-47aa-42ec-a939-11bdd5b5b33c",
+      "deploymentId": "ed39d2d2-0e87-4d2f-9f7e-1e88c0bdc380",
+      "statusAtVerification": "SUCCESS",
+      "onlineReplicas": 1,
+      "latestDeploymentCreatedAt": "2026-11-05T21:07:20.178Z",
+      "publicDomain": "inspectescrow-integrated-web-production.up.railway.app"
+    },
+    {
+      "name": "inspectescrow-modelb-live",
+      "serviceId": "0b5745d3-7fd9-472c-8b13-33010741744e",
+      "deploymentId": "9b2f3d1f-f880-4408-9124-53a7d6684a1c",
+      "statusAtVerification": "SUCCESS",
+      "onlineReplicas": 1,
+      "latestDeploymentCreatedAt": "2026-11-05T16:37:18.653Z",
+      "publicDomain": "inspectescrow-modelb-live-production.up.railway.app"
+    }
+  ],
+  "httpMetrics8h": {
+    "integratedWeb": {
+      "requests": 343,
+      "http5xx": 0,
+      "client4xx": 16
+    },
+    "modelB": {
+      "requests": 6,
+      "http5xx": 0
+    }
+  },
+  "modelBCheckpointSha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+  "evm": {
+    "chainId": 11155111,
+    "chainName": "Ethereum Sepolia",
+    "contractAddress": "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",
+    "latestE2eTrade": "0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+    "completedTx": 12
+  },
+  "codeSubmission": {
+    "repository": "https://github.com/CHANGJAEHYUN-engineering/InspectEscrow",
+    "legacyCloudBaseCommit": "1d8c41c1b5315a071c32b12139c6993128a9f432",
+    "sourceParityVerified": true,
+    "codeCorrespondence": "PUBLIC_WEB_ASSETS_MATCHED_SOURCE_MIRRORED",
+    "reason": "Latest actual integrated cloud web and Model B server source copied into deploy/cloud-web and deploy/modelb-cloud; six public web asset SHA256 match. Fresh Docker build and private Model B model-artifact provisioning were not independently tested.",
+    "requirements": [
+      "Keep independent model ZIP secret and verify SHA before docker build",
+      "No Docker CLI on authorized laptop; fresh rebuild not independently verified",
+      "Old completed-trade browser fixtures need update"
+    ],
+    "webAssetParityChecked": 6,
+    "nodeSyntaxChecksPassed": 34,
+    "pythonCompileChecksPassed": 2,
+    "readOnlyPublicSmokeChecksPassed": 10,
+    "privateModelArtifactExcludedFromGit": true,
+    "cleanDockerRebuildVerified": false,
+    "firstPolicyAcceptedTxVerified": "0x18d0516566b42625749db59a68e179a21f838a6fcda60feaa57042ef4216959c"
+  },
+  "limitations": [
+    "HOLD: controlled negative onchain test, not actual independent replay of this trade",
+    "+1: actual AI rerun but unsigned offchain comparison, no TX",
+    "Model B weights, original photos, private keys excluded",
+    "Physical identity is not proven by hashes"
+  ],
+  "publicEvidenceIndex": "docs/SEPOLIA_12TX_E2E_20261106.json"
 }
