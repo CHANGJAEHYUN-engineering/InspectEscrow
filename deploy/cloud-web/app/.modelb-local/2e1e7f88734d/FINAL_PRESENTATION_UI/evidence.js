@@ -2,6 +2,28 @@
 (()=>{
 const $=id=>document.getElementById(id),SESSION_KEY="inspectescrow.evidence-session.v1",MAX_JSON=512*1024,MAX_IMAGE=20*1024*1024;
 let bundle=null,bundleText="",bundleName="",lastResult=null,previewUrls=[];
+function prefillLiveEvidence(){
+  const h=window.__inspectEscrowEvidenceHandoff;
+  const trade=$("expected-trade")?.value;
+  if(!h||!h.bundle||!/^0x[0-9a-fA-F]{64}$/.test(trade||"")||
+     h.tradeId.toLowerCase()!==trade.toLowerCase())return;
+  if(!["supplier","buyer"].includes(h.role)||!["TOP","FRONT","SIDE"].every(v=>h.files?.[v] instanceof File))return;
+  const text=JSON.stringify(h.bundle,null,2)+"\n";
+  bundleText=text;bundle=JSON.parse(text);
+  bundleName="inspectescrow-"+h.role+"-"+(h.sessionId||"session")+".evidence.json";
+  const jsonFile=new File([text],bundleName,{type:"application/json"});
+  const list=new DataTransfer();list.items.add(jsonFile);$("bundle-file").files=list.files;
+  $("bundle-name").textContent=bundleName+" · 동일 브라우저 탭에서 연결";
+  $("expected-role").value=h.role;
+  for(const view of ["TOP","FRONT","SIDE"]){
+    const file=h.files[view],input=$("image-"+view.toLowerCase()),dt=new DataTransfer();
+    dt.items.add(file);input.files=dt.files;
+    input.dispatchEvent(new Event("change",{bubbles:true}));
+  }
+  const notice=$("auto-handoff-note");if(notice){notice.hidden=false;notice.textContent="✓ 이전 AI 검사 원본 3뷰 + Evidence JSON 자동 연결됨 · 아래 재검증 버튼을 눌러 실제 서버 검증 실행 · TX 0";}
+  $("progress").textContent="원본과 증거가 연결됐습니다. 검증은 아직 실행되지 않았습니다.";
+}
+
 const escape=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const short=s=>{s=String(s||"");return s.length>28?s.slice(0,12)+"…"+s.slice(-10):s;};
 const errorText=e=>String(e?.message||e).slice(0,300);
@@ -26,5 +48,5 @@ function download(){if(!lastResult||!bundleText)return;const blob=new Blob([bund
 $("bundle-file").addEventListener("change",async()=>{try{const f=selectedFile("bundle-file","증거 JSON",MAX_JSON);bundleText=await asText(f);bundle=JSON.parse(bundleText);bundleName=f.name;$("bundle-name").textContent=f.name+" · "+f.size+" bytes";const message=bundle?.unsigned?.message||bundle?.message;if(message?.tradeId)$("expected-trade").value=message.tradeId;const role=bundle?.roleName||bundle?.role;if(["supplier","buyer"].includes(String(role).toLowerCase()))$("expected-role").value=String(role).toLowerCase();$("progress").textContent="JSON을 읽었습니다. 아직 PASS가 아닙니다. 원본 3뷰를 선택하고 재검증하세요.";}catch(e){bundle=null;bundleText="";bundleName="";$("bundle-name").textContent="잘못된 JSON: "+errorText(e);}});
 for(const view of ["TOP","FRONT","SIDE"]){$("image-"+view.toLowerCase()).addEventListener("change",()=>setPreview(view,$("image-"+view.toLowerCase()).files?.[0]));}
 $("verify").addEventListener("click",verify);$("save-session").addEventListener("click",saveDraftSession);$("download").addEventListener("click",download);$("refresh-chain").addEventListener("click",()=>refreshChain().catch(e=>$("progress").textContent="Sepolia 재조회 실패: "+errorText(e)));$("clear-session").addEventListener("click",()=>{localStorage.removeItem(SESSION_KEY);renderHistory();$("progress").textContent="브라우저의 최소 복구 메타데이터를 삭제했습니다. 원본 파일과 JSON은 애초에 저장되지 않았습니다.";});window.addEventListener("beforeunload",clearPreviews);
-window.__evidence2b={sessionKey:SESSION_KEY,session,restoreSession,refreshChain};restoreSession();
+window.__evidence2b={sessionKey:SESSION_KEY,session,restoreSession,refreshChain};restoreSession();prefillLiveEvidence();
 })();

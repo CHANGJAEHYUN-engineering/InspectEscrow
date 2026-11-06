@@ -3,7 +3,7 @@
 <script defer src="/vendor/ethers.umd.min.js"></script><script defer src="/e2e.js"></script></head>
 <body><div class="shell"><header><a href="/trades">← 거래 상세·정책</a><strong>Inspect<span>Escrow</span> · E2E VERIFICATION LAB</strong><span><a href="/journey">2F 실행 센터</a> · <a href="/resolution">분쟁·정산 →</a></span></header>
 <main>
-<section class="hero"><div class="overline">PATCH3 · SELECTED NETWORK · MANUAL APPROVAL ONLY</div><h1>실제 거래 증거 연결 실험실</h1><p>모델 추론·원본 3뷰 검증·Station EIP-712 서명·Actor 거래 제출을 분리합니다. 실제 서명·TX는 역할 계정이 MetaMask에서 직접 승인해야 합니다.</p></section>
+<section class="hero"><div class="overline">PATCH3 · SELECTED NETWORK · MANUAL APPROVAL ONLY</div><h1>실제 거래 증거 연결 실험실</h1><p>같은 탭의 AI 검사에서 넘어오면 원본 3뷰를 자동 연결합니다. 작업자는 뷰 확인 체크박스를 직접 선택해야 하며, 새 거래에 맞춘 AI 재추론·증거 생성은 별도로 수행합니다. Station EIP-712 서명과 Actor 거래 전송은 각각 MetaMask에서 직접 승인해야 합니다.</p></section>
 <div class="facts"><div class="fact"><small>NEW TRADE STATUS</small><strong id="trade-state">조회 중</strong></div><div class="fact"><small>DEADLINE REMAINING</small><strong id="deadline">조회 중</strong></div><div class="fact"><small>ACCOUNTING</small><strong id="accounting">조회 중</strong></div></div>
 <div class="toolbar"><div><small>TRADE ID</small><code id="trade-id">거래 검증 중</code></div><button id="refresh" class="button secondary">계약 상태 갱신</button></div>
 <div id="preflight" class="notice">읽기 전용 사전검증 중입니다.</div>
