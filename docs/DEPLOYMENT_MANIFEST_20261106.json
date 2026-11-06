@@ -1,0 +1,66 @@
+{
+  "schema": "inspectescrow-submission-deployment-manifest/1",
+  "asOfDate": "2026-11-06",
+  "environment": "Railway production",
+  "region": "sfo",
+  "prototypeUrl": "https://inspectescrow-integrated-web-production.up.railway.app/",
+  "services": [
+    {
+      "name": "inspectescrow-integrated-web",
+      "serviceId": "d89bb890-47aa-42ec-a939-11bdd5b5b33c",
+      "deploymentId": "ed39d2d2-0e87-4d2f-9f7e-1e88c0bdc380",
+      "statusAtVerification": "SUCCESS",
+      "onlineReplicas": 1,
+      "latestDeploymentCreatedAt": "2026-11-05T21:07:20.178Z",
+      "publicDomain": "inspectescrow-integrated-web-production.up.railway.app"
+    },
+    {
+      "name": "inspectescrow-modelb-live",
+      "serviceId": "0b5745d3-7fd9-472c-8b13-33010741744e",
+      "deploymentId": "9b2f3d1f-f880-4408-9124-53a7d6684a1c",
+      "statusAtVerification": "SUCCESS",
+      "onlineReplicas": 1,
+      "latestDeploymentCreatedAt": "2026-11-05T16:37:18.653Z",
+      "publicDomain": "inspectescrow-modelb-live-production.up.railway.app"
+    }
+  ],
+  "httpMetrics8h": {
+    "integratedWeb": {
+      "requests": 343,
+      "http5xx": 0,
+      "client4xx": 16
+    },
+    "modelB": {
+      "requests": 6,
+      "http5xx": 0
+    }
+  },
+  "modelBCheckpointSha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+  "evm": {
+    "chainId": 11155111,
+    "chainName": "Ethereum Sepolia",
+    "contractAddress": "0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905",
+    "latestE2eTrade": "0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff",
+    "completedTx": 12
+  },
+  "codeSubmission": {
+    "repository": "https://github.com/CHANGJAEHYUN-engineering/InspectEscrow",
+    "legacyCloudBaseCommit": "1d8c41c1b5315a071c32b12139c6993128a9f432",
+    "sourceParityVerified": false,
+    "codeCorrespondence": "NOT_CONFIRMED",
+    "reason": "Railway web version is newer than GitHub 2026-10-31 source. Latest cloud gateway / UI / +1 Replay and cross-PC mutual resolution files are not all pushed to the repository.",
+    "requirements": [
+      "Sync exact latest local cloud deployment source",
+      "Verify source-to-public-asset hash parity",
+      "Verify two-service reproduction and no secrets in git",
+      "Update manifest with verified source commit/tag"
+    ]
+  },
+  "limitations": [
+    "HOLD: controlled negative onchain test, not actual independent replay of this trade",
+    "+1: actual AI rerun but unsigned offchain comparison, no TX",
+    "Model B weights, original photos, private keys excluded",
+    "Physical identity is not proven by hashes"
+  ],
+  "publicEvidenceIndex": "docs/SEPOLIA_12TX_E2E_20261106.json"
+}
