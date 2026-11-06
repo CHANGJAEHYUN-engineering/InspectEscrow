@@ -19,6 +19,8 @@
 - **[실제 웹 사용·시연 가이드](docs/ORGANIZER_DEMO_GUIDE_20261106_KO.md)**
 - **[Sepolia 신규 거래 12건 TX 및 결과 JSON](docs/SEPOLIA_12TX_E2E_20261106.json)**
 - **[최종 코드 동기화·UI·보안 점검표](docs/FINAL_RELEASE_PARITY_20261106_KO.md)**
+- **[최신 Railway 배포 매니페스트](docs/DEPLOYMENT_MANIFEST_20261106.json)**
+- **[GitHub·배포 소스 일치성 검사 스크립트](scripts/final_submission_source_parity.mjs)**
 - [2026-10-31 과거 README 원문](docs/README_20261031_ARCHIVE.md)
 
 ### 확인된 주요 실증
