@@ -1,7 +1,7 @@
 "use strict";
 (()=>{
 const $=id=>document.getElementById(id),MAX=20*1024*1024,SESSION_KEY="inspectescrow.live-session.v1";
-const state={config:null,files:{},urls:[],stream:null,cameraView:null,bundle:null,busy:false,sessionCreatedAtUtc:null,currentRole:"supplier"};
+const state={config:null,files:{},urls:[],stream:null,cameraView:null,bundle:null,busy:false,sessionCreatedAtUtc:null,currentRole:"supplier",xai:null};
 // Same-tab UI handoff only. No File, Evidence JSON, wallet key or signature is persisted.
 const HANDOFF_KEY="__inspectEscrowEvidenceHandoff";
 
@@ -30,7 +30,7 @@ function forgetHandoff(role=state.currentRole){
 function saveHandoff(role=state.currentRole){
  const tradeId=$("trade-id")?.value;
  if(!sameTrade(tradeId,tradeId)||!["supplier","buyer"].includes(role))return;
- const snapshot={tradeId,role,files:{...state.files},bundle:state.bundle,inference:state.lastInference,
+ const snapshot={tradeId,role,files:{...state.files},bundle:state.bundle,inference:state.lastInference,xai:state.xai,
    specimenId:$("specimen-id").value,sessionId:$("session-id").value,
    sessionCreatedAtUtc:state.sessionCreatedAtUtc};
  const store=roleStore(tradeId);
@@ -55,7 +55,7 @@ function restoreFiles(h){
 }
 function applyRoleSnapshot(h){
  state.files=h?{...h.files}:{};
- state.bundle=h?.bundle||null;state.lastInference=h?.inference||null;
+ state.bundle=h?.bundle||null;state.lastInference=h?.inference||null;state.xai=h?.xai||null;renderXai();
  $("specimen-id").value=h?.specimenId||"";
  state.sessionCreatedAtUtc=h?.sessionCreatedAtUtc||new Date().toISOString();
  $("session-id").value=h?.sessionId||"LIVE-"+crypto.randomUUID();
@@ -143,10 +143,10 @@ async function digest(file){const bytes=await file.arrayBuffer(),hash=await cryp
 async function b64(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(",")[1]||"");r.onerror=reject;r.readAsDataURL(file);});}
 function short(v){const s=String(v||"");return s.length>23?s.slice(0,13)+"…"+s.slice(-8):s;}
 function mark(id,status,text=status){const el=$(id);if(!el)return;el.className="flow-status "+status;el.textContent=text;}
-function setFlow(){const top=!!state.files.TOP,three=top&&!!state.files.FRONT&&!!state.files.SIDE,offline=state.config?.runtimeAvailable===false;mark("flow-capture",top?"complete":"ready",top?"COMPLETE":"READY");mark("flow-inference",offline?"blocked":state.busy?"running":state.lastInference?"complete":top?"ready":"blocked",offline?"AI OFFLINE":state.busy?"RUNNING":state.lastInference?"COMPLETE":top?"READY":"BLOCKED");mark("flow-evidence",offline?"blocked":state.bundle?"complete":three&&state.lastInference?"ready":"blocked",offline?"AI OFFLINE":state.bundle?"COMPLETE":three&&state.lastInference?"READY":"BLOCKED");mark("flow-station","blocked","BLOCKED · UNSIGNED");mark("flow-onchain","blocked","BLOCKED · NOT SUBMITTED");$("infer").disabled=offline||state.busy||!top;$("infer").title=offline?"AI 검사 서버가 오프라인이라 새 추론을 실행할 수 없습니다.":top?"선택한 TOP 원본으로 실제 Model B 추론":"TOP 원본을 먼저 선택하세요";$("build").disabled=offline||state.busy||!three;$("build").title=offline?"AI 검사 서버 오프라인 · 보관 기록만 조회 가능":three?"서로 다른 3뷰 원본으로 Evidence 생성":"TOP·FRONT·SIDE 원본이 모두 필요합니다";}
+function setFlow(){const xaiButton=$("explain");if(xaiButton)xaiButton.disabled=state.config?.runtimeAvailable===false||state.busy||!state.lastInference;const top=!!state.files.TOP,three=top&&!!state.files.FRONT&&!!state.files.SIDE,offline=state.config?.runtimeAvailable===false;mark("flow-capture",top?"complete":"ready",top?"COMPLETE":"READY");mark("flow-inference",offline?"blocked":state.busy?"running":state.lastInference?"complete":top?"ready":"blocked",offline?"AI OFFLINE":state.busy?"RUNNING":state.lastInference?"COMPLETE":top?"READY":"BLOCKED");mark("flow-evidence",offline?"blocked":state.bundle?"complete":three&&state.lastInference?"ready":"blocked",offline?"AI OFFLINE":state.bundle?"COMPLETE":three&&state.lastInference?"READY":"BLOCKED");mark("flow-station","blocked","BLOCKED · UNSIGNED");mark("flow-onchain","blocked","BLOCKED · NOT SUBMITTED");$("infer").disabled=offline||state.busy||!top;$("infer").title=offline?"AI 검사 서버가 오프라인이라 새 추론을 실행할 수 없습니다.":top?"선택한 TOP 원본으로 실제 Model B 추론":"TOP 원본을 먼저 선택하세요";$("build").disabled=offline||state.busy||!three;$("build").title=offline?"AI 검사 서버 오프라인 · 보관 기록만 조회 가능":three?"서로 다른 3뷰 원본으로 Evidence 생성":"TOP·FRONT·SIDE 원본이 모두 필요합니다";}
 function newSession(){
   forgetHandoff(state.currentRole);
-  state.files={};state.bundle=null;state.lastInference=null;
+  state.files={};state.bundle=null;state.lastInference=null;state.xai=null;renderXai();
   for(const view of ["TOP","FRONT","SIDE"]){
     const id=view.toLowerCase(),picker=$(id),img=$(id+"-preview");
     if(picker)picker.value="";if(img){img.removeAttribute("src");img.style.display="none";}
@@ -168,12 +168,75 @@ async function select(view,file){if(!file)return;if(file.size<500||file.size>MAX
   $("evidence-result").className="result empty";
   $("evidence-result").textContent="원본이 변경되었습니다. Evidence를 다시 생성하세요.";
   if(view==="TOP"){
-    state.lastInference=null;$("inference").className="result empty";
+    state.lastInference=null;state.xai=null;renderXai();$("inference").className="result empty";
     $("inference").textContent="TOP 원본 변경 · AI 재추론 필요";
   }const id=view.toLowerCase(),url=URL.createObjectURL(file);state.urls.push(url);$(id+"-preview").src=url;$(id+"-preview").style.display="block";$(id+"-hash").textContent="SHA-256 계산 중…";$(id+"-hash").textContent=await digest(file)+" · "+file.size+" bytes";$("build").disabled=!(state.files.TOP&&state.files.FRONT&&state.files.SIDE);saveHandoff();setFlow();}
 function validateMeta(){const specimen=$("specimen-id").value.trim();if(specimen.length<2)throw Error("사용자 시편 ID를 입력하세요.");if(!$("session-id").value)throw Error("새 검사 세션을 생성하세요.");return{tradeId:$("trade-id").value,role:$("role").value,operatorSpecimenId:specimen,sessionId:$("session-id").value,sessionCreatedAtUtc:state.sessionCreatedAtUtc};}
 async function images(views){const out={};for(const view of views){const f=state.files[view];if(!f)throw Error(view+" 원본이 필요합니다.");out[view]={name:f.name,data:await b64(f)};}return out;}
-async function infer(){if(state.busy)return;state.busy=true;setFlow();$("infer").disabled=true;try{const body={...validateMeta(),images:await images(["TOP"])};$("inference").className="result";$("inference").innerHTML="<strong>실제 Model B 추론 중…</strong><p>선택한 TOP 원본 바이트를 CPU 런타임에 전달했습니다.</p>";const d=await api("/api/live/infer",{method:"POST",headers:{"Content-Type":"application/json","X-InspectEscrow-Local":"1"},body:JSON.stringify(body)});state.lastInference=d;saveHandoff();const review=String(d.decision).includes("REVIEW");$("inference").className="result "+(review?"review":"pass");$("inference").innerHTML=`<div class="score-line"><div><span class="decision">${esc(d.decision)}</span><div class="score-value">${esc(d.scoreRaw)}</div></div><b>${review?"주의 · 재검토":"정상 범위"}</b></div><div class="metrics"><span>scoreScaled <b>${esc(d.scoreScaled)}</b></span><span>thresholdScaled <b>${esc(d.thresholdScaled)}</b></span></div><code>TOP SHA-256 ${esc(d.originalTopSha256)}</code><p>${esc(d.status)} · FRONT/SIDE 미입력 시 정식 증거 미완성 · Station UNSIGNED · 온체인 NOT SUBMITTED</p>`;persist();}catch(e){state.lastInference=null;$("inference").className="result fail";$("inference").innerHTML="<strong>추론 실패</strong><p>"+esc(err(e))+"</p>";}finally{state.busy=false;$("infer").disabled=false;setFlow();}}
+async function infer(){if(state.busy)return;state.xai=null;renderXai();state.busy=true;setFlow();$("infer").disabled=true;try{const body={...validateMeta(),images:await images(["TOP"])};$("inference").className="result";$("inference").innerHTML="<strong>실제 Model B 추론 중…</strong><p>선택한 TOP 원본 바이트를 CPU 런타임에 전달했습니다.</p>";const d=await api("/api/live/infer",{method:"POST",headers:{"Content-Type":"application/json","X-InspectEscrow-Local":"1"},body:JSON.stringify(body)});state.lastInference=d;saveHandoff();const review=String(d.decision).includes("REVIEW");$("inference").className="result "+(review?"review":"pass");$("inference").innerHTML=`<div class="score-line"><div><span class="decision">${esc(d.decision)}</span><div class="score-value">${esc(d.scoreRaw)}</div></div><b>${review?"주의 · 재검토":"정상 범위"}</b></div><div class="metrics"><span>scoreScaled <b>${esc(d.scoreScaled)}</b></span><span>thresholdScaled <b>${esc(d.thresholdScaled)}</b></span></div><code>TOP SHA-256 ${esc(d.originalTopSha256)}</code><p>${esc(d.status)} · FRONT/SIDE 미입력 시 정식 증거 미완성 · Station UNSIGNED · 온체인 NOT SUBMITTED</p>`;persist();}catch(e){state.lastInference=null;$("inference").className="result fail";$("inference").innerHTML="<strong>추론 실패</strong><p>"+esc(err(e))+"</p>";}finally{state.busy=false;$("infer").disabled=false;setFlow();}}
+function renderXai(){
+ const root=$("xai-output"),status=$("xai-progress");
+ if(!root||!status)return;
+ const d=state.xai;
+ $("xai-download").disabled=!d;
+ if(!d||d.method!=="PATCHCORE_NATIVE_ANOMALY_MAP"){
+   root.hidden=true;
+   $("xai-overlay").removeAttribute("src");
+   status.textContent="TOP의 실제 AI 추론을 실행한 후 XAI 근거 보기를 누르세요.";
+   return;
+ }
+ const b64=String(d.overlayPngBase64||"");
+ if(b64.length<100||b64.length>2000000||!/^[A-Za-z0-9+/=]+$/.test(b64)){
+   root.hidden=true;status.textContent="XAI 이미지가 잘못되어 표시하지 않았습니다.";return;
+ }
+ root.hidden=false;
+ $("xai-overlay").src="data:image/png;base64,"+b64;
+ $("xai-heading").textContent="실제 PatchCore 위치별 이상도 · "+d.decision;
+ $("xai-score").textContent="이상 점수 "+d.scoreRaw+" / 임계값 "+(Number(d.thresholdScaled)/1000000).toFixed(6)+
+   " · 이 점수는 불량 확률(%)이 아닙니다.";
+ const bars=Array.isArray(d.quadrants)?d.quadrants:[];
+ $("xai-bars").innerHTML=bars.map(item=>{
+   const x=Math.max(0,Math.min(100,Number(item.relativeAnomalyIndex)||0));
+   return '<div class="xai-bar"><span>'+esc(item.label)+'</span>'+
+     '<div class="xai-bar-track"><div class="xai-bar-fill" style="width:'+x.toFixed(1)+'%"></div></div>'+
+     '<span>'+x.toFixed(1)+'</span></div>';
+ }).join("");
+ $("xai-provenance").textContent="CNN WideResNet50-2 layer2/layer3 · TOP SHA-256 "+
+   short(d.originalTopSha256)+" · 모델 "+short(d.modelCheckpointSha256)+
+   " · 각 막대는 해당 위치의 상대 이상도 지수이며 확률이 아닙니다. 서명·온체인 제출 없음.";
+ status.textContent="실제 PatchCore anomaly_map 재추론 완료 · 원본 해시·모델 해시·점수 확인";
+}
+async function explainXai(){
+ if(state.busy||!state.lastInference||!state.files.TOP)return;
+ state.busy=true;setFlow();
+ $("xai-progress").textContent="고정 Model B로 원본 TOP의 위치별 이상도를 계산하고 있습니다…";
+ try{
+   const body={...validateMeta(),images:await images(["TOP"])};
+   const expected=await digest(state.files.TOP);
+   const value=await api("/api/live/explain",{
+     method:"POST",headers:{"Content-Type":"application/json","X-InspectEscrow-Local":"1"},
+     body:JSON.stringify(body)
+   });
+   if(!value.ok||value.originalTopSha256!==expected||
+      value.modelCheckpointSha256!==state.config?.runtime?.checkpointSha256||
+      String(value.scoreScaled)!==String(state.lastInference.scoreScaled)||
+      value.decision!==state.lastInference.decision)
+      throw Error("XAI 원본·모델·AI 점수 결합 검증 실패");
+   state.xai=value;saveHandoff();renderXai();
+ }catch(e){
+   state.xai=null;saveHandoff();renderXai();
+   $("xai-progress").textContent="XAI 실행 실패 · "+err(e)+
+     " · 기존 AI 판정과 Evidence에는 영향을 주지 않았습니다.";
+ }finally{state.busy=false;setFlow();}
+}
+function downloadXai(){
+ const x=state.xai;if(!x?.overlayPngBase64)return;
+ const a=document.createElement("a");
+ a.href="data:image/png;base64,"+x.overlayPngBase64;
+ a.download="InspectEscrow_PatchCore_XAI_"+state.currentRole+".png";
+ a.click();
+}
+
 async function build(){if(state.busy)return;state.busy=true;setFlow();$("build").disabled=true;try{const body={...validateMeta(),images:await images(["TOP","FRONT","SIDE"])};$("evidence-result").className="result";$("evidence-result").innerHTML="<strong>원본 재검증·증거 해시 생성 중…</strong>";const d=await api("/api/live/build",{method:"POST",headers:{"Content-Type":"application/json","X-InspectEscrow-Local":"1"},body:JSON.stringify(body)});state.bundle=d.bundle;saveHandoff();$("evidence-result").className="result pass";$("evidence-result").innerHTML=`<div class="score-line"><div><span class="decision">${esc(d.status)}</span><div class="score-value">${esc(d.scoreScaled)}</div></div><b>OFFCHAIN EVIDENCE COMPLETE</b></div><div class="metrics"><span>판정 <b>${esc(d.decision)}</b></span><span>Station <b>UNSIGNED</b></span></div><code>Manifest ${esc(d.hashes.specimenManifestHash)}</code><code>Evidence ${esc(d.hashes.evidencePackageHash)}</code><p>Canonical unsigned template 생성 완료 · fresh Station 서명 필요 · Actor 온체인 미제출 · TX 0</p>`;$("download").disabled=false;persist();}catch(e){state.bundle=null;saveHandoff();$("download").disabled=true;$("evidence-result").className="result fail";$("evidence-result").innerHTML="<strong>증거 생성 실패</strong><p>"+esc(err(e))+"</p>";}finally{state.busy=false;$("build").disabled=!(state.files.TOP&&state.files.FRONT&&state.files.SIDE);saveHandoff();setFlow();}}
 function downloadRole(role){
  const h=roleRecord(roleStore($("trade-id").value),role),pkg=h?.bundle;
@@ -192,14 +255,14 @@ function stopCamera(){if(state.stream)state.stream.getTracks().forEach(t=>t.stop
 async function capture(){try{if(!state.stream||!state.cameraView)throw Error("활성 카메라가 없습니다.");const v=$("camera-video"),canvas=document.createElement("canvas");canvas.width=v.videoWidth;canvas.height=v.videoHeight;if(!canvas.width)throw Error("카메라 프레임이 아직 준비되지 않았습니다.");canvas.getContext("2d").drawImage(v,0,0);const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.95));const file=new File([blob],`${state.cameraView.toLowerCase()}-${Date.now()}.jpg`,{type:"image/jpeg",lastModified:Date.now()});await select(state.cameraView,file);stopCamera();}catch(e){$("camera-status").textContent="촬영 실패 · "+err(e)+" · 다시 시도하거나 파일 업로드를 사용하세요.";}}
 async function load(){restore();setFlow();try{const tradeId=activeTrade();$("trade-id").value=tradeId;for(const a of document.querySelectorAll('a[href="/evidence"]'))a.href="/evidence?tradeId="+encodeURIComponent(tradeId);for(const a of document.querySelectorAll('a[href^="/replay"]'))a.href="/replay?mode=offchain&tradeId="+encodeURIComponent(tradeId);for(const a of document.querySelectorAll('a[href="/e2e"]'))a.href="/e2e?tradeId="+encodeURIComponent(tradeId);state.config=await api("/api/live/config?tradeId="+encodeURIComponent(tradeId));$("trade-id").value=state.config.tradeId;await hydrateHandoff(state.config.tradeId);const completed=[17,18,19].includes(Number(state.config.state));$("runtime").textContent=state.config.runtimeAvailable?"MODEL B ONLINE · "+short(state.config.runtime.checkpointSha256):"MODEL B 오프라인 · 보관 기록 조회 가능";$("truth").textContent=completed?"완료된 S05 거래 기록 · 새 실시간 검사 세션이 아니며 이번 화면에서 AI 재추론을 수행하지 않았습니다. · chain "+state.config.chainId:state.config.runtimeAvailable?state.config.governanceStatus+" · OFFCHAIN 증거 준비만 허용 · Station UNSIGNED · 온체인 NOT SUBMITTED · chain "+state.config.chainId:state.config.runtimeMessage+" · 실제 AI 추론 미실행 · chain "+state.config.chainId;$("bindings").innerHTML=[["Policy",state.config.policyHash],["Model Bundle",state.config.modelBundleHash],["Capture",state.config.captureProfileHash],["Threshold",state.config.thresholdScaled]].map(x=>`<div><small>${esc(x[0])}</small><code>${esc(x[1])}</code></div>`).join("");setFlow();}catch(e){state.config={runtimeAvailable:false};$("runtime").textContent="거래 컨텍스트 확인 실패";$("truth").textContent="잘못된 요청 또는 거래 컨텍스트로 검사 구성을 불러오지 못했습니다. · 실제 AI 추론 미실행 · "+err(e);setFlow();}}
 for(const view of ["TOP","FRONT","SIDE"]){$(view.toLowerCase()).addEventListener("change",e=>select(view,e.target.files?.[0]).catch(x=>alert(err(x))));}
-document.querySelectorAll(".camera").forEach(b=>b.addEventListener("click",()=>startCamera(b.dataset.view)));$("diagnose-camera").addEventListener("click",cameraDiagnostics);$("capture").addEventListener("click",capture);$("stop-camera").addEventListener("click",stopCamera);$("new-session").addEventListener("click",newSession);$("infer").addEventListener("click",infer);$("build").addEventListener("click",build);$("download").addEventListener("click",download);$("role").addEventListener("change",event=>switchRole(event.target.value));
+document.querySelectorAll(".camera").forEach(b=>b.addEventListener("click",()=>startCamera(b.dataset.view)));$("diagnose-camera").addEventListener("click",cameraDiagnostics);$("capture").addEventListener("click",capture);$("stop-camera").addEventListener("click",stopCamera);$("new-session").addEventListener("click",newSession);$("infer").addEventListener("click",infer);$("explain").addEventListener("click",explainXai);$("xai-download").addEventListener("click",downloadXai);$("build").addEventListener("click",build);$("download").addEventListener("click",download);$("role").addEventListener("change",event=>switchRole(event.target.value));
 for(const role of ["supplier","buyer"]){
  $(role+"-summary-switch").addEventListener("click",()=>switchRole(role));
  $(role+"-summary-download").addEventListener("click",()=>downloadRole(role));
 }
 
 $("specimen-id").addEventListener("change",()=>{
-  state.bundle=null;$("download").disabled=true;
+  state.xai=null;renderXai();state.bundle=null;$("download").disabled=true;
   $("evidence-result").className="result empty";$("evidence-result").textContent="시편 ID 변경 · Evidence 재생성 필요";
   saveHandoff();persist();setFlow();
 });window.addEventListener("beforeunload",()=>{stopCamera();state.urls.forEach(URL.revokeObjectURL);});load();cameraDiagnostics();

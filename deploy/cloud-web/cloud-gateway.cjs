@@ -21,7 +21,7 @@ let activeAICalls=0;
 function protectPublicActions(req,res,pathname){
  if(!["POST","PUT","PATCH","DELETE"].includes(req.method))return false;
  const ip=String(req.headers["x-forwarded-for"]||req.socket.remoteAddress||"unknown").split(",")[0].trim().slice(0,100);
- const heavy=/^\/api\/(?:live\/(?:infer|build|replay)|modelb\/infer|replay\/(?:execute|controlled-score-demo)|e2e\/prepare-|review\/prepare)/.test(pathname);
+ const heavy=/^\/api\/(?:live\/(?:infer|build|replay|explain)|modelb\/infer|replay\/(?:execute|controlled-score-demo)|e2e\/prepare-|review\/prepare)/.test(pathname);
  const windowMs=10*60*1000,now=Date.now();
  for(const [k,v] of publicRequestBudgets)if(now>=v.end)publicRequestBudgets.delete(k);
  function consume(key,max){
@@ -115,7 +115,7 @@ async function adapter(req,res){
      });
    }catch(e){return aiError(res,e);}
  }
- if(endpoint==="/api/infer"&&req.method==="POST"){
+ if((endpoint==="/api/infer"||endpoint==="/api/explain")&&req.method==="POST"){
    try{
      const bytes=await readBytes(req,9*1024*1024);
      const request=new Request("http://127.0.0.1/api/infer",{
@@ -131,7 +131,14 @@ async function adapter(req,res){
      form.append("top",image,image.name||"top.jpg");
      form.append("expected_top_sha256",digest);
      form.append("specimen_label","MODEL_B_CLOUD_BRIDGE");
-     const result=await aiRequest("POST","/api/cloud/inspect",form);
+     const isExplain=endpoint==="/api/explain";
+     const result=await aiRequest("POST",isExplain?"/api/cloud/explain":"/api/cloud/inspect",form);
+     if(isExplain){
+       if(!result.ok||result.originalTopSha256!==digest||result.modelCheckpointSha256!==CHECKPOINT||
+          result.method!=="PATCHCORE_NATIVE_ANOMALY_MAP")throw Error("XAI_ORIGINAL_MODEL_BINDING_FAILED");
+       modelWasUsed=true;
+       return send(res,200,result);
+     }
      if(result.bundle?.manifest?.captureFiles?.TOP?.sha256!==digest||
          result.bundle?.inference?.modelCheckpointSha256!==CHECKPOINT)throw Error("INFERENCE_ORIGINAL_BINDING_FAILED");
      modelWasUsed=true;

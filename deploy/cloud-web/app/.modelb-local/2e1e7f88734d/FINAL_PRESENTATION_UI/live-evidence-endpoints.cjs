@@ -151,6 +151,30 @@ async function build(ctx,body){
     stationSignatureComplete:false,onchainSubmitted:false,serverStoredOriginals:false,serverStoredBundle:false,transactionsSent:0};
 }
 
+async function explainTop(ctx,body){
+  const meta=validateMetadata(body),top=decodeImage(body.images?.TOP,"TOP");
+  const bindings=await config(ctx,meta.tradeId);
+  assert(bindings.runtimeAvailable,"LOCAL_MODEL_B_OFFLINE");
+  const form=new FormData();
+  form.append("image",new Blob([top.bytes],{type:top.mime}),top.name);
+  form.append("expected_sha256",top.sha256);
+  form.append("specimen_id","IE-DEMO-001");
+  const response=await fetch(MODEL_URL+"/api/explain",{
+    method:"POST",body:form,signal:AbortSignal.timeout(240000)
+  });
+  const result=await response.json();
+  assert(response.ok,"MODEL_B_XAI_FAILED_"+String(result.detail||response.status));
+  assert(result.originalTopSha256===top.sha256,"XAI_TOP_SHA256_MISMATCH");
+  assert(result.modelCheckpointSha256===CHECKPOINT_SHA256,"XAI_CHECKPOINT_MISMATCH");
+  assert(Number.isSafeInteger(result.scoreScaled),"XAI_SCORE_INVALID");
+  assert(typeof result.overlayPngBase64==="string"&&result.overlayPngBase64.length>100&&
+    result.overlayPngBase64.length<2000000,"XAI_OVERLAY_INVALID");
+  assert(result.method==="PATCHCORE_NATIVE_ANOMALY_MAP","XAI_METHOD_MISMATCH");
+  return {ok:true,tradeId:bindings.tradeId,role:meta.role,sessionId:meta.sessionId,
+    source:"ACTUAL_MODEL_B_PATCHCORE_ANOMALY_MAP_OFFCHAIN",
+    ...result,transactionsSent:0,stationSigned:false,onchainSubmitted:false};
+}
+
 async function replayOffchain(body){
   const staticResult=verifyStaticEvidence(body);
   const runtime=await modelStatus();
@@ -175,13 +199,13 @@ async function handle(req,res,ctx,url){
   if(url.pathname==="/api/live/config"&&req.method==="GET"){
     try{return send(res,200,await config(ctx,url.searchParams.get("tradeId")));}catch(error){return send(res,422,{ok:false,error:"INVALID_LIVE_CONFIG_REQUEST",detail:String(error.shortMessage||error.message||error).slice(0,280),runtimeAvailable:false,actualAiInferenceExecuted:false,transactionsSent:0});}
   }
-  if(["/api/live/infer","/api/live/build","/api/live/replay"].includes(url.pathname)&&req.method==="POST"){
+  if(["/api/live/infer","/api/live/build","/api/live/replay","/api/live/explain"].includes(url.pathname)&&req.method==="POST"){
     if(req.headers.origin&&req.headers.origin!=="http://"+req.headers.host&&req.headers.origin!==process.env.INSPECTESCROW_PUBLIC_ORIGIN)return send(res,403,{ok:false,error:"ORIGIN_REJECTED"});
     if(req.headers["x-inspectescrow-local"]!=="1"||!String(req.headers["content-type"]||"").startsWith("application/json"))return send(res,403,{ok:false,error:"LOCAL_JSON_HEADER_REQUIRED"});
-    try{const body=await readBody(req);const value=url.pathname.endsWith("/infer")?await preview(ctx,body):url.pathname.endsWith("/build")?await build(ctx,body):await replayOffchain(body);return send(res,200,value);}
+    try{const body=await readBody(req);const value=url.pathname.endsWith("/infer")?await preview(ctx,body):url.pathname.endsWith("/build")?await build(ctx,body):url.pathname.endsWith("/explain")?await explainTop(ctx,body):await replayOffchain(body);return send(res,200,value);}
     catch(error){return send(res,422,{ok:false,status:"UNVERIFIABLE",actualAiReplayExecuted:false,error:String(error.shortMessage||error.message||error).slice(0,300),transactionsSent:0});}
   }
   return send(res,405,{error:"METHOD_OR_ROUTE_NOT_ALLOWED"});
 }
 
-module.exports={handle,config,preview,build,replayOffchain,decodeImage,inferTop};
+module.exports={handle,config,preview,build,replayOffchain,explainTop,decodeImage,inferTop};

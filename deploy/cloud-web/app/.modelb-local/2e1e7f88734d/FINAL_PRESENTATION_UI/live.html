@@ -33,6 +33,16 @@
 
 <section class="panel action"><div class="head"><div><em>03</em><h2>실제 Model B 검사</h2></div><span class="mode">TOP ONLY ALLOWED</span></div><button id="infer" class="primary" disabled title="TOP 원본을 먼저 선택하세요">TOP 실제 AI 추론 실행</button><div id="inference" class="result empty"><strong>검사 전</strong><p>TOP 원본을 선택하세요.</p></div></section>
 
+<section class="panel xai-panel"><div class="head"><div><em>XAI</em><h2>PatchCore 판단 근거 · 이상 위치 시각화</h2></div><span class="mode">CNN FEATURES + NATIVE ANOMALY MAP</span></div>
+<p class="small">TOP 이미지에서 정상 학습 특징과의 차이가 크게 나타난 위치를 빨간색으로 표시합니다. 빨간 영역은 <b>불량 확률이나 원인 확정이 아닙니다.</b> 이 결과는 오프체인 참고자료이며 별도 서명·제출되지 않습니다.</p>
+<button id="explain" class="primary" type="button" disabled>실제 AI 근거 보기 · 추가 추론</button> <button id="xai-download" type="button" disabled>빨간색 XAI 이미지 PNG 저장</button>
+<div id="xai-progress" class="xai-progress" aria-live="polite">TOP의 실제 AI 추론을 먼저 실행하세요.</div>
+<div id="xai-output" class="xai-output" hidden>
+<div class="xai-figure"><img id="xai-overlay" alt="PatchCore 모델 원본 TOP 이미지의 상대 이상도 빨간색 오버레이"><p>빨강 = 정상 메모리뱅크 특징과의 거리 상대적으로 큼</p></div>
+<div class="xai-report"><strong id="xai-heading">모델 근거</strong><p id="xai-score"></p><div id="xai-bars" class="xai-bars"></div><p id="xai-provenance" class="small"></p></div>
+</div>
+</section>
+
 <section class="panel action"><div class="head"><div><em>04</em><h2>3뷰 Evidence Bundle</h2></div><span class="mode">UNSIGNED · NOT SUBMITTED</span></div><button id="build" class="primary" disabled>TOP·FRONT·SIDE 증거 생성</button><button id="download" disabled>Evidence JSON 백업 다운로드</button><div id="evidence-result" class="result empty"><strong>미완성</strong><p>AI 추론 후 서로 다른 3뷰 원본을 모두 선택해야 합니다.</p></div></section>
 
 <section class="panel"><div class="head"><div><em>05</em><h2>검증 연결</h2></div><span class="mode">SAME-TAB HANDOFF · FALLBACK RE-IMPORT</span></div><div class="next"><a href="/evidence">① Evidence 검증 (같은 탭에서 JSON·3뷰 자동 연결)</a><a href="/replay?mode=offchain">② /replay에서 실제 독립 재추론</a><a href="/e2e">③ Station·Actor (동일 3뷰 연결·새 추론·서명 준비)</a></div><p class="small">같은 브라우저 탭 안에서는 원본 3뷰와 unsigned JSON을 검증·Station/Actor 화면으로 전달합니다. 새로고침·새 탭·브라우저 종료 시에는 수동 재선택이 필요합니다. 원본·증거 JSON·개인키는 서버에 영구 저장하지 않습니다.</p></section>
