@@ -60,3 +60,11 @@
 - 사분면 그래프는 **너트 시각화 ROI 내 상대 강조 강도의 95백분위 지수**로 변경한다. 0~100 수치는 결함 확률/결함 면적 비율이 아니다.
 - 통합 SPA에서 HTML style/link를 제거하는 특성에 맞춰 별도 `xai-dashboard.css`를 shell에 직접 로드해 XAI 히트맵과 4개 막대 그래프를 정상 레이아웃으로 표시한다.
 - 이 마스크 방법은 밝은 금속 너트 + 어두운 매트 촬영 환경에 한정한다. 다른 상품·배경·조명에 일반화된 제품 분할 모델로 주장하면 안 된다.
+
+## 시각화 v2 실제 Railway 회귀 시험 (2026-11-06)
+- 모델 서비스 배포 `f96a4e10-bfac-4ad7-bc64-662e34af70c5`: SUCCESS. 웹 서비스 배포 `e2e92c60-f2f6-4a7b-824f-75be13417451`: SUCCESS.
+- S05 `S05_normal_repeat2.jpg.jpg` 실제 Model B: `PASS` / 점수 `36.18504333496094` / 원생 anomaly map 최대값 `35.588165`. 고정 위치별 표시 기준 `38.280373` 미만 → 빨간 강조 픽셀 0, 배경 강조 픽셀 0. 사분면 지수 0/0/0/0.
+- S03 `S03_deep_scratch1.jpg.jpg` 실제 Model B: `REVIEW_REQUIRED` / 점수 `52.57213592529297` / 원생 anomaly map 최대값 `50.038719`. 붉은 강조 픽셀 872, 배경 강조 픽셀 0. 사분면 지수 0/57.5/0/0 (좌상/우상/좌하/우하).
+- 실제 통합 Chrome 화면에서 XAI 카드 `display:grid`, 4영역 막대 `display:grid`, 그래프 트랙 높이 13px을 확인함. 따라서 이전 unstyled 텍스트 나열 문제 수정.
+- 실제 통합 거래에서 Buyer S03 → AI inference HTTP200 → XAI HTTP200 → Evidence 생성 HTTP200 → `/api/evidence/verify-offchain` HTTP200 → XAI 연결 PASS → sidecar JSON 다운로드 PASS → Station·Actor XAI 읽기 전용 · 자동 서명/트랜잭션 0건 확인. 테스트 결과 `PRODUCTION_EVIDENCE_XAI_ALL_PASS`.
+- 기술적 한계: 밝은 금속 제품과 어두운 촬영 매트에 대한 **휴리스틱 ROI 마스킹**이며 의미론적 객체 분할/확률 보정/결함 확정은 아니다. 이미지당 자동 contrast stretching을 없앴지만, 화면의 고정 기준은 픽셀별로 임상적으로/공정적으로 보정된 결함 판정 임계값이 아니다.
