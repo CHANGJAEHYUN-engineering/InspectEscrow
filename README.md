@@ -9,6 +9,15 @@
 
 **[InspectEscrow 통합 웹사이트 바로가기](https://inspectescrow-integrated-web-production.up.railway.app/)**
 
+### 운영진 제출용 소스코드 ZIP
+
+**[InspectEscrow_FINAL_SOURCE_SUBMISSION_20261106.zip 다운로드](submissions/2026-11-06/InspectEscrow_FINAL_SOURCE_SUBMISSION_20261106.zip)** · 700 KB · 127개 파일
+
+GitHub의 최종 소스코드를 KoMaP식 검토용 ZIP으로도 제공하며, 최신 클라우드 웹·Model B 서버 소스·PATCH3 스마트컨트랙트·검증 코드·실제 Replay 웹 캡처·실증 기록이 포함되어 있습니다. **가중치 백업 ZIP, 실물 원본 사진, 지갑 개인키와 비밀 토큰은 포함되지 않습니다.** AI 서버를 독립 재구축하려면 모델 아티팩트를 별도로 확보해야 합니다.
+
+- [ZIP SHA-256 검증값](submissions/2026-11-06/SHA256SUMS.txt) · `8b1a519d14a89c09c44332385400bbc2b8a04b22aa077b7b1cdc3e50f2316861`
+- 최종 ZIP은 GitHub 태그 `submission-2026-11-06-source`의 소스를 기준으로 생성했습니다. 파일별 SHA-256·압축 CRC·압축 해제 후 공개 웹 조회 10/10 검사를 통과했습니다.
+
 실물 너트 AI 검사(모델 B), 원본·정책·검사 증거, EIP-712 역할별 서명, Sepolia 에스크로, 분쟁·Replay, 당사자 상호 합의, 정산 및 Withdraw를 연결한 **테스트넷 기반 제조 B2B 프로토타입**입니다. 역할별 통합 웹 화면과 별도의 클라우드 Model B 추론 서버로 운영됩니다.
 
 **2026-11-06 최종 실행 소스 동기화:** [deploy/cloud-web/](deploy/cloud-web/)에 실제 Railway 통합 웹 게이트웨이·프런트엔드·서버 코드가, [deploy/modelb-cloud/](deploy/modelb-cloud/)에 별도 Model B 추론 서버 코드가 포함되어 있습니다. 공개 웹의 HTML/JS/CSS 6개 파일과 소스 SHA-256 일치, Node 34개 파일 구문 검사, Python 2개 파일 컴파일, 읽기 전용 10개 URL·거래 상태 검사를 통과했습니다. **원본 실물 사진과 95MB Model B 체크포인트 백업 ZIP은 안전·라이선스 이유로 GitHub에 포함하지 않았으므로, AI 서버 자체 재빌드에는 별도 아티팩트 제공이 필요합니다.** [실행 방법·검증 결과](docs/SOURCE_SYNC_VERIFIED_20261106_KO.md)를 참고하세요.
