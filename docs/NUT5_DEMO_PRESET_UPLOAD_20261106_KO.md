@@ -52,3 +52,15 @@
 - 2026-11-06 로컬 Chrome 기능 테스트 PASS: Supplier 원본 3/3 → Buyer 전환 0/3 + 3개 미리보기 숨김 → Buyer 원본 3/3 → Supplier 전환 0/3 → Buyer 재전환 0/3. 양 역할 Evidence 비교 기록 유지. 실제 새 업로드 후 Evidence/Actor 자동 연결은 기존 동작 유지.
 - 2026-11-06 로컬 Chrome 모의 보관 스토리지 테스트 PASS: 정상 Supplier 3/3 → 역할 변경 시 0/3 → 불량 Buyer 3/3, 로드 이미지마다 SHA-256 확인, AI 자동 추론 안 함.
 - **사용자 제공 6장 실물 데이터 배포 및 실제 운영 웹 동작 검증은 아직 미완료** (파일 수신 후 진행).
+
+## 2026-11-06 Supplier 정상 3장 등록 완료 (Buyer 3장 대기)
+- 2026-11-06 대화에서 사용자가 직접 첨부한 TOP, FRONT, SIDE의 표시 픽셀 및 이미지 특징이 노트북의 `S05-Supplier` 폴더 원본과 동일함을 dHash 64비트 값으로 일치 확인.
+- 첨부 파일은 1536×2048 해상도의 변환본이며, 노트북 원본은 EXIF 방향값(6)을 가진 4000×3000 고해상도 촬영 원본임. **두 파일군의 SHA-256은 서로 다르므로 동일 바이트라고 주장하지 않음.**
+- 노트북의 고해상도 원본 JPEG 바이트를 재압축 없이 프리셋 복사본으로 등록. 공개 URL로 전달되는 파일에는 촬영 기기·시각 등의 EXIF 메타데이터가 남아 있으며 GPS 태그는 발견되지 않음.
+- Supplier TOP: `nut5_normal_TOP.jpg` 2,673,426 bytes SHA-256 `0609922596edc39c6f8db095d7a820d36f87c9492e1f6ffd28936e4d9b888991`.
+- Supplier FRONT: `nut5_normal_FRONT.jpg` 2,335,808 bytes SHA-256 `2aca0b3ae7c8caf65783d48da8e921b1c152fff9f6db7f5840f38f2e37e40bf1`.
+- Supplier SIDE: `nut5_normal_SIDE.jpg` 2,403,071 bytes SHA-256 `8ea3490e7fec718fe291780626ca0c6dd12dcc33ca580916d096d4734a0508fe`.
+- Model B 실제 클라우드 3뷰 검증에서 `PASS` / `scoreRaw=36.30292892456055` / 임계값 `38.280373` / 원본 3뷰 SHA-256 모두 일치.
+- `manifest.json`은 Supplier만 포함. Buyer는 아직 첨부받지 않았으므로 해당 역할의 보관 불러오기 버튼 비활성. Supplier 버튼은 활성.
+- 브라우저 테스트: Supplier 정상 3장 프리셋 일괄 불러오기 PASS, Buyer 역할 전환 시 0/3 및 보관 버튼 비활성 PASS, Supplier 재진입 시 다시 0/3이면서 프리셋 버튼 활성 PASS. AI·XAI 자동 실행 없음.
+- 개인정보/보안: `deploy/cloud-web/.gitignore`에 사진 확장자 제외 설정이 있으므로 사용자 원본 이미지는 공개 GitHub 저장소에 **커밋하지 않는다**. 운영 배포는 파일 목록을 제한한 별도 깨끗한 staging 빌드 컨텍스트를 사용하며, 공개 웹에서 프리셋 이미지 URL은 접근 가능하다.

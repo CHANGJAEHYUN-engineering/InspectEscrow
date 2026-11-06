@@ -148,7 +148,7 @@ const PRESET_BASE="/demo-presets/nut5/";
 let presetManifest=null;
 const PRESET_VIEWS=["TOP","FRONT","SIDE"];
 function updatePresetControls(){
- const ready=Boolean(presetManifest&&!state.busy);
+ const ready=Boolean(presetManifest?.roles?.[state.currentRole]&&!state.busy);
  for(const view of PRESET_VIEWS){
    const button=document.querySelector('[data-preset-view="'+view+'"]');
    if(!button)continue;
@@ -159,9 +159,9 @@ function updatePresetControls(){
  }
  const all=$("preset-all"),status=$("preset-status");
  if(all)all.disabled=!ready;
- if(status)status.textContent=presetManifest?
+ if(status)status.textContent=ready?
    "5번 너트 "+(state.currentRole==="supplier"?"정상 3장":"불량 3장")+" 보관됨 · 실제 AI·XAI는 별도 실행":
-   "시연용 5번 너트 정상·불량 원본 6장 등록 대기";
+   (presetManifest?"현재 역할의 보관 사진은 아직 등록되지 않았습니다.":"시연용 5번 너트 정상·불량 원본 등록 대기");
 }
 async function loadPresetManifest(){
  try{
@@ -169,13 +169,19 @@ async function loadPresetManifest(){
    if(!response.ok)throw Error("아직 등록되지 않음");
    const manifest=await response.json();
    if(manifest.schema!=="InspectEscrow.Nut5PhotoPresets.v1")throw Error("보관 사진 목록 규격 불일치");
-   for(const role of ["supplier","buyer"])for(const view of PRESET_VIEWS){
-     const entry=manifest.roles?.[role]?.[view];
+   let registeredRoleCount=0;
+   for(const role of ["supplier","buyer"]){
+    if(!manifest.roles?.[role])continue;
+    registeredRoleCount++;
+    for(const view of PRESET_VIEWS){
+     const entry=manifest.roles[role][view];
      if(!entry||!/^nut5_(normal|defect)_(TOP|FRONT|SIDE)\.(jpg|jpeg|png)$/i.test(entry.filename)||
         !/^[a-f0-9]{64}$/i.test(entry.sha256))throw Error("보관 사진 6개 정보가 미완성입니다.");
      const expected="nut5_"+(role==="supplier"?"normal":"defect")+"_"+view+".";
      if(!entry.filename.startsWith(expected))throw Error("역할별 사진 매핑이 잘못됐습니다.");
+    }
    }
+   if(registeredRoleCount===0)throw Error("등록된 역할의 사진이 없습니다.");
    presetManifest=manifest;
  }catch(e){
    presetManifest=null;
