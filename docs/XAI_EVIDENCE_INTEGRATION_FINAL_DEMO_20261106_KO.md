@@ -32,3 +32,17 @@
 - 양쪽 모두 읽기 전용이며 전자서명·자금 이체를 수행하지 않는다. 기제출 기록은 교체되지 않는다.
 - `onchain.submitted`가 역할의 과거 제출을 뜻할 때 혼동하지 않도록, UI 기록의 `onchainSubmitted`는 **검사한 바로 그 증거의 hash+manifest match**인 경우에만 true로 저장한다.
 - 위 경계는 심사위원에게 “신규 사진은 오프체인 증거 검증 완료 / 기존 거래 정산은 과거 실제 TX 별도 검증”이라고 설명한다.
+
+## 2026-11-06 실제 Railway 운영 사이트 검증 완료
+- 웹 배포 ID: `5dc602b3-622a-4a8f-a25d-db1cdfe2b9cd` · Railway `SUCCESS`.
+- 실제 Model B, 보관된 사용자가 직접 촬영한 육각너트 시편 원본을 사용. 모의 AI 응답 없음.
+- Supplier 실제 TOP `S05_normal_repeat2.jpg.jpg`: score **36.18498992919922**, `PASS`; TOP·FRONT·SIDE 원본 기반 Evidence 생성, 실제 `anomaly_map` 히트맵 생성, 원본/모델/점수 매칭 및 XAI sidecar JSON 다운로드 PASS.
+- Buyer 실제 TOP `S03_deep_scratch1.jpg.jpg`: score **52.57209777832031**, `REVIEW_REQUIRED`; TOP·FRONT·SIDE 원본 기반 Evidence 생성, 실제 `anomaly_map` 히트맵 생성, 4영역 상대 이상도 그래프 PASS.
+- 공급사 PASS / 구매사 REVIEW 비교 카드 PASS. Buyer 최초 전환 시 Supplier 업로드 원본을 요구 없이 재사용하지 않음.
+- 이미 정산 완료된 기존 Trade ID의 과거 Buyer Evidence와 새 미서명 Buyer Evidence가 다르므로 **strict onchain 검증은 `ONCHAIN_EVIDENCE_HASH_MISMATCH`가 정상**.
+- `/api/evidence/verify-offchain`로 새 Evidence 원본/해시/정책 컨텍스트 검증: **HTTP 200 / OFFCHAIN_VERIFIED_ONLY**. 기존 Sepolia 기록을 대체하지 않음.
+- 새 Evidence에 대한 XAI sidecar 연결 검증: **PASS** (TOP SHA-256, 모델 체크포인트, 점수, Evidence Package Hash). 히트맵 표시 / 4개 막대 / JSON 다운로드 PASS.
+- `/e2e` Station·Actor 화면: 직전 검사 XAI 읽기 전용 표시 PASS, Buyer 이미지 3장 자동 전달 PASS, 뷰 확인 체크박스 미선택, EIP-712 서명·Actor TX 버튼 비활성 PASS.
+- **Sepolia 신규 트랜잭션 전송 0건**. 사용된 검사 결과 및 XAI는 미서명 오프체인 PoC 증거다.
+- Playwright Chrome 실기 테스트 `test-xai-buyer-evidence-prod.cjs`: `PRODUCTION_EVIDENCE_XAI_ALL_PASS`.
+- 모의 UI 변조 테스트: XAI 연결 JSON `scoreScaled` 값을 바꾸면 `SIDECAR_CONTENT_CHANGED`로 거부. 자체 재해싱 가능성 때문에 이는 제3자 서명 인증이 아님.
