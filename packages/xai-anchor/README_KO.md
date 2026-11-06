@@ -5,7 +5,7 @@
 - Foundry 단위 테스트: test/InspectEscrowXAIAnchor.t.sol (9개 PASS)
 - 오프체인 XAI 보고서 검증 + 온체인 조회/등록 CLI: tools/xai-anchor.cjs
 - Sepolia 네트워크와 기존 에스크로 계약의 getTradeTerms ABI prefix 실조회 확인
-- 실제 Sepolia 컨트랙트 배포: 암호화된 지갑 잠금 해제 후 수행 필요. 배포 전에는 온체인 XAI 해시 등록 완료라고 표현하지 않는다.
+- 실제 Sepolia 컨트랙트 배포: **성공** (주소 및 TX 아래 참조). 다만 XAI 보고서 해시 자체는 별도 거래로 등록해야 한다.
 - **기존 웹 UI, 기존 InspectEscrow 에스크로 코드, 기존 증거 해시와 가스 정산 흐름은 변경하지 않음.**
 
 ## 설계
@@ -62,3 +62,14 @@ node tools\xai-anchor.cjs verify --file C:\path\to\report.sidecar.json --anchor 
 - Sepolia cast chain-id: 11155111 PASS
 - 기존 InspectEscrow getTradeTerms(완료된 거래)에서 Supplier/Buyer actor 주소 확인 PASS
 - PowerShell deploy-sepolia.ps1 읽기 전용 preflight: PASS / 실제 전송 0건
+
+## [2026-11-06] Sepolia 실제 배포 확정
+- 새 XAI Anchor: `0x16391d0f6e4baA35CC835839e98b85437455ba82`
+- 배포 TX: `0x0260e6d67446e5550afdf7feaa97ef6513caf6acee84170b37cc33d2f9561ff0`
+- Etherscan: https://sepolia.etherscan.io/address/0x16391d0f6e4baA35CC835839e98b85437455ba82
+- Receipt `status=1`, block `12077201`, 온체인 런타임 코드 `3653 bytes` 확인.
+- 읽기 전용 `escrow()` 조회: `0x0a4721CF41Ad3f7a9EC9C73049D2db73B905` (원 계약 정확히 일치).
+- 배포자: `0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE` (검증된 기존 거래 Supplier actor와 일치).
+- **XAI 보고서 해시 실제 저장은 아직 0건 확인.** `anchor(...)` 별도 서명·승인·TX 필요.
+- 검증된 현황 원본: `deployment.sepolia.json`.
+- UI 변경은 별도 채팅방에서만 진행. 코드/ABI/주소는 여기서 인계.

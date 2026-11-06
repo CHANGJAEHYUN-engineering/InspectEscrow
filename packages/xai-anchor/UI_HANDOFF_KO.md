@@ -16,7 +16,7 @@
 8. **별도 프레임**: 'XAI 증거 보조 해시 고정' vs '기존 거래 검사 Evidence 정식 온체인 제출'을 명확히 분리한다. 새로운 미서명 Evidence가 Sepolia 기존 증거와 같아졌다고 표시하지 않는다.
 
 ## 배포 컨트랙트 주소
-- 배포 전: 공란. deployment.sepolia.json 생성 및 실 체인 verify 완료 후 연결할 것.
+- **Sepolia 배포 완료:** `0x16391d0f6e4baA35CC835839e98b85437455ba82` (deployment.sepolia.json 실 체인 조회 확인). 아직 실제 XAI 해시는 미등록.
 - 기존 InspectEscrow 원 계약: 0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905
 - 해당 contract 소스: packages/xai-anchor/src/InspectEscrowXAIAnchor.sol
 - ABI: packages/xai-anchor/out/InspectEscrowXAIAnchor.sol/InspectEscrowXAIAnchor.json (forge build 생성)
@@ -26,3 +26,14 @@
 - 고정 전: 'XAI 보고서 해시는 아직 온체인에 기록되지 않았습니다.'
 - 기록 성공 후: 'XAI 보고서 SHA-256을 Sepolia에 고정했습니다. 제출 후 변경 여부를 검증할 수 있습니다.'
 - 절대 표현 금지: '정상 제품의 진품을 블록체인으로 증명', '모든 최초 상태를 위변조 불가로 보장', 'XAI가 법적 분쟁을 해결'
+
+## [2026-11-06] Sepolia 실제 배포 확정
+- 새 XAI Anchor: `0x16391d0f6e4baA35CC835839e98b85437455ba82`
+- 배포 TX: `0x0260e6d67446e5550afdf7feaa97ef6513caf6acee84170b37cc33d2f9561ff0`
+- Etherscan: https://sepolia.etherscan.io/address/0x16391d0f6e4baA35CC835839e98b85437455ba82
+- Receipt `status=1`, block `12077201`, 온체인 런타임 코드 `3653 bytes` 확인.
+- 읽기 전용 `escrow()` 조회: `0x0a4721CF41Ad3f7a9EC9C73049D2db73B905` (원 계약 정확히 일치).
+- 배포자: `0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE` (검증된 기존 거래 Supplier actor와 일치).
+- **XAI 보고서 해시 실제 저장은 아직 0건 확인.** `anchor(...)` 별도 서명·승인·TX 필요.
+- 검증된 현황 원본: `deployment.sepolia.json`.
+- UI 변경은 별도 채팅방에서만 진행. 코드/ABI/주소는 여기서 인계.
