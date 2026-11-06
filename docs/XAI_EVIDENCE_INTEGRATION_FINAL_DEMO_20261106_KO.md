@@ -22,3 +22,13 @@
 - `node --check` (xai-companion/live/evidence/e2e/platform/server.js): PASS.
 - Chrome Playwright UI 모의 결과 테스트: Evidence 원본 3장 + Bundle + XAI 자동 연결 PASS; 서버 Evidence 검증 완료 후 XAI 연결 PASS; XAI JSON 다운로드 PASS; 점수 변조한 XAI sidecar 거부 PASS; Station/Actor 읽기 전용 XAI PASS; Station 확인 체크박스·서명·전송 자동 수행 없음 PASS.
 - 실제 클라우드 Model B + Sepolia 웹 배포 결과는 **별도 실기 테스트 기록**으로만 완료 표시한다.
+
+## 실제 운영 중 발견한 구분: 신규 미서명 Evidence vs 기존 온체인 기록
+- 2026-11-06 실제 Buyer S03 3뷰에서는 AI `REVIEW_REQUIRED` 52.572097..., XAI `anomaly_map`을 재현했다.
+- 그러나 이미 완료된 Sepolia 거래 ID에 **이번에 새로 생성한 미서명 Evidence**를 엄격 온체인 일치 검증하면 `ONCHAIN_EVIDENCE_HASH_MISMATCH`가 발생한다. 이는 검증 기능의 정상 차단이다.
+- 이를 해결하기 위해 **두 검증을 명시적으로 분리**했다.
+  1. `/api/evidence/verify-offchain`: 실제 3뷰 바이트, manifest/evidence keccak256, EIP-712 구조, 모델/정책 컨텍스트 및 기존 체인 거래 조건을 교차검증하되, 이전에 제출된 다른 Evidence 해시와 동일하다고 요구하지 않는다. 결과 `OFFCHAIN_VERIFIED_ONLY`; `REPLAY_INPUT_BLOCKED`.
+  2. `/api/evidence/verify`: 기존의 온체인 제출 증거까지 같은 해시인지 확인하는 **엄격 대조**. 다른 과거 증거가 제출돼 있으면 그대로 실패한다.
+- 양쪽 모두 읽기 전용이며 전자서명·자금 이체를 수행하지 않는다. 기제출 기록은 교체되지 않는다.
+- `onchain.submitted`가 역할의 과거 제출을 뜻할 때 혼동하지 않도록, UI 기록의 `onchainSubmitted`는 **검사한 바로 그 증거의 hash+manifest match**인 경우에만 true로 저장한다.
+- 위 경계는 심사위원에게 “신규 사진은 오프체인 증거 검증 완료 / 기존 거래 정산은 과거 실제 TX 별도 검증”이라고 설명한다.

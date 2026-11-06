@@ -18,7 +18,7 @@
     <section class="hero">
       <div class="eyebrow">LOCAL ORIGINALS · LIVE SEPOLIA READBACK · TX 0</div>
       <h1>내 검사 기록과 증거 무결성</h1>
-      <p>JSON 문자열을 신뢰하지 않습니다. 원본 3뷰의 SHA-256, manifest·evidence keccak256, 정책·모델 commitment, EIP-712 구조와 현재 Sepolia 기록을 다시 계산합니다.</p>
+      <p>원본 3뷰의 SHA-256, manifest·evidence keccak256, 정책·모델 commitment, EIP-712 구조를 재검증합니다. 새로운 미서명 검사 결과는 오프체인 검증하고, 기존 제출 증거와의 온체인 일치는 별도 버튼으로 엄격하게 확인합니다.</p>
     </section>
 
     <section class="security-note">
@@ -53,7 +53,8 @@
       </div>
       <label class="remember"><input id="remember" type="checkbox" checked> 민감하지 않은 최소 세션 메타데이터만 이 브라우저에 기억</label>
       <div class="actions">
-        <button id="verify" class="primary">원본·해시·Sepolia 재검증</button>
+        <button id="verify" class="primary">새 Evidence 원본·해시 검증 (오프체인)</button>
+        <button id="verify-chain">온체인 제출 증거 엄격 대조</button>
         <button id="save-session">현재 작업 기억</button>
         <button id="download" disabled>검증한 증거 JSON 저장</button>
         <button id="refresh-chain" disabled>현재 Sepolia 제출 상태 재조회</button>

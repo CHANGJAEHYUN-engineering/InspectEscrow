@@ -207,7 +207,7 @@ function verifySignatureLocally(staticResult,nowUnix){
   return {status:usableNow?"VALID_NOW":"VALID_BUT_EXPIRED",present:true,valid:true,recoveredSigner:getAddress(recovered),digest,usableNow,issuedAt:issued,validUntil};
 }
 
-async function readOnchain(ctx,staticResult){
+async function readOnchain(ctx,staticResult,{allowDifferentEvidence=false}={}){
   const {tradeId,role,evidenceHash,manifestHash,normalized}=staticResult;
   try{
     const [net,block,terms,state,deadline,inspection]=await Promise.all([
@@ -228,10 +228,10 @@ async function readOnchain(ctx,staticResult){
     const submitted=Number(inspection.submittedAt)!==0;
     const evidenceMatches=submitted&&eq(inspection.evidencePackageHash,evidenceHash);
     const manifestMatches=submitted&&eq(inspection.specimenManifestHash,manifestHash);
-    if(submitted)assert(evidenceMatches,"ONCHAIN_EVIDENCE_HASH_MISMATCH");
-    if(submitted)assert(manifestMatches,"ONCHAIN_MANIFEST_HASH_MISMATCH");
-    if(submitted)assert(Number(inspection.attempt)===Number(normalized.message.attempt),"ONCHAIN_ATTEMPT_MISMATCH");
-    if(submitted)assert(eq(inspection.station,normalized.message.station),"ONCHAIN_STATION_MISMATCH");
+    if(submitted&&!allowDifferentEvidence)assert(evidenceMatches,"ONCHAIN_EVIDENCE_HASH_MISMATCH");
+    if(submitted&&!allowDifferentEvidence)assert(manifestMatches,"ONCHAIN_MANIFEST_HASH_MISMATCH");
+    if(submitted&&evidenceMatches&&manifestMatches)assert(Number(inspection.attempt)===Number(normalized.message.attempt),"ONCHAIN_ATTEMPT_MISMATCH");
+    if(submitted&&evidenceMatches&&manifestMatches)assert(eq(inspection.station,normalized.message.station),"ONCHAIN_STATION_MISMATCH");
     return {source:Number(net.chainId)===11155111?"LIVE_SEPOLIA_READ_ONLY":"LOCAL_ANVIL_READ_ONLY",exists:true,chainId:Number(net.chainId),blockNumber:block.number,blockTimestamp:Number(block.timestamp),state:Number(state),stateName:STATE_NAMES[Number(state)]||"UNKNOWN",deadline:Number(deadline),submitted,evidenceMatches,manifestMatches,outcome:Number(inspection.outcome),scoreScaled:String(inspection.aggregateScoreScaled),station:inspection.station,attempt:Number(inspection.attempt)};
   }catch(error){
     const code=String(error.shortMessage||error.message||error);
@@ -242,9 +242,9 @@ async function readOnchain(ctx,staticResult){
   }
 }
 
-async function validateEvidencePayload(ctx,body){
+async function validateEvidencePayload(ctx,body,{offchainOnly=false}={}){
   const staticResult=verifyStaticEvidence(body);
-  const onchain=await readOnchain(ctx,staticResult);
+  const onchain=await readOnchain(ctx,staticResult,{allowDifferentEvidence:offchainOnly});
   const nowUnix=onchain.blockTimestamp||Math.floor(Date.now()/1000);
   const signature=verifySignatureLocally(staticResult,nowUnix);
   if(signature.present&&signature.digest){
@@ -255,14 +255,15 @@ async function validateEvidencePayload(ctx,body){
     if(!signature.usableNow&&!consumed)fail("STATION_SIGNATURE_EXPIRED_AND_NOT_CONSUMED");
   }
   const replayEligible=Boolean(onchain.submitted&&onchain.evidenceMatches&&onchain.manifestMatches);
-  const level=replayEligible&&signature.valid?"FULL_VERIFICATION":replayEligible||signature.valid?"PARTIAL_VERIFICATION":"PARTIAL_VERIFICATION";
+  const level=offchainOnly?"OFFCHAIN_VERIFIED_ONLY":replayEligible&&signature.valid?"FULL_VERIFICATION":"PARTIAL_VERIFICATION";
   const limitations=[];
   if(!signature.present)limitations.push("Station signature bytes are not included in this bundle; on-chain acceptance is checked separately.");
   if(!onchain.exists)limitations.push("Trade does not currently exist on the configured chain.");
   else if(!onchain.submitted)limitations.push("Evidence hash has not been submitted for this role on the configured chain.");
+  else if(!onchain.evidenceMatches)limitations.push("A different, earlier Evidence hash was submitted for this role; this newly generated bundle is OFFCHAIN-ONLY and has not replaced the onchain record.");
   limitations.push("Image hashes do not prove physical specimen identity or custody.");
   return {
-    ok:true,verificationLevel:level,replayInputStatus:replayEligible?"REPLAY_INPUT_ELIGIBLE":"REPLAY_INPUT_BLOCKED",
+    ok:true,verificationLevel:level,verificationScope:offchainOnly?"OFFCHAIN_ORIGINAL_HASH_AND_POLICY_CONTEXT":"STRICT_ONCHAIN_EVIDENCE_MATCH",replayInputStatus:offchainOnly?"REPLAY_INPUT_BLOCKED":replayEligible?"REPLAY_INPUT_ELIGIBLE":"REPLAY_INPUT_BLOCKED",
     verifiedAt:new Date().toISOString(),format:staticResult.normalized.format,
     tradeId:staticResult.tradeId,role:staticResult.role,roleName:staticResult.roleName,
     station:getAddress(staticResult.normalized.message.station),operatorSpecimenLabel:staticResult.normalized.manifest.operatorSpecimenLabel||staticResult.normalized.manifest.operatorLabel||"UNSPECIFIED",
@@ -288,10 +289,10 @@ async function contractStatus(ctx,tradeId,roleName,evidencePackageHash){
 
 const send=(res,code,value)=>{res.writeHead(code,{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"});res.end(JSON.stringify(value));};
 async function handle(req,res,ctx,url){
-  if(url.pathname==="/api/evidence/verify"&&req.method==="POST"){
+  if(["/api/evidence/verify","/api/evidence/verify-offchain"].includes(url.pathname)&&req.method==="POST"){
   if(req.headers.origin&&req.headers.origin!=="http://"+req.headers.host&&req.headers.origin!==process.env.INSPECTESCROW_PUBLIC_ORIGIN)return send(res,403,{ok:false,error:"ORIGIN_REJECTED"});
     if(req.headers["x-inspectescrow-local"]!=="1"||!String(req.headers["content-type"]||"").startsWith("application/json"))return send(res,403,{ok:false,error:"LOCAL_JSON_HEADER_REQUIRED"});
-    try{return send(res,200,await validateEvidencePayload(ctx,await readBody(req)));}
+    try{return send(res,200,await validateEvidencePayload(ctx,await readBody(req),{offchainOnly:url.pathname==="/api/evidence/verify-offchain"}));}
     catch(error){return send(res,422,{ok:false,verificationLevel:"INVALID",replayInputStatus:"REPLAY_INPUT_BLOCKED",error:String(error.shortMessage||error.message||error).slice(0,260),transactionsSent:0});}
   }
   if(url.pathname==="/api/evidence/status"&&req.method==="GET"){
