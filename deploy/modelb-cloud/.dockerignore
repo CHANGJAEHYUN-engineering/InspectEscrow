@@ -1,0 +1,14 @@
+.git
+.venv
+__pycache__
+*.pyc
+*.log
+*.tmp
+*.bak
+.env
+.env.*
+*.private
+*.key
+*_secret*
+*.zip
+!model/InspectEscrow_ModelB_BACKUP.zip

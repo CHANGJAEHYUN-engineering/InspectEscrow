@@ -1,108 +1,62 @@
-# 최종 제출 전 코드·배포 일치성 점검 및 보완 목록
-_2026-11-06 · InspectEscrow · 운영진 제출용 내부 QA_
+# InspectEscrow 최종 제출 품질 점검
 
-## 현재 결론
+_2026-11-06 기준 · 공개 프로토타입 / 소스 일치성 / 기능 및 용어_
 
-**웹 서비스는 동작하지만, GitHub 소스는 최신 클라우드 배포본과 동기화되지 않았습니다. 따라서 현재 상태를 ‘코드까지 제출 완료’라고 판정할 수 없습니다.**
+## 구현·제출 현황
 
-| 대상 | 현재 확인 상태 | 후속 조치 |
+**배포 중인 웹의 실제 소스를 `deploy/cloud-web/`, 별도 Model B 서버 소스를 `deploy/modelb-cloud/`에 반영했습니다.** 이전 2026-10-31 Windows 웹은 자료 보존 목적으로 남겨두고 제출 시 진입점은 반드시 최신 `deploy/` 경로로 안내합니다.
+
+| 영역 | 확인된 사실 | 판정 |
 |---|---|---|
-| 통합 웹 도메인 | Railway 서비스 Online, 배포 SUCCESS | 브라우저 기능 회귀 검증 |
-| Model B API | Railway 별도 추론 서버 Online, 배포 SUCCESS | 외부 사용자 실제 업로드·추론 확인 |
-| 웹 배포 코드 | Railway 배포 `ed39d2d2-0e87-4d2f-9f7e-1e88c0bdc380` | 배포 때 사용한 소스 스냅샷을 커밋 |
-| GitHub `main` 코드 | 마지막 기준 커밋 `1d8c41c1b5315a071c32b12139c6993128a9f432` (2026-10-31) | 최신 클라우드 소스 병합 필요 |
-| 최신 12TX | 실제 Sepolia 실행 및 공개 TX 인덱스 기록 | 첫 번째 TX 해시 원본과 비교 |
-| Model B +1 | 원본 TOP 2회 실제 추론 INCONSISTENT | 실제 웹 캡처·Report 원본 안전하게 보존 |
-| 원본 Evidence 보관 | 이번 신규 거래에서 Supplier·Buyer JSON 미저장 | 자동 저장·내보내기 강화 후 회귀 테스트 |
-| UI 용어·문구 | 최신 코드 전체 정적 감사 미완료 | 아래 용어·상태·버튼을 통일 |
+| 통합 웹 | Railway 성공 배포 `ed39d2d2-0e87-4d2f-9f7e-1e88c0bdc380`, Online | PASS |
+| Model B AI | 별도 Railway 성공 배포 `9b2f3d1f-f880-4408-9124-53a7d6684a1c`, Online | PASS |
+| 코드 동기화 | 최신 노트북 원본을 GitHub 제출용 `deploy/`에 복사 | 반영 |
+| 공개 웹 클라이언트 자산 | HTML/JS/CSS 6개 SHA-256까지 같음 | PASS |
+| 소스 구문·의존성 | Node 34개 구문 PASS, Python 2개 컴파일 PASS, `npm ci` PASS | PASS |
+| 웹 API 읽기 전용 검사 | 실제 완료 거래 `RELEASED(17)` 및 상태 조회 등 10/10 | PASS |
+| 6메뉴·7역할 화면 | 로그인 없는 외부 브라우저 진입·역할 선택 확인 | PASS |
+| 원본 Evidence 저장 | 이번 완료 거래의 양측 Evidence JSON을 저장하지 않아 독립 재현 자료 부족 | 개선 필요 |
+| 완전 재배포 | 개발 노트북에 Docker CLI 없음 / 비공개 Model B ZIP 미공급 | **미검증** |
+| 기존 자동 브라우저 테스트 | 닫힌 거래에 HOLD 상태를 요구하는 구식 Fixture, 헤더에 가려지는 자동 클릭 | 테스트 갱신 필요 |
 
-## 소스 동기화 — 최우선 P0
+최종 증거 목록은 [소스 동기화 확인서](SOURCE_SYNC_VERIFIED_20261106_KO.md)와 [12TX 색인](SEPOLIA_12TX_E2E_20261106.json)을 참고하세요.
 
-현 GitHub에는 과거 `.modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/` 코드가 있으나, 최신 통합 화면의 다음 모듈이 동일한 버전으로 반영되지 않았습니다.
+## 용어·문장 통일
 
-- 클라우드 웹 진입점 `cloud-gateway.cjs`, 배포용 `Dockerfile`, `.dockerignore`.
-- 최신 역할 기반 웹 통합 셸 `platform.html`, `platform.js`, `platform.css`, `enterprise-design.css`, `enterprise-tools.css`.
-- `roles.js` MetaMask 연결·네트워크·EIP-6963 탐지·사용자에게 보이는 오류 안내.
-- `resolution.html`·`resolution.js` 원격 PC 간 Supplier/Buyer EIP-712 동일 메시지 서명, 수신 서명 검증, `mutualResolve()` 실제 ABI.
-- `replay.html`, `replay.js`, `replay-endpoints.cjs` 실제 Model B TOP 2회 재추론 / unsigned +1 주장값 / 정확한 INCONSISTENT 표기.
-- `server.cjs` 최신 REST 경로, `e2e-endpoints.cjs` 및 거래/정산 상태 조회·권한·프로비넌스.
-- 별도 Model B Railway 서버 최신 API 코드, 해당 모델 체크포인트 SHA-256 정보 및 **모델 가중치 파일의 안전한 제공 방법**.
-- `browser_test/` 클라우드 브라우저 회귀 스크립트(지갑 mock 검증, 거래 상태 조회, +1 Replay 결과).
-
-**주의:** GitHub의 기존 옛날 정적 `index.html`은 최종 6메뉴 클라우드 앱이 아닙니다. 새 도메인과 같은 앱으로 오해할 수 없도록 README 첫 화면에 즉시 표시해야 합니다.
-
-### 안전한 동기화 절차
-
-1. 최종 배포에 사용한 실제 Windows 소스 폴더를 찾습니다. 당시 클라우드 웹 빌드 위치: `C:\Users\USER\Documents\InspectEscrow_INTEGRATED_CLOUD_CANDIDATE_20261106`. 데스크톱 원격 연결이 복구돼야 해당 원본을 꺼낼 수 있습니다.
-2. **배포에 사용한 원본을 별도 백업**하고 GitHub `main`에서 새 `release/2026-11-06-submission` 브랜치를 만듭니다.
-3. 최신 웹 서비스 소스 전체를 재현 가능한 경로(예: `deploy/cloud-web/`)에 포함합니다. 다만 환경변수·`.env`·지갑 개인키·시드·API 토큰·이미지 원본·서명된 민감 Evidence·개인 파일은 제외합니다.
-4. Model B 서버 코드는 별도 `deploy/modelb-cloud/`에 정리하고 실제 체크포인트 해시만 게시합니다. 모델 파일/원본 사진은 라이선스·용량을 검토한 뒤 별도 공급 경로를 문서화합니다.
-5. 새 브랜치에서 Docker 빌드, 로컬 웹 실행, 역할 전환, 비서명 replay, API 응답, Evidence 다운로드·재검증을 수행합니다.
-6. 배포본 `/replay.js`, `/resolution.js`, `/roles.js`, `/platform.js` 등과 제출 코드의 실제 SHA-256을 비교해 차이가 없도록 합니다. 빌드 시 생성물이 있으면 소스 커밋·재빌드 해시로 일치성을 입증합니다.
-7. 원격 팀원 PC에서 코드만으로 설치할 수 있는지 확인하고 README의 재현 절차·필요 비밀변수 이름(값 제외)·버전/커밋 SHA를 업데이트합니다.
-8. 코드 리뷰 후 `main` 병합하고 배포 커밋 SHA 고정 또는 Release 태그 생성. 이 과정에서 **현재 정상 가동 중인 Railway 서비스를 무작정 GitHub의 낡은 코드로 재배포하지 않습니다.**
-
-## 최종 문구 통일 — P1
-
-| 기존 또는 위험 표현 | 최종 권장 문구 |
+| 부정확한 표현 | 운영진 제출용 문구 |
 |---|---|
-| AI 불량 확정 | **AI 기준 초과 · 검토 필요(REVIEW_REQUIRED)** |
-| AI가 대금을 자동 판결 | **계약 정책·역할·상호 합의에 따라 대금 귀속 결정** |
-| Replay가 다른 점수를 보였다 = 사기 확정 | **고정 조건 재추론과 비교값 불일치 확인** |
-| Model B Replay 조작으로 Sepolia HOLD 자동 발생 | **클라우드 오프체인 +1 탐지와 Sepolia 통제 HOLD 별도 검증** |
-| 실거래·실제 ETH | **Sepolia 테스트넷에서 실행된 실제 온체인 TX·테스트 ETH** |
-| 승인된 양산 검사 정책 | **실증용 정책 / 일부 Model B 정책 문서 DRAFT 단계** |
-| 검증 36개 모두 온체인 통과 | **Local Anvil 자동 Red-Team 36/36 PASS** |
-| Station 지갑으로 정산 | **Station은 검사 증거 서명, Actor는 거래 TX/정산** |
-| Inspector 판정이 모두 자동 | **Replay 일관성과 정산 판단을 분리** |
-| 정산 완료 = 입금 완료 | **SettlementCredited → claimable → withdraw() 구분** |
-| 하나의 해시로 동일 실물 인증 | **원본 파일 무결성 검증, 물리적 시편 동일성은 별도 검증 필요** |
-| 고객용 최종 운영 서비스 | **실증용 프로토타입 / PoC** |
+| AI가 불량 확정 | AI 정책 임계값 초과 → **REVIEW_REQUIRED(검토 필요)** |
+| AI가 대금을 판결 | 계약 정책과 검증된 참여자 합의/Inspector 결정을 기반으로 대금 귀속 처리 |
+| Replay CONSISTENT = Buyer/Supplier 점수 동일 | 각 제출 결과가 **동일 원본·모델·조건으로 재현 가능** |
+| +1 변조로 Sepolia HOLD 자동 실행 | **오프체인 +1 조작 탐지**와 **Sepolia 통제된 HOLD 예외 검증**은 서로 다른 실험 |
+| 실제 ETH 수익 | Sepolia **테스트 ETH**의 예치·인출 |
+| 모든 Red-Team 온체인 검증 | Local Anvil **36/36 PASS**, 별도 Sepolia 12건 TX |
+| Station가 거래 수행 | **Station은 검사 Evidence EIP-712 서명**, **Actor는 계약 TX 실행** |
+| 정산 완료 = 이체 완료 | `SettlementCredited → claimable → withdraw()` |
+| 블록체인으로 동일 제품 확정 | 이미지 파일의 무결성과 계약 실행 검증, 물리적 실물 동일성은 미보증 |
+| 완전 무결/법적 중재 자동화 | 실증 수준의 보안·예외 처리 PoC. 법적 구속력과 생산 현장 운영 별도 검토 |
 
-**프레젠테이션 문장 원칙:** “실증했습니다”, “확인했습니다”, “기록됐습니다”처럼 누가 무엇을 어디서 검증했는지 구체적으로 설명합니다. “세계 최초”, “완전 무결”, “사기 방지 보장”, “법적 최종 판결”, “양산 즉시 도입” 같은 검증되지 않은 표현은 피합니다. 제출 문서에서 채팅 지시 흔적, ‘AI가 작성함’, 메모·TODO처럼 보이는 표현을 제거합니다.
+## 반영된 최신 기능
 
-## P0/P1 기능·안전성 점검표
+- 역할 기반 6메뉴 웹, 7역할, MetaMask 연결·오류 안내, EIP-6963 대응
+- 자체 서버에서 실제 Model B TOP 검사, TOP/FRONT/SIDE 증거 구성·해시 검증
+- Station EIP-712 검사 증거 서명과 Actor의 별도 Sepolia 제출
+- 분쟁·Inspector·Backup·HOLD·상호 합의·claimable·withdraw
+- **서로 다른 PC의 Buyer와 Supplier가 동일한 EIP-712 메시지에 각자 서명**, Buyer 서명값만 전달해 합의 정산
+- **동일 TOP 2회 실제 Model B 추론 → unsigned 주장 점수 +1 비교 → INCONSISTENT**, TX 0
+- AI 동시 추론 제한·공개 요청 rate limit·Origin 방어, 브라우저 스크린샷 기반 실행 증거
 
-### P0 — 제출 이전 필수
+## 실제 결과의 경계
 
-- [ ] **GitHub 최신 배포 소스 동기화**, 재현 가능한 Docker/설정/설치 문서, 현재 commit SHA 고정
-- [ ] 퍼블릭 웹의 기능 회귀: 6개 메뉴·7역할 진입, 거래 선택, 기한 만료·이미 종료된 거래 읽기 동작
-- [ ] 지갑 연결: Sepolia chain ID 11155111, Actor/Station 역할, 다른 네트워크·거부·권한 거절 문구
-- [ ] 금전 함수: MetaMask 서명 전 컨트랙트 주소·전송 ETH·가스·정산 귀속·최종 승인 게이트
-- [ ] 원본 TOP/FRONT/SIDE 및 Evidence JSON **명시적 저장·검증** 안내 (자동 백업 여부 허위 표현 금지)
-- [ ] 통제 Red-Team 모드와 실제 Replay 모드에 항상 고정 라벨·TX 발송 여부 표시
-- [ ] `+1` 점수 조작은 비서명 비교값임을 API·UI·Report·PPT에 공통 표기
-- [ ] 모델 서버의 공개 엔드포인트 직접 호출·반복 추론 제한과 토큰 비노출 검토
-- [ ] 시크릿 스캔: `.env`, `PRIVATE_KEY`, `MNEMONIC`, `API_TOKEN`, 지갑 JSON, 실물 이미지·Evidence·로그에 민감정보 유무 확인
-- [ ] 개인정보·서버 로그 보관·삭제 범위 명시; 제3자 예치 지갑 개인키/시드 절대 수집하지 않기
+1. 신규 거래: Supplier PASS(36.302929), Buyer REVIEW(51.506557) → 분쟁 → **통제된 음성 Replay 기록**으로 EXECUTION_HOLD → 서로 다른 PC의 양측 Actor가 상호 합의 → 공급자 지급 → 0.001 Sepolia ETH 인출.
+2. 별도 +1 점수 실험: 실제 Model B 2회 점수 36,185,043, 조작된 **비서명 비교용 점수** 36,185,044. 결과 INCONSISTENT, 온체인 TX 0. 원본 서명된 Evidence를 위조한 결과가 아닙니다.
+3. 물리적으로 같은 너트라는 확정, 실제 제조 환경 QMS/MES 연동, 계약의 법적 구속력, 생산 SLA는 검증 범위가 아닙니다.
 
-### P1 — 완성도 개선
+## 제출 전 마지막 점검
 
-- [ ] 모바일 화면에서 기능 오류·가로 넘침·작은 글씨·테이블 가독성 확인
-- [ ] 코드 내 `local`, `draft`, `test wallet`, `placeholder`, `TODO`, 낡은 주소 및 레거시 링크 표기 전수 감사
-- [ ] 결과 스크린샷은 **실제 웹 실행 화면 캡처**만 사용, 임의 생성한 브라우저 UI 이미지 사용 금지
-- [ ] 실행 중 로딩·중복 클릭·실패 후 재시도·RPC 장애·MetaMask 변경 시나리오 점검
-- [ ] 거래 단위와 컨트랙트 전체 누적 ETH 수치 구분
-- [ ] 가스비 현실성: 예치금 대비 L1 비용, 롤업/배치 경제성, 시연 비용을 분리해 표기
-- [ ] `claimable` 0 전환 후 출금 TX 영수증을 찾지 못해 ‘PENDING’으로 오판하는 조회 UI 오류 점검
-
-## 실제 검증의 한계 (숨기지 않을 것)
-
-1. 2026-11-06 신규 거래의 **HOLD는 통제 테스트**입니다. 정식 서명 Evidence를 훼손해 AI 독립 Replay가 자동으로 이를 탐지하고 HOLD로 전환한 한 번의 연속 온체인 실험이 아닙니다.
-2. 클라우드 `+1` 탐지는 실제 AI 2회 추론 기반이지만 **unsigned 비교 주장 조작**입니다. Sepolia TX를 보내지 않았습니다.
-3. 신규 거래의 Supplier/Buyer Evidence JSON 원본은 당시 저장하지 않아 해당 거래를 다시 독립 Replay할 완전한 아티팩트가 부족합니다.
-4. 물리적으로 같은 실물인지에 대한 지속적 추적과 법적 중재 결과는 검증하지 않았습니다.
-5. 현재 공개 GitHub는 실제 클라우드 웹의 완전한 실행 소스가 아니므로 **코드 일치성 검증 완료라고 제출하지 않습니다.**
-
-## 버전 정보
-
-- Railway 통합 웹 최신 확인 성공 배포: `ed39d2d2-0e87-4d2f-9f7e-1e88c0bdc380`
-- Railway 별도 Model B 서버: `9b2f3d1f-f880-4408-9124-53a7d6684a1c`
-- GitHub 동기화 전 기준 커밋: `1d8c41c1b5315a071c32b12139c6993128a9f432`
-- 최신 공개 TX 색인: [SEPOLIA_12TX_E2E_20261106.json](SEPOLIA_12TX_E2E_20261106.json)
-
-본 문서는 **제출 품질 점검 기록**이며 완료 체크박스는 실제 검증 후에만 변경합니다.
-
-## 공식 본선 운영 안내와 대조
-
-[BLOCK AI✳26 공식 홈페이지](https://blockhack.kr/)에는 2026-11-06~07 본선, **최종 구현된 프로토타입 및 GitHub 소스코드** 심사, 발표 **8분·질의응답 2분**으로 안내되어 있습니다. 이전 멘토링 가이드나 팀 내부 발표 시간표가 다르면 **현장 운영진의 개별 공지**를 우선 확인해야 합니다. 행사 당일 제출 마감시각·필수 파일 형식·제출 폼 URL은 이 공개 페이지 정보만으로 확정하지 않습니다.
+- GitHub `main`에 최신 `deploy/`가 실제 반영됐는지, commit SHA가 제출 링크와 일치하는지 확인
+- UI의 원본 JSON 저장 버튼 안내 강화. 이미 종료된 거래를 재현하는 데 필요한 파일 자동 보관을 **보장한다고 표시하지 않기**
+- 공개된 웹에서 이미지 생성용 가상 스크린샷이 아닌 **실제 실행 캡처**만 제출
+- 첫 TX의 전사 해시는 16진수 한 글자가 부족한 기록이 있으므로 Etherscan 원본과 대조 (임의 수정 금지)
+- 브라우저 자동 테스트의 종료 거래 Fixture를 새로 구성하고 헤더 클릭 가림을 실제 PC에서 확인
+- Railway 운영 중인 두 서비스를 무단 재시작하거나 예전 GitHub 루트의 정적 앱으로 대체 배포하지 않기

@@ -1,0 +1,57 @@
+{
+  "schema": "inspectescrow.demo-scenarios/2f-1",
+  "generatedFor": "2026 AI×Blockchain Hackathon final",
+  "actualSepoliaTransactionsCreatedBy2F": 0,
+  "scenarios": [
+    {
+      "id": "A",
+      "name": "정상 거래",
+      "source": "LOCAL_ANVIL plus SEPOLIA_CONFIRMED_TX_REFERENCE",
+      "startTradeId": "NEW_ISOLATED_TRADE_REQUIRED",
+      "roles": ["Supplier", "Buyer", "Primary Inspector", "Backup Inspector", "External Arbitrator"],
+      "flow": ["proposeTrade", "policy acceptance", "assignment acceptance", "fund", "activate", "Supplier PASS", "Buyer PASS", "acceptAndRelease", "Supplier withdraw"],
+      "requiredEvidence": "서로 독립된 Supplier/Buyer 3-view bundle and fresh Station signatures",
+      "recovery": "영수증과 온체인 state를 재조회하고 성공 확인 전 다음 단계로 이동하지 않는다"
+    },
+    {
+      "id": "B",
+      "name": "Buyer REVIEW 분쟁",
+      "source": "LOCAL_ANVIL",
+      "startTradeId": "NEW_ISOLATED_TRADE_REQUIRED",
+      "roles": ["Supplier", "Buyer", "Primary Inspector"],
+      "flow": ["Supplier PASS", "Buyer REVIEW", "independent Replay CONSISTENT", "Inspector Decision", "settlement", "withdraw"],
+      "requiredEvidence": "양측 원본과 canonical Replay Report",
+      "recovery": "Evidence Import부터 재검증"
+    },
+    {
+      "id": "C",
+      "name": "Supplier REVIEW",
+      "source": "LOCAL_ANVIL",
+      "startTradeId": "NEW_ISOLATED_TRADE_REQUIRED",
+      "roles": ["Supplier"],
+      "flow": ["Supplier REVIEW", "SUPPLIER_HOLD", "reinspection or contract timeout path"],
+      "requiredEvidence": "REVIEW를 실제 출력으로 얻은 격리된 fixture",
+      "recovery": "재검사 횟수·deadline 확인"
+    },
+    {
+      "id": "D",
+      "name": "CONTROLLED RED-TEAM 점수 불일치",
+      "source": "LOCAL_ANVIL",
+      "startTradeId": "NEW_ISOLATED_TRADE_REQUIRED",
+      "roles": ["Test Station", "Primary Inspector"],
+      "flow": ["명시적 조작 fixture 제출", "actual Model B replay", "INCONSISTENT", "EXECUTION_HOLD", "arbitration or fallback"],
+      "requiredEvidence": "CONTROLLED RED-TEAM 라벨과 실제 재추론 report",
+      "recovery": "일반 검사 모드와 완전히 분리"
+    },
+    {
+      "id": "E",
+      "name": "정책·증거 공격 차단",
+      "source": "LOCAL_ANVIL",
+      "startTradeId": "MULTIPLE_ISOLATED_TRADES_REQUIRED",
+      "roles": ["Attacker", "Supplier", "Buyer", "Station"],
+      "flow": ["policy tamper", "image replacement", "signature tamper", "nonce reuse", "wrong Actor", "expired deadline", "checkpoint mismatch"],
+      "requiredEvidence": "각 공격의 server, crypto, or Solidity 차단 위치",
+      "recovery": "canonical 원문·원본·fresh nonce로 재준비"
+    }
+  ]
+}

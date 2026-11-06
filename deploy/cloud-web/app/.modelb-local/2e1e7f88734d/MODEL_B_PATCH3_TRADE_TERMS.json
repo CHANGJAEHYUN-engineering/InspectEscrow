@@ -1,0 +1,42 @@
+{
+  "tradeId": "0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e",
+  "supplier": "0xaE7B8A9B15534829492F9449a67e83aAbd82E7BE",
+  "buyer": "0x5B52D3B71dD5B4637B828Fd2a0e8bC78346709eE",
+  "primaryInspector": "0xb60F55bC142a078781199C6a1689Bd7a86d4f6a8",
+  "backupInspector": "0xeE9652D5F77ffee10aFeb7854E88f7B83bDAF7dd",
+  "externalArbitrator": "0x9E3bA22795068b82B3D7C2A998cd40294520c8Ce",
+  "supplierStation": "0x02883F2C472E6d82B88373448E54a209C27A6779",
+  "buyerStation": "0xD5acfa7301BD73FfcBb3f73705E4dA4a2548faab",
+  "primaryInspectorStation": "0x0d9B5d1caf10e7E66AE1F63A4085387F707d092d",
+  "backupInspectorStation": "0x0d88B2aB0E6Aa39c73599C2115b8Ba0C34094a97",
+  "externalArbitratorStation": "0x6D62A42C2328846778e7120A72b02C90c2eEb8eE",
+  "escrowAmount": "1000000000000000",
+  "policyVersion": 2,
+  "policyHash": "0x3a6e3ad272b6bd79312b55fced06e3da3b979d97e7f1cd7c79783e3554be85d6",
+  "modelBundleHash": "0x3670ae2c0c89892018c8120fc13dc31d7415463e48dfce7eff3d626839d351af",
+  "captureProfileHash": "0x757e1e968185a5ffd4f7833e48d12177e1f697f59a196a5512703110ade57c96",
+  "productSpecHash": "0x6337103b283b92a74d2586e59810f6f2972cc2d2970eff15bdbfd398c7e6aea5",
+  "requiredViewSetHash": "0x51e32fbf19b0d13c1d4b02b740cd1e65ec38f69197fc59f4cc9467a852f64ff6",
+  "scoreSchemaId": "0x9151149c14197cc68d22f98cc55c34160dfde24230fd2e6cc155b4d824f95dd5",
+  "thresholdScaled": "38280374",
+  "scoreScaleExponent": 6,
+  "scoreMinScaled": "0",
+  "scoreMaxScaled": "340282366920938463463374607431768211455",
+  "maxSupplierRetries": 1,
+  "maxBuyerRetries": 1,
+  "fallbackPolicy": {
+    "buyerInspectionTimeout": 1,
+    "executionHold": 2,
+    "evidenceHold": 2,
+    "inspectorEscalated": 2
+  },
+  "windows": {
+    "supplierInspection": 3600,
+    "buyerInspection": 3600,
+    "buyerAcceptance": 1800,
+    "primaryInspector": 3600,
+    "backupInspector": 3600,
+    "mutualResolution": 3600,
+    "externalArbitration": 3600
+  }
+}

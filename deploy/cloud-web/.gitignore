@@ -1,0 +1,15 @@
+# Real photographed specimens and sensitive evidence are intentionally not published
+**/*.jpg
+**/*.jpeg
+**/*.png
+**/*.webp
+**/*.zip
+**/.env
+**/.env.*
+**/*.key
+**/*.pem
+**/*secret*
+**/*private*
+**/node_modules/
+**/evidence-private/
+**/*.log

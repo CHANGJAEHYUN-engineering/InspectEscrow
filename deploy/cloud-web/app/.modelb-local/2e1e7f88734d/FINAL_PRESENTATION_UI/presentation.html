@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>InspectEscrow | 본선 Presentation</title>
+  <link rel="stylesheet" href="/presentation.css">
+  <script defer src="/vendor/html2canvas.min.js"></script>
+  <script defer src="/presentation.js"></script>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="/journey">Inspect<span>Escrow</span></a>
+    <nav><a href="/live">LIVE 검사</a><a href="/evidence">증거</a><a href="/replay?mode=offchain">Replay</a><a href="/stage">검증 장면</a></nav>
+    <div class="health"><span class="badge readonly">READ ONLY</span><span id="ai-health" class="badge pending">AI 확인 중</span><span id="rpc-health" class="badge pending">RPC 확인 중</span></div>
+  </header>
+
+  <main>
+    <section id="intro" class="intro">
+      <p class="kicker">AI × BLOCKCHAIN · MANUFACTURING QUALITY ESCROW</p>
+      <h1>AI가 불량이라고 했을 때,<br><span>납품 대금은 누가 결정할까?</span></h1>
+      <p>원본과 고정된 AI를 재검증하고, 독립 Inspector가 계약 규칙 안에서 정산을 판단합니다.</p>
+      <div class="intro-actions"><button id="start" class="primary">발표 시연 시작</button><a href="/live">새 이미지 검사 바로 열기</a></div>
+      <div class="truth-line"><b>진실성 경계</b><span>서명과 온체인 전송은 별도 승인입니다. 이 화면은 트랜잭션을 전송하지 않습니다. 상태는 READY / RUNNING / COMPLETE / BLOCKED / NOT_IMPLEMENTED로만 표시합니다.</span></div>
+    </section>
+
+    <section id="deck" class="deck" hidden>
+      <div class="deck-head">
+        <div><p class="kicker">PRESENTATION FLOW</p><h2 id="slide-title">CAPTURE · 실물 제품 촬영</h2></div>
+        <div class="context"><span id="network">SEPOLIA READ-ONLY</span><code id="trade-short">Trade 조회 중</code></div>
+      </div>
+
+      <ol class="step-rail" aria-label="시연 단계">
+        <li data-step="0" class="active"><b>01 CAPTURE</b><span class="status ready">READY</span><small>TOP / FRONT / SIDE</small></li>
+        <li data-step="1"><b>02 INFERENCE</b><span id="inference-status" class="status ready">READY</span><small>PatchCore · TOP only</small></li>
+        <li data-step="2"><b>03 EVIDENCE</b><span class="status ready">READY</span><small>Hash · Policy · EIP-712</small></li>
+        <li data-step="3"><b>04 SETTLEMENT</b><span class="status blocked">BLOCKED</span><small>Actor approval required</small></li>
+      </ol>
+
+      <div class="slides">
+        <article class="slide active" data-slide="0">
+          <div class="copy"><span class="section-no">01</span><h3>실물과 원본 바이트에서 시작합니다</h3><p>카메라 또는 JPEG/PNG로 새 이미지를 입력합니다. TOP은 실제 AI 입력, FRONT·SIDE는 3-View 증거 무결성용입니다.</p><div class="actions"><a class="primary" href="/live">LIVE 촬영·업로드 열기</a><a href="/journey">거래 컨텍스트 확인</a></div></div>
+          <div class="visual capture-grid"><div class="view top"><b>TOP</b><strong>AI INPUT</strong><span>PatchCore 점수 산출</span></div><div class="view"><b>FRONT</b><strong>EVIDENCE</strong><span>원본 SHA-256</span></div><div class="view"><b>SIDE</b><strong>EVIDENCE</strong><span>원본 SHA-256</span></div><p>한 장을 세 번 복사하면 거절됩니다.</p></div>
+        </article>
+
+        <article class="slide" data-slide="1">
+          <div class="copy"><span class="section-no">02</span><h3>고정 Model B로 실제 점수를 계산합니다</h3><p>새 이미지 결과는 API 응답을 그대로 사용합니다. 발표 화면은 점수나 판정을 미리 고정하지 않습니다.</p><div class="fact"><span>현재 라이브 결과</span><strong id="live-score">—</strong><b id="live-decision">검사 전</b></div></div>
+          <div class="visual score-card"><small>검증된 과거 S05 측정 예시 · LIVE 아님</small><strong>36.302902</strong><div class="meter"><i style="width:94.8%"></i></div><div><span>scoreScaled 36,302,902</span><span>threshold 38,280,374</span></div><b class="pass">PASS</b><p>새 이미지의 PASS/REVIEW는 실제 출력에 따라 달라집니다.</p></div>
+        </article>
+
+        <article class="slide" data-slide="2">
+          <div class="copy"><span class="section-no">03</span><h3>“증거 생성”과 “온체인 제출”을 분리합니다</h3><p>해시와 Evidence JSON이 만들어져도 Station 서명 및 Actor 제출이 자동 완료되지 않습니다.</p><a class="primary" href="/evidence">Evidence Import·재검증</a></div>
+          <div class="visual evidence-stack">
+            <div><span>원본 SHA-256</span><b class="status ready">READY</b></div>
+            <div><span>Policy / Model binding</span><b class="status ready">READY</b></div>
+            <div><span>Evidence JSON</span><b id="bundle-status" class="status blocked">BLOCKED</b></div>
+            <div><span>Station EIP-712</span><b class="status blocked">BLOCKED · UNSIGNED</b></div>
+            <div><span>Actor 온체인 제출</span><b class="status blocked">BLOCKED · NOT SUBMITTED</b></div>
+            <div><span>Etherscan receipt</span><b class="status none">NOT_IMPLEMENTED</b></div>
+          </div>
+        </article>
+
+        <article class="slide" data-slide="3">
+          <div class="copy"><span class="section-no">04</span><h3>Replay와 정산 판단은 같은 일이 아닙니다</h3><p>Replay는 AI 재현성을 검증하고, Inspector Decision은 계약 규칙에 따라 대금 귀속을 판단합니다. EXECUTION_HOLD는 자동 지급·환급이 아닙니다.</p><div class="actions"><a class="primary" href="/replay?mode=offchain">Inspector Replay</a><a href="/resolution">Decision·정산</a></div></div>
+          <div class="visual settlement"><div><span>현재 세션</span><b>OFFCHAIN</b><small>Station 서명·Actor TX 필요</small></div><div class="arrow">→</div><div><span>검증된 과거 S05</span><b class="pass">RELEASED</b><small>Sepolia 12 TX · Withdraw 완료</small></div></div>
+        </article>
+      </div>
+
+      <div class="controls"><button id="prev">이전</button><span id="position">1 / 4</span><button id="next" class="primary">다음 단계</button><button id="fullscreen">전체화면</button><button id="capture-png" data-html2canvas-ignore="true">현재 16:9 PNG 저장</button><a class="fallback" href="/stage">오류 시 검증 기록 열기</a><button disabled title="검증된 영상 파일이 구성되지 않았습니다">시연 영상 · NOT_IMPLEMENTED</button></div>
+    </section>
+
+    <section class="proofs">
+      <div class="section-heading"><div><p class="kicker">VERIFIABLE RECORDS</p><h2>환경을 섞지 않은 거래·검증 근거</h2></div><span>주소는 축약 표시 · 복사는 전체 원문</span></div>
+      <div class="tabs" role="tablist"><button class="active" data-proof="patch3">PATCH3 정상 거래</button><button data-proof="patch2">PATCH2 분쟁·환급</button><button data-proof="anvil">Local Anvil</button><button data-proof="replay">Windows Replay</button></div>
+      <div id="patch3" class="proof active">
+        <div><span class="source sepolia">SEPOLIA_CONFIRMED_TX</span><h3>Model B S05 · 정상 정산 · 12 TX</h3><p>Supplier PASS → Buyer PASS → RELEASED → Supplier Withdraw</p></div>
+        <dl><div><dt>PATCH3 Contract</dt><dd><a href="https://sepolia.etherscan.io/address/0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905" target="_blank" rel="noreferrer">0x0a4721CF…73B905</a><button data-copy="0x0a4721CF41Ad3f7a9EC9C73049D2b5D2db73B905">복사</button></dd></div><div><dt>Trade ID</dt><dd><code>0x2e1e7f88…3d9e</code><button data-copy="0x2e1e7f88734dc4bf2b1fee924192a11311846a4351b86497d5c43670fa173d9e">복사</button></dd></div><div><dt>Escrow</dt><dd>0.001 Sepolia ETH</dd></div></dl>
+      </div>
+      <div id="patch2" class="proof">
+        <div><span class="source sepolia">SEPOLIA_CONFIRMED_TX</span><h3>Model A · 실제 분쟁·환급</h3><p>Buyer REVIEW → Primary Timeout → Backup CONSISTENT → REFUND → Buyer Withdraw</p></div>
+        <dl><div><dt>PATCH2 Contract</dt><dd><a href="https://sepolia.etherscan.io/address/0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9" target="_blank" rel="noreferrer">0x270e3E8a…FFa9</a><button data-copy="0x270e3E8a53dC50A04f0d83b5b4ae9416EB42fFa9">복사</button></dd></div><div><dt>Buyer Withdraw</dt><dd><a href="https://sepolia.etherscan.io/tx/0x5183318aafe01643879771af8d66820dc3e2bfeb206ec9881323d7735c168bd2" target="_blank" rel="noreferrer">0x5183318a…bd2</a><button data-copy="0x5183318aafe01643879771af8d66820dc3e2bfeb206ec9881323d7735c168bd2">복사</button></dd></div></dl>
+      </div>
+      <div id="anvil" class="proof"><div><span class="source local">LOCAL_ANVIL</span><h3>PATCH3 Red-Team · 36 / 36</h3><p>공격 거절만이 아니라 상태 전이·종료·회계 검사를 포함한 프로토콜 검증입니다.</p></div><dl><div><dt>+1 점수 위조</dt><dd>36,302,902 → 36,302,903</dd></div><div><dt>Replay tolerance</dt><dd>0 · INCONSISTENT → EXECUTION_HOLD</dd></div></dl></div>
+      <div id="replay" class="proof"><div><span class="source windows">RECORDED_WINDOWS_QA</span><h3>Independent Replay · 5 / 5 CONSISTENT</h3><p>이전 Windows 동일 환경 측정 기록이며 이번 저용량 세션에서 재실행하지 않았습니다.</p></div><dl><div><dt>웜 실행 중앙값</dt><dd>2.1414초</dd></div><div><dt>최초 모델 준비</dt><dd>약 116.77초</dd></div></dl></div>
+      <div class="github"><img src="/api/presentation/github-qr.svg" alt="InspectEscrow GitHub 저장소 QR"><div><b>검증 가능한 코드와 기술 기록</b><a href="https://github.com/CHANGJAEHYUN-engineering/InspectEscrow" target="_blank" rel="noreferrer">github.com/CHANGJAEHYUN-engineering/InspectEscrow</a><small>실제 URL을 오류 정정 H 등급 QR로 인코딩했습니다.</small></div></div>
+    </section>
+
+    <section class="scenarios">
+      <div class="section-heading"><div><p class="kicker">DISPUTE & TAMPER SCENARIOS</p><h2>서로 다른 증거 출처를 한 거래처럼 합치지 않습니다</h2></div></div>
+      <div class="scenario-grid">
+        <article><span class="source sepolia">A · SEPOLIA</span><h3>실제 분쟁·환급</h3><p>Model A / PATCH2. Backup Replay CONSISTENT 이후 Inspector REFUND, Buyer Withdraw.</p></article>
+        <article><span class="source mixed">B · WINDOWS + LOCAL ANVIL</span><h3>점수 +1 위조</h3><p>실제 재추론 불일치 근거와 EXECUTION_HOLD 로컬 상태 검증을 구분합니다.</p></article>
+        <article><span class="source local">C · LOCAL ANVIL</span><h3>사후 정책 변경</h3><p>Policy hash 또는 서명 불일치가 사전검증/컨트랙트 revert로 차단됩니다.</p></article>
+        <article><span class="source sepolia">D · SEPOLIA + CONTRACT RULES</span><h3>Inspector 미응답</h3><p>실제 PATCH2 Primary Timeout → Backup 기록. Replay 재현성과 대금 판단은 별개입니다.</p></article>
+      </div>
+      <div class="p1"><div><span class="status none">NOT_IMPLEMENTED</span><h3>Zero-Friction Station P1</h3><p>동적 QR·3-View 실제 동시 촬영 검증·자동서명 데몬은 P0 통과 후 별도 보안 검증 대상입니다. Station 키를 브라우저에 보내지 않으며 Actor 승인은 계속 분리합니다.</p></div><a href="/live">현재 안전한 LIVE 경로 사용</a></div>
+    </section>
+  </main>
+  <footer>LOCALHOST PRESENTATION · NO WALLET REQUEST · NO BROADCAST · ACTOR ≠ STATION</footer>
+</div>
+</body>
+</html>

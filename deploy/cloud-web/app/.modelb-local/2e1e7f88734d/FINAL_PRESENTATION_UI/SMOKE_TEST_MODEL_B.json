@@ -1,0 +1,33 @@
+{
+  "type": "Archived source image retest - NOT a newly captured live image",
+  "checkedAt": "2026-10-30T17:53:10.061Z",
+  "http": 200,
+  "durationSec": 112.922,
+  "result": {
+    "schema": "InspectEscrow.ModelB.LiveLocalInference.v1",
+    "status": "OFFCHAIN_DEMO_NOT_ONCHAIN_APPROVED",
+    "specimen_id": "IE-DEMO-001",
+    "specimen_code": "S05",
+    "specimen_label_source": "USER_SELECTED_UNVERIFIED",
+    "view": "TOP",
+    "file_name": "S05_SUPPLIER_TOP_20261029_01.jpg.jpg",
+    "original_image_sha256": "0609922596edc39c6f8db095d7a820d36f87c9492e1f6ffd28936e4d9b888991",
+    "original_image_bytes": 2673426,
+    "model_checkpoint_sha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+    "preprocessing": "EXIF_transpose_RGB_center_square_700_then_Patchcore_320_center_crop_280",
+    "score_raw": 36.30290222167969,
+    "score_raw_decimal": "36.30290222167969",
+    "score_scaled": 36302902,
+    "score_scale": 1000000,
+    "score_rounding": "ROUND_HALF_UP",
+    "threshold_scaled": 38280373,
+    "threshold_raw": 38.280373,
+    "decision_rule": "score_scaled > threshold_scaled => REVIEW_REQUIRED",
+    "decision": "PASS",
+    "device": "cpu",
+    "inference_elapsed_ms": 112767,
+    "inferred_at_utc": "2026-10-30T17:53:10.011253+00:00",
+    "station_signed_in_this_app": false,
+    "sent_to_blockchain": false
+  }
+}

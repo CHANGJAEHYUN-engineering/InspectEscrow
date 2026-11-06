@@ -1,0 +1,13 @@
+.git
+.gitignore
+**/node_modules
+**/.env
+**/*.key
+**/*.pem
+**/*private*
+**/*secret*
+**/__pycache__
+*.zip
+*.ps1
+*.log
+*.bak

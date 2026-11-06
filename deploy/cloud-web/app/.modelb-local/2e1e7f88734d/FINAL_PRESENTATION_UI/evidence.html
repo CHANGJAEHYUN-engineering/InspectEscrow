@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>InspectEscrow | 내 검사 기록</title>
+  <link rel="stylesheet" href="/evidence.css">
+  <script defer src="/evidence.js"></script>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <a href="/trades">← 거래 목록·정책</a>
+    <strong>Inspect<span>Escrow</span> · EVIDENCE VAULT</strong>
+    <span><a href="/journey">2F 실행 센터</a> · <a href="/replay">Inspector Replay →</a></span>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="eyebrow">LOCAL ORIGINALS · LIVE SEPOLIA READBACK · TX 0</div>
+      <h1>내 검사 기록과 증거 무결성</h1>
+      <p>JSON 문자열을 신뢰하지 않습니다. 원본 3뷰의 SHA-256, manifest·evidence keccak256, 정책·모델 commitment, EIP-712 구조와 현재 Sepolia 기록을 다시 계산합니다.</p>
+    </section>
+
+    <section class="security-note">
+      <strong>브라우저 저장 범위</strong>
+      <p>거래 ID·역할·검증 시각·해시·결과만 선택적으로 저장합니다. 원본 이미지, 증거 JSON 본문, Station 서명, 개인키, 지갑 권한은 저장하지 않습니다. 새로고침 후 원본 파일은 반드시 다시 선택해야 합니다.</p>
+    </section>
+
+    <section class="panel import-panel">
+      <div class="section-title"><div><span>01</span><h2>증거 불러오기</h2></div><span class="mode">검증 전 · 온체인 전송 없음</span></div>
+      <div class="grid two">
+        <label>작업 중인 Trade ID
+          <input id="expected-trade" type="text" spellcheck="false" placeholder="0x… (bundle과 일치해야 함)">
+        </label>
+        <label>내 역할
+          <select id="expected-role"><option value="supplier">Supplier</option><option value="buyer">Buyer</option></select>
+        </label>
+      </div>
+      <label class="file-box">증거 묶음 JSON <small>최대 512 KiB</small>
+        <input id="bundle-file" type="file" accept="application/json,.json">
+        <span id="bundle-name">파일을 선택하세요</span>
+      </label>
+      <div class="grid three">
+        <label class="file-box">TOP 원본
+          <input id="image-top" type="file" accept="image/jpeg,image/png"><span id="name-top">재선택 필요</span><img id="preview-top" alt="TOP 원본 미리보기">
+        </label>
+        <label class="file-box">FRONT 원본
+          <input id="image-front" type="file" accept="image/jpeg,image/png"><span id="name-front">재선택 필요</span><img id="preview-front" alt="FRONT 원본 미리보기">
+        </label>
+        <label class="file-box">SIDE 원본
+          <input id="image-side" type="file" accept="image/jpeg,image/png"><span id="name-side">재선택 필요</span><img id="preview-side" alt="SIDE 원본 미리보기">
+        </label>
+      </div>
+      <label class="remember"><input id="remember" type="checkbox" checked> 민감하지 않은 최소 세션 메타데이터만 이 브라우저에 기억</label>
+      <div class="actions">
+        <button id="verify" class="primary">원본·해시·Sepolia 재검증</button>
+        <button id="save-session">현재 작업 기억</button>
+        <button id="download" disabled>검증한 증거 JSON 저장</button>
+        <button id="refresh-chain" disabled>현재 Sepolia 제출 상태 재조회</button>
+        <button id="clear-session" class="quiet">복구 기록 지우기</button>
+      </div>
+      <div id="progress" class="progress" aria-live="polite">증거와 원본 파일을 선택하세요.</div>
+    </section>
+
+    <section id="result" class="panel result-panel hidden">
+      <div class="section-title"><div><span>02</span><h2>무결성 검증 결과</h2></div><strong id="level" class="badge">검증 전</strong></div>
+      <div class="facts">
+        <div><small>역할</small><strong id="fact-role">—</strong></div>
+        <div><small>AI 판정</small><strong id="fact-decision">—</strong></div>
+        <div><small>Station 서명</small><strong id="fact-signature">—</strong></div>
+        <div><small>블록체인 제출</small><strong id="fact-onchain">—</strong></div>
+        <div><small>Inspector Replay 입력</small><strong id="fact-replay">—</strong></div>
+      </div>
+      <div class="grid two detail-grid">
+        <article><h3>거래·정책 바인딩</h3><dl id="binding"></dl></article>
+        <article><h3>검사 점수</h3><dl id="inference"></dl></article>
+        <article><h3>원본 3뷰 SHA-256</h3><dl id="image-hashes"></dl></article>
+        <article><h3>현재 Sepolia 상태</h3><dl id="chain"></dl></article>
+      </div>
+      <article class="checks"><h3>검증 항목</h3><div id="checks"></div></article>
+      <article class="limitations"><h3>검증 한계</h3><ul id="limitations"></ul></article>
+    </section>
+
+    <section class="panel">
+      <div class="section-title"><div><span>03</span><h2>최근 검사 기록</h2></div><span class="mode">메타데이터만 로컬 저장</span></div>
+      <div id="history" class="history"><p>저장된 기록이 없습니다.</p></div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

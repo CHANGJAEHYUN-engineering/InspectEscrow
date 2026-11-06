@@ -1,0 +1,296 @@
+{
+  "schema": "inspectescrow.final-modelb-anvil-e2e/1",
+  "generatedAtUtc": "2026-11-04T09:29:01.394Z",
+  "source": "LOCAL_ANVIL",
+  "chainId": 31340,
+  "contract": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+  "credentialRegistry": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "modelB": {
+    "checkpointSha256": "8320d4cab14d071ae65911d59d5ddf608a1a514e0bfdba0c4345d27da94a3854",
+    "replayRuntime": {
+      "mode": "ARCHIVED_ACTUAL_MODEL_B_PROVENANCE_NOT_REEXECUTED_THIS_RUN",
+      "actualAiReplayExecuted": false,
+      "error": "fetch failed"
+    },
+    "sourceTruth": "S05 supplier and S03 review are archived actual Model B outputs; S03 three images are not verified physical capture angles"
+  },
+  "scenarioA": {
+    "status": "REFUNDED_WITHDRAWN",
+    "tradeId": "0x8919187db8a3cc3d7f4d54ffb7af1fcb41fd95f471c30cd5e3a08f1a7e3805e7",
+    "supplier": {
+      "scoreScaled": "36302902",
+      "evidencePackageHash": "0x103d58d127fdb3967d0ed15dda08a8d680fb04c935171c6fb72af09bcf5f88e0",
+      "signature": "0x989278f26702b95c4e25214b4ba4bc503ad5c8c563183c076f831dc9395b21e742b4ab613a5edf858b3da0c81e2a4d07b98298ea1719e2eaf8427dd979345dbe1b",
+      "digest": "0xc27274f7796f7f74bd550ecd83074daf84d79095cfd21f58e33fec2286ca7ba5",
+      "topSha256": "0609922596edc39c6f8db095d7a820d36f87c9492e1f6ffd28936e4d9b888991"
+    },
+    "buyer": {
+      "scoreScaled": "52572132",
+      "evidencePackageHash": "0x6deac334a969be8220e036ae59199750800d5e3cada4436fedcf49671d7ecbca",
+      "signature": "0xee4592dd7c06916b51a504b7a2a1e58254c3cce9ef97d4291888f577f487c33621020f69d42cb6d1653fd266d0bc754d1ed674e5aac6305558dbb7adc312576a1c",
+      "digest": "0xe07b8d6b8c8307adfe3b00d7e346a5813ed9f42d41dc9473e1f7a7dc84eecb5f",
+      "topSha256": "a6f9827f2b2d19ada3e6143a2b6983784afd4b4d22c28d6e45d65fbed036a370"
+    },
+    "replay": {
+      "status": "CONSISTENT",
+      "reportHash": "0x743aab1222c2cc5f4a796cb6c91d4a80f39cb52cd269d31eb92cadfad3e1b72b",
+      "signature": "0xd8553f8aa74319a3bda719b0462b7403396df783b3f3da0c70c7f03763e43eb173aa83b1e96fea5c1bc8c9792fd9911a3371ef15f8c3d0d970fe7620a7f0e9f61c",
+      "digest": "0x648d5d33e2a921e6a9bdb7a0d7b19bc49952e05be0ef72a0d1b43b69dcbff333",
+      "actualAiReplayExecuted": false
+    },
+    "decision": "REFUND_TO_BUYER",
+    "finalState": 18,
+    "buyerClaimableAfterWithdraw": "0"
+  },
+  "scenarioB": {
+    "status": "EXECUTION_HOLD",
+    "label": "CONTROLLED_RED_TEAM_TEST",
+    "tradeId": "0x8921b719d72c7911d2d20e5c18e5701c9eae685da0fff395e65f7fa65a13e1af",
+    "actualScoreScaled": "52572132",
+    "claimedScoreScaled": "52572133",
+    "absoluteErrorScaled": "1",
+    "evidencePackageHash": "0x1d5587bfb040cc6768feeee28eecb276b916f5e4fec88c5db87a1531b7d7d790",
+    "stationSignature": "0xb3aec5948d632ea08b5a92286e20eb41acc1cae1bac8e439ae2ec4509be4f2cf6dba11589621468710f67472dce4096d6abd49367cdebc170e57935e929aa9b51b",
+    "stationDigest": "0x5a82e922c335035ce5994b7cf9fd6bcfc99edd1fa46759e71a86e4e7923d7da3",
+    "replayReportHash": "0x267c18bda60c8749bfcb5e88c3cc0b5b04fb71940e15d0c88ce2391da268921c",
+    "replaySignature": "0x167e9e3c65cad20964a619eb405b42628ba3e1308fc058408730b95064f777200fbeacf0abed4e8541e9c668015624b0cfd75e869f7b57321a1b114705678f971c",
+    "actualAiReplayExecuted": false,
+    "finalState": 14,
+    "supplierClaimable": "0",
+    "buyerClaimable": "0"
+  },
+  "checksPassed": 9,
+  "checks": [
+    {
+      "name": "archived actual Model B source bytes and reports verified",
+      "status": "PASS",
+      "detail": "S05 PASS + S03 REVIEW; S03 views are archived comparison images, not verified physical angles"
+    },
+    {
+      "name": "Actor, Station and authority addresses are distinct",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "five Local Anvil Station credentials ACTIVE",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "Scenario A entered DISPUTED_PRIMARY from actual-score provenance",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "Scenario A REFUNDED and Buyer withdrew escrow",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "Scenario B false score has valid fresh Station signature and bound Evidence hash",
+      "status": "PASS",
+      "detail": "52572133"
+    },
+    {
+      "name": "Scenario B entered EXECUTION_HOLD with no automatic payout",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "Scenario B ordinary Inspector Decision blocked in EXECUTION_HOLD",
+      "status": "PASS",
+      "detail": "execution reverted (unknown custom error)"
+    },
+    {
+      "name": "final accounting conserved and HOLD escrow remains protected",
+      "status": "PASS",
+      "detail": ""
+    }
+  ],
+  "transactions": 29,
+  "transactionReceipts": [
+    {
+      "label": "register 0x976EA740",
+      "hash": "0xf440b62ef66f61f13648bbcf97f6571cf44bf39e43a6dd04208cc8f193d3ef21",
+      "blockNumber": 3,
+      "gasUsed": "69146"
+    },
+    {
+      "label": "register 0x14dC7996",
+      "hash": "0x57f2cac4766e577408f6f45996966360783ae30ef709e85a115c5f3998dead6b",
+      "blockNumber": 4,
+      "gasUsed": "69146"
+    },
+    {
+      "label": "register 0x23618e81",
+      "hash": "0x72076c91dd70564618468c4ae313ea679ea87c5cf57bff812059d73815074ab9",
+      "blockNumber": 5,
+      "gasUsed": "69146"
+    },
+    {
+      "label": "register 0xa0Ee7A14",
+      "hash": "0xc9fd12bf01e21aa6411bda4f1142155dfc2bb07077f2d94ae3a711adc617a70e",
+      "blockNumber": 6,
+      "gasUsed": "69146"
+    },
+    {
+      "label": "register 0xBcd4042D",
+      "hash": "0x6ebc2d5553e581d697dd887a9f40eca8ec3a9009c7d5909a83315b4e7f73ea64",
+      "blockNumber": 7,
+      "gasUsed": "69134"
+    },
+    {
+      "label": "SCENARIO_A_REFUND propose",
+      "hash": "0x0b6de331c4b8213395f005c3304011e201ef088965cd8c417c6c534c123d6b2a",
+      "blockNumber": 8,
+      "gasUsed": "651310"
+    },
+    {
+      "label": "SCENARIO_A_REFUND supplier policy",
+      "hash": "0x00cd90f35bda0001af3a505179b07987106409d8e5624f1c0b6e125dfc0e675c",
+      "blockNumber": 9,
+      "gasUsed": "33576"
+    },
+    {
+      "label": "SCENARIO_A_REFUND buyer policy",
+      "hash": "0x6a7ec09d105e76e15afac01bd2867b53992362b29e738271c5156ce57830d539",
+      "blockNumber": 10,
+      "gasUsed": "36175"
+    },
+    {
+      "label": "SCENARIO_A_REFUND primary assignment",
+      "hash": "0x1882acf5cac92ba3c3a8f31c27df9da15aa8d07313a8584ac8580191b9655d6c",
+      "blockNumber": 11,
+      "gasUsed": "33574"
+    },
+    {
+      "label": "SCENARIO_A_REFUND backup assignment",
+      "hash": "0x8dce13ebe7af48d0f897390b39d2e7faf96f81c00b84e9bd8714451e2bee0311",
+      "blockNumber": 12,
+      "gasUsed": "35769"
+    },
+    {
+      "label": "SCENARIO_A_REFUND arbitrator assignment",
+      "hash": "0x948ca7dd25d68335f804db40dfe6858ebc3345b83375b47d6d6d699cd47264f0",
+      "blockNumber": 13,
+      "gasUsed": "38357"
+    },
+    {
+      "label": "SCENARIO_A_REFUND fund",
+      "hash": "0x095ce98c453b4d956756ea2799bf80c0ecbb94393c9b1b9e32cc8ed9421be26a",
+      "blockNumber": 14,
+      "gasUsed": "109488"
+    },
+    {
+      "label": "SCENARIO_A_REFUND activate",
+      "hash": "0xaf145602b22a960d70ee9190265962636fb0f3de9390fd78a06af69d3eb66861",
+      "blockNumber": 15,
+      "gasUsed": "31703"
+    },
+    {
+      "label": "A_SUPPLIER_S05 Actor submit",
+      "hash": "0xa840789639d7fadcc41219f3c9c96f2eb9633f4e6a753cf172f07e7317fc6c6a",
+      "blockNumber": 16,
+      "gasUsed": "204282"
+    },
+    {
+      "label": "A_BUYER_S03_REVIEW Actor submit",
+      "hash": "0xdd59ded542c39401aacd49e5220c05b7efe1cbaa2f8d7e110418704b099e7a3b",
+      "blockNumber": 17,
+      "gasUsed": "210374"
+    },
+    {
+      "label": "A Inspector Replay CONSISTENT",
+      "hash": "0x5960f107f9a40b5b2a596898b1317585af81d52a7de294c1309f5b39223acde5",
+      "blockNumber": 18,
+      "gasUsed": "143826"
+    },
+    {
+      "label": "A Inspector refund decision",
+      "hash": "0xbf013cc10d0144acf41950e1945b198d2fec2ef8d2b860f94b69e8e5a27e03de",
+      "blockNumber": 19,
+      "gasUsed": "160848"
+    },
+    {
+      "label": "A Buyer withdraw",
+      "hash": "0x4606285ad1e9846df07178e31385fa25ba1a5dc0463fd31c381717ac09e2eccb",
+      "blockNumber": 20,
+      "gasUsed": "54971"
+    },
+    {
+      "label": "SCENARIO_B_CONTROLLED_MISMATCH propose",
+      "hash": "0x29dbdaa79d5800295d32c7d86a11e9d917fe80dfc0b586296058d9178804ba8f",
+      "blockNumber": 21,
+      "gasUsed": "651310"
+    },
+    {
+      "label": "SCENARIO_B_CONTROLLED_MISMATCH supplier policy",
+      "hash": "0x96d6597aeefb38a1b9cd876da1fe3072cfd0884d7a3abc01c2fe867b8a7255be",
+      "blockNumber": 22,
+      "gasUsed": "33576"
+    },
+    {
+      "label": "SCENARIO_B_CONTROLLED_MISMATCH buyer policy",
+      "hash": "0xd591a0b7e672c22bac565d99f62783d035adaf4b797251ccedd5a99f02b4647b",
+      "blockNumber": 23,
+      "gasUsed": "36175"
+    },
+    {
+      "label": "SCENARIO_B_CONTROLLED_MISMATCH primary assignment",
+      "hash": "0x74bcf2f7bee125e141d85ee87d070a5e4b99b3459cd0d8fcb319333230ce28d6",
+      "blockNumber": 24,
+      "gasUsed": "33574"
+    },
+    {
+      "label": "SCENARIO_B_CONTROLLED_MISMATCH backup assignment",
+      "hash": "0x589f63989e7da09572c03b0b20fb54ea71a2592226dc3c9506aeceb37a59cbaa",
+      "blockNumber": 25,
+      "gasUsed": "35769"
+    },
+    {
+      "label": "SCENARIO_B_CONTROLLED_MISMATCH arbitrator assignment",
+      "hash": "0x9e797f5bdc9642056ba9cdd4574c5d4a05aa8068befaf01819db593202efca0a",
+      "blockNumber": 26,
+      "gasUsed": "38357"
+    },
+    {
+      "label": "SCENARIO_B_CONTROLLED_MISMATCH fund",
+      "hash": "0x5d3f456427ffe844515f4eeb9b70d3eebef2b1c34a55fd8b1add230a16f1e7b0",
+      "blockNumber": 27,
+      "gasUsed": "92388"
+    },
+    {
+      "label": "SCENARIO_B_CONTROLLED_MISMATCH activate",
+      "hash": "0xee4dd507dc0b4e212f358e456ab05a1e2c5082439a6c2e106917154a53118e5f",
+      "blockNumber": 28,
+      "gasUsed": "31703"
+    },
+    {
+      "label": "B_SUPPLIER_S05 Actor submit",
+      "hash": "0xf5daa5e2941d8117740dba52858bc598b2d475561865f6f688704cd7ab6a0318",
+      "blockNumber": 29,
+      "gasUsed": "204294"
+    },
+    {
+      "label": "B_BUYER_CONTROLLED_FALSE_SCORE Actor submit",
+      "hash": "0x24570a557a2c8370a031d9515320a2052f243fa8c48a20f36d5b025a15918c7e",
+      "blockNumber": 30,
+      "gasUsed": "210374"
+    },
+    {
+      "label": "B Inspector Replay INCONSISTENT",
+      "hash": "0xd4203ca1eb1d9db317d0654438eb92b818e6190086330a6f77fe7878bd57c634",
+      "blockNumber": 31,
+      "gasUsed": "149481"
+    }
+  ],
+  "finalAccounting": {
+    "totalFunded": "2000000000000000",
+    "totalWithdrawn": "1000000000000000",
+    "unsettledEscrow": "1000000000000000",
+    "outstandingClaimable": "0",
+    "accountingConserved": true,
+    "balanceCoversLiabilities": true
+  },
+  "sepoliaTransactionsSent": 0
+}

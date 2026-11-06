@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>InspectEscrow | Enterprise Workspace</title>
+  <link rel="stylesheet" href="/final.css">
+  <link rel="stylesheet" href="/business.css">
+  <script defer src="/final.js"></script>
+  <script defer src="/business.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand"><span class="brandmark">I<span>E</span></span><div><strong>InspectEscrow</strong><small>제조 품질검사 · 거래·분쟁 관리 플랫폼</small></div></div>
+    <div class="telemetry" aria-label="실시간 서버 상태">
+      <span id="web-status" class="led-tag pending">WEB · 확인 중</span>
+      <span id="ai-status" class="led-tag pending">MODEL B · 확인 중</span>
+      <span id="chain-status" class="led-tag pending">SEPOLIA · 확인 중</span>
+      <button id="refresh-all" type="button" class="outline mini">상태 갱신</button>
+      <button id="fullscreen" type="button" class="outline mini">⛶ 전체화면</button>
+    </div>
+  </header>
+  <div class="navband">
+    <nav class="tabs" aria-label="최종 시연 모드">
+      <button type="button" class="tab active" data-tab="platform" aria-selected="true"><span>01</span> 업무 포털</button>
+      <button type="button" class="tab" data-tab="record" aria-selected="false"><span>02</span> 발표·시나리오</button>
+      <button type="button" class="tab" data-tab="live"><span>03</span> 현장 AI 검사</button>
+      <button type="button" class="tab" data-tab="evidence"><span>04</span> 증거 · Replay</button>
+      <button type="button" class="tab" data-tab="settlement"><span>05</span> 분쟁 · 정산</button>
+      <button type="button" class="tab" data-tab="proof"><span>06</span> 검증 근거</button>
+    </nav>
+    <span class="safety">LOCAL POC · 기업용 공개서비스 미배포</span>
+  </div>
+
+  <main>
+
+    <section class="pane active" data-pane="platform" aria-label="기업용 업무 포털">
+      <div class="biz" id="biz-app">
+        <div class="biz-topnotice"><span class="biz-dot"></span><strong>현장 실증용 운영 워크스페이스</strong><span>이 화면은 실제 Sepolia 거래 상태를 조회합니다. 아직 회사 계정·기업별 권한 인증·외부 공개 배포는 지원하지 않습니다.</span><span id="biz-network" class="biz-source">연결 확인 중</span></div>
+        <div class="biz-hero"><div><div class="biz-eyebrow">INSPECTESCROW · MANUFACTURING TRUST INFRASTRUCTURE</div><h1>검사부터 정산까지,<br><em>기업 간 거래를 하나로.</em></h1><p>발주·납품·현장검사·독립 검수·지급까지 각 참여자가 같은 거래를 확인하고 담당 업무를 실행합니다.</p></div><div class="biz-hero-actions"><button id="biz-refresh" class="biz-action ghost" type="button">↻ 거래·상태 새로고침</button><button id="biz-new-trade" class="biz-action primary" type="button">+ 신규 거래 시작</button></div></div>
+        <div class="biz-main">
+          <aside class="biz-sidebar" aria-label="업무 역할 선택"><div class="biz-sidebar-title">업무 계정 역할 <small>역할 조회 · 지갑 인증 전</small></div>
+            <button type="button" class="biz-role active" data-biz-role="buyer"><span class="biz-role-icon">B</span><span><b>구매·발주사</b><small>정책 승인 · 대금 예치 · 검수</small></span></button>
+            <button type="button" class="biz-role" data-biz-role="supplier"><span class="biz-role-icon">S</span><span><b>공급·납품사</b><small>거래 수락 · 납품 검사</small></span></button>
+            <button type="button" class="biz-role" data-biz-role="station"><span class="biz-role-icon">F</span><span><b>현장 검사 담당자</b><small>TOP/FRONT/SIDE · 서명 증거</small></span></button>
+            <button type="button" class="biz-role" data-biz-role="inspector"><span class="biz-role-icon">I</span><span><b>독립 품질 Inspector</b><small>Replay · 분쟁 판정</small></span></button>
+            <button type="button" class="biz-role" data-biz-role="arbitrator"><span class="biz-role-icon">A</span><span><b>외부 중재 담당자</b><small>에스컬레이션 · 최종 검토</small></span></button>
+            <button type="button" class="biz-role" data-biz-role="broker"><span class="biz-role-icon">O</span><span><b>중개 플랫폼·운영자</b><small>거래 현황 · 감사 이력 열람</small></span></button>
+            <div class="biz-wallet"><div class="biz-smalltitle">지갑 및 역할 검증</div><div id="biz-wallet-text">지갑 연결 전 · 읽기 전용</div><button id="biz-connect" class="biz-action light" type="button">MetaMask 연결</button><p>화면 역할 선택만으로 거래 권한이 부여되지 않습니다. 실제 서명·제출은 계약에 등록된 지갑으로 별도 승인해야 합니다.</p></div>
+          </aside>
+          <div class="biz-content">
+            <div class="biz-sectionhead"><div><div class="biz-eyebrow" id="biz-role-label">BUYER WORKSPACE</div><h2 id="biz-role-title">구매사 거래 대시보드</h2><p id="biz-role-explainer">검사 기준을 확인하고 대금을 예치한 뒤 납품 결과를 검수합니다.</p></div><div class="biz-role-status"><span id="biz-role-access">지갑 미연결 · 역할 조회 모드</span></div></div>
+            <div class="biz-chooser"><label for="biz-trades">현재 업무 거래</label><select id="biz-trades"><option>거래 목록 불러오는 중…</option></select><button id="biz-use-custom" type="button" class="biz-mini">거래 ID 직접 조회</button><button id="biz-copy" type="button" class="biz-mini">Trade ID 복사</button></div>
+            <div class="biz-custom" id="biz-custom-row" hidden><input id="biz-custom-id" type="text" aria-label="거래 ID" placeholder="0x로 시작하는 64자리 Trade ID"><button type="button" id="biz-custom-search" class="biz-action light">조회</button></div>
+            <div id="biz-notice" class="biz-inline-notice">실제 온체인 거래 상태를 불러오는 중입니다…</div>
+            <div class="biz-kpis"><div class="biz-kpi"><span>거래 상태</span><strong id="biz-state">—</strong><small id="biz-state-sub">온체인 조회 대기</small></div><div class="biz-kpi"><span>예치금</span><strong id="biz-escrow">—</strong><small>조회된 거래 조건 기준</small></div><div class="biz-kpi"><span>공급사 AI 검사</span><strong id="biz-supplier">—</strong><small id="biz-supplier-sub">기록 확인 전</small></div><div class="biz-kpi"><span>구매사 AI 검사</span><strong id="biz-buyer">—</strong><small id="biz-buyer-sub">기록 확인 전</small></div></div>
+            <section class="biz-card"><div class="biz-cardhead"><div><span class="biz-eyebrow">TRADE LIFECYCLE</span><h3>거래 진행 현황</h3></div><span id="biz-policy" class="biz-statuspill">정책 확인 전</span></div><div id="biz-progress" class="biz-progress"><p>진행 현황을 불러오는 중…</p></div><p id="biz-policy-note" class="biz-muteline"></p></section>
+            <div class="biz-two"><section class="biz-card"><div class="biz-cardhead"><div><span class="biz-eyebrow">MY ACTIONS</span><h3 id="biz-task-title">내 업무</h3></div><span id="biz-assigned" class="biz-mini-tag">조회 중</span></div><div id="biz-tasks" class="biz-tasklist"><p>실제 거래에서 가능한 업무를 확인 중…</p></div></section>
+            <section class="biz-card"><div class="biz-cardhead"><div><span class="biz-eyebrow">TRUST & AUDIT</span><h3>증거 및 거래 무결성</h3></div><button id="biz-export" class="biz-mini" type="button">감사 내역 JSON 저장</button></div><dl class="biz-facts"><div><dt>체인</dt><dd id="biz-chain">—</dd></div><div><dt>정책 해시</dt><dd id="biz-hash">—</dd></div><div><dt>Replay 상태</dt><dd id="biz-replay">—</dd></div><div><dt>회계 보존</dt><dd id="biz-accounting">—</dd></div><div><dt>계약 주소</dt><dd id="biz-contract">—</dd></div></dl></section></div>
+            <section class="biz-card"><div class="biz-cardhead"><div><span class="biz-eyebrow">AUDIT TRAIL</span><h3>블록체인 거래 이력</h3></div><span id="biz-count" class="biz-mini-tag">조회 중</span></div><div id="biz-timeline" class="biz-timeline">실제 TX 이력을 조회 중입니다…</div></section>
+            <section class="biz-card biz-workbench" id="biz-workbench"><div class="biz-cardhead"><div><span class="biz-eyebrow">ACTION WORKBENCH · ROLE-GATED</span><h3 id="biz-workbench-name">업무 실행 화면</h3><p id="biz-workbench-help">선택한 업무의 실제 실행 콘솔을 동일 사이트 안에서 엽니다.</p></div><div class="biz-workbench-tools"><button id="biz-open-external" type="button" class="biz-mini" disabled>전체 화면에서 업무 실행</button><button id="biz-close-workbench" type="button" class="biz-mini">닫기</button></div></div><div id="biz-workbench-blank" class="biz-workbench-blank">위쪽의 역할별 업무 버튼을 누르면 계약 실행·검사 화면이 열립니다. 단순 역할 선택으로 서명이나 TX는 전송되지 않습니다.</div><iframe id="biz-workbench-frame" title="실제 InspectEscrow 업무 실행 콘솔" src="about:blank" hidden></iframe><p class="biz-workbench-warning">MetaMask가 iframe에 표시되지 않는 브라우저는 「전체 화면에서 업무 실행」으로 여세요. 모든 지갑 서명은 명시적 확인 후 진행됩니다.</p></section>
+            <div class="biz-caution"><strong>실증 환경 표시</strong><span>현 화면은 기존 Sepolia/로컬 실행 기능에 연결된 B2B POC입니다. 외부 회사 고객이 이용하려면 조직 계정·역할 기반 접근제어, 증거 보관, 서버 배포/HTTPS, 개인정보·감사 정책 및 보안 검증이 추가되어야 합니다.</span><button id="biz-present" type="button">발표 시연 모드 열기 ↗</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pane" data-pane="record" aria-label="녹화용 시나리오">
+      <div class="section-intro"><div><p class="eyebrow">RECORDED DEMONSTRATION · 60 SECONDS</p><h1>검사 충돌은 <em>검증 가능한 정산</em>으로 이어집니다.</h1><p class="lead">마우스로 단계 버튼을 눌러 녹화하세요. 기존 실증 기록을 단계별로 보여주며, 이 화면은 새 트랜잭션을 발생시키지 않습니다.</p></div><div class="timebox"><small>영상 구성</small><b>20 <span>+</span> 40 <small>sec</small></b><p>환급 20초 · 조작 방어 40초</p></div></div>
+      <div class="scenario-switch"><button class="scene-choice selected" data-case="refund"><b>SCENARIO 01</b><span>Buyer REVIEW → 분쟁 → 환급</span><small>0–20초 · PATCH2 실제 Sepolia 완료</small></button><button class="scene-choice accent" data-case="tamper"><b>SCENARIO 02 · HERO</b><span>+1 점수 조작 → 독립 Replay → HOLD</span><small>20–60초 · Model B + Local Anvil 통제 검증</small></button></div>
+      <div class="stage-frame">
+        <div class="stage-upper"><div><span id="rec-scope" class="scope-label">PATCH2 · ARCHIVED SEPOLIA RECEIPTS</span><h2 id="rec-title">01 · Buyer가 검사 결과에 이의를 제기합니다</h2><p id="rec-desc">Supplier PASS 이후 Buyer REVIEW가 제출되면, 즉시 정산하지 않고 Inspector 경로로 이동합니다.</p></div><span id="rec-progress" class="step-count">01 / 05</span></div>
+        <div id="rec-flow" class="flow-strip" aria-label="시나리오 단계"></div>
+        <div class="evidence-display"><div class="evidence-main"><span id="rec-metric-label" class="eyebrow">EVIDENCE STAGE</span><strong id="rec-metric">DISPUTED</strong><p id="rec-metric-caption">분쟁 발생 · 자동 지급 없음</p></div><div class="evidence-side"><span id="rec-proof-type">기존 Sepolia 실거래 재구성</span><code id="rec-proof-id">Trade 0xe021…c94c</code><p id="rec-proof-note">현재 페이지는 녹화용 증빙 뷰입니다. 새로운 서명·온체인 TX를 생성하지 않습니다.</p><a id="rec-proof-link" href="https://sepolia.etherscan.io/tx/0x5183318aafe01643879771af8d66820dc3e2bfeb206ec9881323d7735c168bd2" target="_blank" rel="noopener noreferrer">실제 Sepolia 영수증 열기 ↗</a></div></div>
+        <div class="stage-bottom"><div class="record-notice" id="rec-guard">검증 출처: PATCH2 · Model A · Sepolia 실TX</div><div class="stage-buttons"><button id="rec-verify" class="outline">실증 근거 조회</button><button id="rec-reset" class="outline">처음으로</button><button id="rec-next" class="primary">다음 근거 확인 <span>→</span></button></div></div>
+      </div>
+      <div class="script-hint"><strong>녹화 안내</strong><span>OBS에서 마우스 커서 포함 화면 녹화 → 첫 시나리오 20초 내 클릭 완주 → 두 번째 시나리오 40초 강조. 실제 점수 변조 입력부터 Replay 재실행까지 보여주려면 아래 검증 콘솔도 별도 녹화해야 합니다.</span></div>
+    </section>
+
+    <section class="pane" data-pane="live" aria-label="실시간 AI 검사">
+      <div class="section-intro"><div><p class="eyebrow">LIVE MODEL B · REAL IMAGE BYTES</p><h1>원본 사진 두 장, <em>두 번의 실제 추론.</em></h1><p class="lead">정상·스크래치 사진을 직접 선택하고 모델 B 추론을 실행합니다. 점수는 저장된 값을 보여주지 않고 매번 AI 서버로 전송해 계산합니다.</p></div><div class="timebox compact"><small>고정 임계값</small><b>38.280373</b><p>scaled 38,280,373</p></div></div>
+      <div class="live-pair">
+        <article class="inspect-card" data-role="normal"><div class="card-head"><div><span class="eyebrow">SUPPLIER</span><h2>정상 이미지</h2></div><span class="pill teal">01 · NORMAL</span></div>
+          <div class="preview" id="normal-preview"><span class="preview-ghost">◉</span><p>정상 TOP 사진 선택 대기</p></div>
+          <div class="file-actions"><button class="outline" id="sample-normal">검증용 보관 정상 사진</button><label class="filelabel">직접 사진 업로드<input id="file-normal" type="file" accept="image/jpeg,image/png"></label></div>
+          <div class="infer-board"><div><span>PatchCore anomaly score</span><strong id="normal-score">—</strong></div><span id="normal-decision" class="decision pending">검사 전</span></div>
+          <div id="normal-detail" class="scan-detail">원본을 선택하면 파일 SHA-256을 계산합니다.</div><button id="run-normal" class="primary full" disabled>정상 이미지 실제 AI 추론 실행</button>
+        </article>
+        <article class="inspect-card" data-role="scratch"><div class="card-head"><div><span class="eyebrow">BUYER</span><h2>스크래치 이미지</h2></div><span class="pill amber">02 · SCRATCH</span></div>
+          <div class="preview" id="scratch-preview"><span class="preview-ghost">◌</span><p>스크래치 TOP 사진 선택 대기</p></div>
+          <div class="file-actions"><button class="outline" id="sample-scratch">검증용 보관 스크래치</button><label class="filelabel">직접 사진 업로드<input id="file-scratch" type="file" accept="image/jpeg,image/png"></label></div>
+          <div class="infer-board"><div><span>PatchCore anomaly score</span><strong id="scratch-score">—</strong></div><span id="scratch-decision" class="decision pending">검사 전</span></div>
+          <div id="scratch-detail" class="scan-detail">원본을 선택하면 파일 SHA-256을 계산합니다.</div><button id="run-scratch" class="primary full" disabled>스크래치 실제 AI 추론 실행</button>
+        </article>
+      </div>
+      <div class="verdict-bar"><div><span class="eyebrow">LIVE COMPARISON</span><h3 id="live-verdict">두 이미지를 검사하면 비교 결과가 나타납니다.</h3><p id="live-note">실제 판정값은 선택한 원본 이미지와 고정 체크포인트에 따라 달라집니다.</p></div><button id="go-evidence" class="primary" disabled>Evidence · Replay 이어서 시연 →</button></div>
+      <p class="truth-note">보관 샘플의 정상 S05와 스크래치 S03은 서로 다른 시편입니다. 두 이미지의 판정 차이가 동일 물체의 분쟁이나 온체인 제출을 자동 증명하지는 않습니다.</p>
+    </section>
+
+    <section class="pane" data-pane="evidence" aria-label="Evidence와 독립 Replay">
+      <div class="section-intro"><div><p class="eyebrow">THREE-VIEW INTEGRITY → ACTUAL MODEL REPLAY</p><h1>AI 점수를 <em>검증 가능한 증거</em>로 만듭니다.</h1><p class="lead">각 역할에 TOP·FRONT·SIDE 세 원본이 있어야 Evidence Bundle을 만듭니다. 새 Evidence는 서명 전까지 <b>UNSIGNED · NOT SUBMITTED</b>입니다.</p></div><span class="scope-label">실제 Model B 재추론 · 온체인 TX 0</span></div>
+      <div class="trade-bar"><label>선택한 Trade ID <input id="trade-id" spellcheck="false" value="0x49bf5596d20cdf4c5de348a699967a1fc06f51c83fcbf5fcedf54dcf08c591ff"></label><button id="check-trade" class="outline">거래 게이트 확인</button><span id="trade-status" class="pill muted">확인 전</span></div>
+      <div class="evidence-grid">
+        <article class="evidence-card"><div class="card-head"><div><span class="eyebrow">SUPPLIER</span><h2>정상 사진 Evidence</h2></div><span class="pill teal">TOP · FRONT · SIDE</span></div><label>시편 라벨<input id="label-normal" value="DEMO-NORMAL-01" maxlength="100"></label><div class="viewlist"><div>TOP <span id="top-name-normal">라이브 검사 입력 없음</span><button id="top-pick-normal" class="tinybutton">다시 선택</button><input id="top-input-normal" type="file" accept="image/jpeg,image/png" hidden></div><label>FRONT <input id="front-normal" type="file" accept="image/jpeg,image/png"></label><label>SIDE <input id="side-normal" type="file" accept="image/jpeg,image/png"></label></div><div class="evidence-actions"><button class="primary" id="build-normal">3뷰 Evidence 생성</button><button class="outline" id="replay-normal" disabled>원본 독립 Replay</button></div><div id="evidence-status-normal" class="result-detail">사진 3장 준비 후 Evidence 생성</div><div id="replay-status-normal" class="result-detail secondary">Replay 전</div><button id="download-normal" class="outline small" disabled>Evidence JSON 저장</button></article>
+        <article class="evidence-card"><div class="card-head"><div><span class="eyebrow">BUYER</span><h2>스크래치 Evidence</h2></div><span class="pill amber">TOP · FRONT · SIDE</span></div><label>시편 라벨<input id="label-scratch" value="DEMO-SCRATCH-01" maxlength="100"></label><div class="viewlist"><div>TOP <span id="top-name-scratch">라이브 검사 입력 없음</span><button id="top-pick-scratch" class="tinybutton">다시 선택</button><input id="top-input-scratch" type="file" accept="image/jpeg,image/png" hidden></div><label>FRONT <input id="front-scratch" type="file" accept="image/jpeg,image/png"></label><label>SIDE <input id="side-scratch" type="file" accept="image/jpeg,image/png"></label></div><div class="evidence-actions"><button class="primary" id="build-scratch">3뷰 Evidence 생성</button><button class="outline" id="replay-scratch" disabled>원본 독립 Replay</button></div><div id="evidence-status-scratch" class="result-detail">사진 3장 준비 후 Evidence 생성</div><div id="replay-status-scratch" class="result-detail secondary">Replay 전</div><button id="download-scratch" class="outline small" disabled>Evidence JSON 저장</button></article>
+      </div>
+      <div class="verdict-bar"><div><span class="eyebrow">OFFCHAIN COMPLETION GATE</span><h3 id="evidence-verdict">서명 전 원본 증거 생성·Replay 준비</h3><p>Replay 일치 ≠ 자동 정산. Inspector의 정산 판단 및 수령자의 Withdraw는 별개입니다.</p></div><button id="go-settlement" class="primary">서명·온체인 단계 확인 →</button></div>
+    </section>
+
+    <section class="pane" data-pane="settlement" aria-label="거래 제출 및 분쟁 정산">
+      <div class="section-intro"><div><p class="eyebrow">ROLE-AUTHORIZED SIGNATURES · CONTRACT STATE GATES</p><h1>서명·온체인 제출은 <em>역할별 실제 승인이 필요합니다.</em></h1><p class="lead">기존 `/e2e`와 `/resolution`의 실행 UI를 같은 사이트 안에서 불러옵니다. 03에서 생성한 unsigned Bundle이 04로 자동 전달되는 것은 아니며, 실제 거래에서는 원본 3뷰를 다시 선택하고 새 서명 패키지를 준비해야 합니다.</p></div><span class="scope-label">서명 · 트랜잭션 자동 실행 없음</span></div>
+      <div class="settlement-top"><div><span class="eyebrow">SELECTED TRADE</span><code id="selected-trade">0x49bf…91ff</code><p id="settlement-gate">현재 선택 거래의 상태·기한·정책 승인 확인 전</p></div><div class="settlement-actions"><button class="outline active" data-subpage="e2e">Station 서명·Actor 제출</button><button class="outline" data-subpage="resolution">Replay · Inspector 판단 · 환급</button><button class="outline" data-subpage="trades">거래·정책·역할</button><button id="open-subpage" class="outline">별도 탭 ↗</button></div></div>
+      <iframe id="contract-frame" title="InspectEscrow 공식 온체인 실행 콘솔" src="about:blank"></iframe>
+      <p class="truth-note">주의: `/stage`의 두 사진 비교 결과는 신규 스마트컨트랙트에 자동 연결되지 않습니다. 실제 거래하려면 활성 거래, 서로 다른 3뷰, 유효한 Station/Actor 지갑, 정책 승인·기한·예치금이 모두 필요합니다. 조건이 충족되지 않으면 버튼은 차단됩니다. MetaMask가 iframe에서 보이지 않으면 「별도 탭」으로 실행 콘솔을 여세요.</p>
+    </section>
+
+    <section class="pane" data-pane="proof" aria-label="실증 근거와 제출 유의사항">
+      <div class="section-intro"><div><p class="eyebrow">VERIFY WHAT WAS ACTUALLY TESTED</p><h1>검증 환경을 <em>구분해서 증명</em>합니다.</h1><p class="lead">실제 Sepolia 거래, Local Anvil 보안 테스트, 로컬 Model B 추론을 같은 것으로 표현하지 않습니다.</p></div><button class="outline" id="reload-proof">현행 증빙 재조회</button></div>
+      <div class="proof-grid"><article><span class="eyebrow">PATCH2 · MODEL A</span><h2>Sepolia 분쟁·환급 완주</h2><p>Buyer REVIEW → Backup Replay CONSISTENT → Inspector REFUND → Buyer Withdraw</p><strong>0.005 ETH</strong><small>기존 실거래 / 신규 TX 없음</small><a href="https://sepolia.etherscan.io/tx/0x5183318aafe01643879771af8d66820dc3e2bfeb206ec9881323d7735c168bd2" target="_blank" rel="noopener noreferrer">Withdraw 영수증 ↗</a></article>
+      <article><span class="eyebrow">MODEL B · REAL PHOTOS</span><h2>독립 AI 재추론</h2><p>보관 S05 정상 / S03 스크래치 실제 재추론 및 SHA-256 검증</p><strong id="proof-model">상태 확인 중</strong><small id="proof-model-note">과거 점수와 현재 라이브 입력을 구분</small></article>
+      <article><span class="eyebrow">PATCH3 · LOCAL ANVIL</span><h2>조작 방어·정산 보류</h2><p>통제 점수 +1 → Replay INCONSISTENT → EXECUTION_HOLD 계약 테스트</p><strong id="proof-tests">36/36 PASS</strong><small>로컬 보안 검증 · 신규 Sepolia HOLD 미검증</small><button id="verify-hold" class="outline small">로컬 근거와 Sepolia 상태 조회</button></article></div>
+      <div class="truth-panel"><h3>발표 시 반드시 구분할 범위</h3><div class="truth-grid"><div><span class="dot good"></span><b>실제</b><p>보관 실물 사진의 실제 AI 추론 / 기존 Sepolia 영수증 / 로컬 스마트컨트랙트 테스트</p></div><div><span class="dot warn"></span><b>시연용 통제 조건</b><p>+1 주장 점수 변조는 검증된 통제 Red-Team 입력이며, 실제 악성 신규 서명·Sepolia 제출 거래와 구분</p></div><div><span class="dot off"></span><b>아직 미검증</b><p>이번 신규 라이브 사진 → EIP-712 서명 → Sepolia 분쟁 → 환급·Withdraw까지 단일 거래 E2E</p></div></div><pre id="proof-diagnostics">현행 서버/거래 상태를 불러오는 중…</pre></div>
+    </section>
+  </main>
+  <footer class="footer"><div>InspectEscrow · AI Quality Transaction Platform</div><div>현장 실증용 업무 POC · 외부 고객 서비스 미배포 · 검증된 거래 상태만 표시</div><a href="/journey" target="_blank">기술 운영 콘솔 ↗</a></footer>
+</div>
+</body>
+</html>

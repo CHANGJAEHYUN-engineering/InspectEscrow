@@ -11,7 +11,7 @@
 
 실물 너트 AI 검사(모델 B), 원본·정책·검사 증거, EIP-712 역할별 서명, Sepolia 에스크로, 분쟁·Replay, 당사자 상호 합의, 정산 및 Withdraw를 연결한 **테스트넷 기반 제조 B2B 프로토타입**입니다. 역할별 통합 웹 화면과 별도의 클라우드 Model B 추론 서버로 운영됩니다.
 
-**중요한 소스 버전 공지:** 이 저장소의 기존 소스는 **2026-10-31 Windows Web Release V2** 기준입니다. **2026-11-06 클라우드에 배포된 최신 코드와의 완전 동기화는 아직 확인되지 않았습니다.** 운영진은 웹 프로토타입을 바로 사용할 수 있지만, GitHub 코드만으로 동일한 최신 클라우드 앱을 재빌드·배포할 수 있다고 주장하지 않습니다. [소스 불일치 및 보완 계획](docs/FINAL_RELEASE_PARITY_20261106_KO.md)을 참고하세요.
+**2026-11-06 최종 실행 소스 동기화:** [deploy/cloud-web/](deploy/cloud-web/)에 실제 Railway 통합 웹 게이트웨이·프런트엔드·서버 코드가, [deploy/modelb-cloud/](deploy/modelb-cloud/)에 별도 Model B 추론 서버 코드가 포함되어 있습니다. 공개 웹의 HTML/JS/CSS 6개 파일과 소스 SHA-256 일치, Node 34개 파일 구문 검사, Python 2개 파일 컴파일, 읽기 전용 10개 URL·거래 상태 검사를 통과했습니다. **원본 실물 사진과 95MB Model B 체크포인트 백업 ZIP은 안전·라이선스 이유로 GitHub에 포함하지 않았으므로, AI 서버 자체 재빌드에는 별도 아티팩트 제공이 필요합니다.** [실행 방법·검증 결과](docs/SOURCE_SYNC_VERIFIED_20261106_KO.md)를 참고하세요.
 
 ### 운영진 제출 자료
 
@@ -21,6 +21,8 @@
 - **[최종 코드 동기화·UI·보안 점검표](docs/FINAL_RELEASE_PARITY_20261106_KO.md)**
 - **[최신 Railway 배포 매니페스트](docs/DEPLOYMENT_MANIFEST_20261106.json)**
 - **[GitHub·배포 소스 일치성 검사 스크립트](scripts/final_submission_source_parity.mjs)**
+- **[최신 소스 동기화·안전성 검사 결과](docs/SOURCE_SYNC_VERIFIED_20261106_KO.md)**
+- **[실제 Model B +1 Replay 실행 결과·원본 웹 캡처](docs/evidence/MODEL_B_CLOUD_PLUS1_REAL_WEB_SCREENSHOT.png)**
 - [2026-10-31 과거 README 원문](docs/README_20261031_ARCHIVE.md)
 
 ### 확인된 주요 실증
@@ -56,8 +58,10 @@
 
 **Station**은 검사 증거를 서명하고 **Actor**는 계약의 거래·정산 동작을 실행합니다. **REVIEW_REQUIRED**는 '불량 확정'이 아니라 검토 필요이며, **Replay CONSISTENT**는 양 당사자의 점수가 서로 같다는 뜻이 아니라 *각자의 원본에서 제출 점수가 재현된다*는 의미입니다.
 
-### 공개 코드 구조 (기준: 2026-10-31)
+### 공개 코드 구조 (현재 클라우드 배포본 우선)
 
+- **[`deploy/cloud-web/`](deploy/cloud-web/): 현재 배포한 통합 웹 전체 실행 코드 (6메뉴·7역할·EIP-712·Replay·정산)**
+- **[`deploy/modelb-cloud/`](deploy/modelb-cloud/): 별도 클라우드 AI 추론 서버 코드 (가중치 파일은 별도 제공)**
 - `packages/phase3c_hardening_20261023/`: PATCH3 Solidity/EIP-712/보안·Red-Team 테스트
 - `.modelb-local/2e1e7f88734d/FINAL_PRESENTATION_UI/`: 기존 Windows용 역할 기반 웹 소스
 - `modelb/`: Model B 서버 소스(모델 아티팩트는 외부 관리)
