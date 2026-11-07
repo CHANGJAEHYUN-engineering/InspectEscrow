@@ -7,10 +7,10 @@ RUN python -m pip install --upgrade pip && \
     python -m pip install torch==2.15.0 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cpu
 COPY requirements.txt /app/requirements.txt
 RUN python -m pip install -r requirements.txt
-COPY server.py cloud_app.py /app/
+COPY server.py cloud_app.py cloud_xai.py /app/
 COPY static/ /app/static/
 COPY model/ /app/model/
-RUN python -m compileall -q server.py cloud_app.py
+RUN python -m compileall -q server.py cloud_app.py cloud_xai.py
 ENV PORT=8080 HF_HUB_OFFLINE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2
 EXPOSE 8080
 CMD ["sh","-c","exec uvicorn cloud_app:app --host 0.0.0.0 --port $PORT --workers 1"]

@@ -39,3 +39,10 @@ node scripts/submission_public_smoke.mjs
 ```
 
 For third-party clean-room reproduction, install Node 24+ and Docker. The separately deployed AI service requires a controlled-provisioned Model B artifact; see `../modelb-cloud/README.md`.
+
+## 2026-11-07 integrated UI update
+- The sidebar retains both **Escrow Trade Mode** and **Evidence/Decision Assist Mode**. The latter is a separate, no-escrow advisory UI.
+- Actual Model B inference generates its XAI overlay automatically. The UI shows regional relative anomaly bars, **not defect probabilities**.
+- The same-browser session can pass three original images, XAI and an unsigned Evidence Bundle through **Live AI → Evidence Verification → Station/Actor** without uploading the same files again. Changes of trade, role or source invalidate the transient handoff.
+- An unsigned off-chain draft may be integrity-checked even when an older inspection exists on-chain; it **must not** be represented as a matching on-chain inspection or replay-eligible proof.
+- Inspector decisions and on-chain settlement are separate from legal fault attribution. The present PoC does not automate physical returns.

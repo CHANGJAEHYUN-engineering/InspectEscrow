@@ -70,7 +70,24 @@ async function inferTop(image,operatorSpecimenId){
   assert(Number(runtimeReport.original_image_bytes)===image.bytes.length,"MODEL_B_TOP_BYTES_MISMATCH");
   assert(runtimeReport.model_checkpoint_sha256===CHECKPOINT_SHA256,"MODEL_B_INFERENCE_CHECKPOINT_MISMATCH");
   assert(Number.isSafeInteger(runtimeReport.score_scaled)&&runtimeReport.score_scaled===Math.round(Number(runtimeReport.score_raw)*1e6),"MODEL_B_SCORE_SCALING_INVALID");
-  return {...runtimeReport,
+  assert(runtimeReport.xai_generated_from_model===true,"XAI_NOT_MODEL_GENERATED");
+  assert(runtimeReport.xai_source_top_sha256===image.sha256,"XAI_TOP_HASH_MISMATCH");
+  assert(runtimeReport.xai_model_checkpoint_sha256===CHECKPOINT_SHA256,"XAI_MODEL_CHECKPOINT_MISMATCH");
+  assert(Number(runtimeReport.xai_score_scaled)===Number(runtimeReport.score_scaled),"XAI_SCORE_MISMATCH");
+  assert(/^patchcore-anomaly-map-overlay-v[0-9]+$/.test(String(runtimeReport.xai_method||"")),"XAI_METHOD_INVALID");
+  const rawXai=String(runtimeReport.xai_heatmap_png_base64||"");
+  assert(rawXai.length>100&&rawXai.length<550000&&rawXai.length%4===0&&/^[A-Za-z0-9+/]*={0,2}$/.test(rawXai),"XAI_BASE64_INVALID");
+  const xaiBytes=Buffer.from(rawXai,"base64");
+  assert(xaiBytes.length>100&&xaiBytes.length<400000,"XAI_IMAGE_SIZE_INVALID");
+  assert(xaiBytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])),"XAI_PNG_MAGIC_INVALID");
+  assert(sha256(xaiBytes)===runtimeReport.xai_heatmap_sha256,"XAI_SHA256_MISMATCH");
+  assert(Array.isArray(runtimeReport.xai_quadrants)&&runtimeReport.xai_quadrants.length===4 &&
+    runtimeReport.xai_quadrants.every(q=>typeof q.label==="string"&&
+      Number.isFinite(q.relativeAnomalyIndex)&&q.relativeAnomalyIndex>=0&&q.relativeAnomalyIndex<=100 &&
+      Number.isSafeInteger(q.pixelCount)&&q.pixelCount>0),"XAI_QUADRANTS_MISSING_OR_INVALID");
+  assert(runtimeReport.xai_quadrant_metric==="regional_p90_normalized_to_TOP_foreground_p99","XAI_QUADRANT_METRIC_INVALID");
+  const {xai_heatmap_png_base64, ...cleanReport}=runtimeReport;
+  const normalized={...cleanReport,
     schema:"InspectEscrow.ModelB.DynamicEvidenceInference.v1",
     status:"OFFCHAIN_EVIDENCE_PREPARATION_NOT_SUBMITTED",
     specimen_id:operatorSpecimenId,specimen_code:"OPERATOR_PROVIDED",
@@ -80,6 +97,15 @@ async function inferTop(image,operatorSpecimenId){
     runtime_source_unchanged:true,
     station_signed_in_this_app:false,sent_to_blockchain:false
   };
+  Object.defineProperty(normalized,"_xaiHeatmap",{
+    enumerable:false,
+    value:{name:"xai-"+image.sha256.slice(0,16)+".png",data:rawXai,
+      sha256:runtimeReport.xai_heatmap_sha256,bytes:xaiBytes.length,
+      quadrants:runtimeReport.xai_quadrants,
+      quadrantMetric:runtimeReport.xai_quadrant_metric,
+      quadrantScope:runtimeReport.xai_quadrant_scope}
+  });
+  return normalized;
 }
 
 async function config(ctx,tradeId){
@@ -104,7 +130,7 @@ async function preview(ctx,body){
   const report=await inferTop(top,meta.operatorSpecimenId);
   return {ok:true,status:"TOP_ONLY_AI_COMPLETE_EVIDENCE_INCOMPLETE",tradeId:bindings.tradeId,role:meta.role,
     operatorSpecimenId:meta.operatorSpecimenId,sessionId:meta.sessionId,sessionCreatedAtUtc:meta.capturedAtUtc,
-    originalTopSha256:top.sha256,originalTopBytes:top.bytes.length,inferenceReport:report,
+    originalTopSha256:top.sha256,originalTopBytes:top.bytes.length,inferenceReport:report,xaiHeatmap:report._xaiHeatmap,
     scoreRaw:report.score_raw,scoreScaled:String(report.score_scaled),thresholdScaled:bindings.thresholdScaled,decision:report.decision,
     modelBundleHash:bindings.modelBundleHash,policyHash:bindings.policyHash,missingViews:["FRONT","SIDE"],
     evidenceBundleComplete:false,stationSignatureComplete:false,onchainSubmitted:false,transactionsSent:0,
@@ -117,6 +143,7 @@ async function build(ctx,body){
   const images=Object.fromEntries(["TOP","FRONT","SIDE"].map(view=>[view,decodeImage(body.images?.[view],view)]));
   assert(new Set(Object.values(images).map(x=>x.sha256)).size===3,"DUPLICATE_VIEW_IMAGE_BYTES");
   const report=await inferTop(images.TOP,meta.operatorSpecimenId);
+  if(body.expectedXaiHeatmapSha256)assert(body.expectedXaiHeatmapSha256===report._xaiHeatmap.sha256,"XAI_PREVIEW_BUILD_HASH_MISMATCH");
   const nonce=hexlify(randomBytes(32));
   const station=bindings.stations[meta.role];
   const captureFiles=Object.fromEntries(["TOP","FRONT","SIDE"].map(view=>[view,{fileName:images[view].name,sha256:images[view].sha256,bytes:images[view].bytes.length}]));
@@ -134,6 +161,10 @@ async function build(ctx,body){
     modelCheckpointSha256:CHECKPOINT_SHA256,modelBundleHash:bindings.modelBundleHash,artifactCommitmentHash:commitment.artifactCommitmentHash,
     captureProfileHash:bindings.captureProfileHash,productSpecHash:bindings.productSpecHash,requiredViewSetHash:bindings.requiredViewSetHash,
     scoreSchemaId:bindings.scoreSchemaId,scoreScaled:String(report.score_scaled),contractThresholdScaled:bindings.thresholdScaled,
+    xaiHeatmapSha256:report._xaiHeatmap.sha256,xaiHeatmapBytes:report._xaiHeatmap.bytes,
+    xaiHeatmapFileName:report._xaiHeatmap.name,xaiSourceTopSha256:images.TOP.sha256,
+    xaiMethod:report.xai_method,xaiRawMapSha256:report.xai_map_sha256,
+    xaiProvenance:"MODEL_GENERATED_PATCHCORE_ANOMALY_MAP_VERIFIED",
     replayToleranceScaled:String(commitment.replayToleranceScaled),offchainDecision:report.decision,completeThreeViewCapture:true,
     originalFilesRetainedByOperator:true,aiExecutionTrustedToLocalBackend:false,aiExecutionTrustedToCloudBackend:true,stationAttestationDigest:ZeroHash,
     onchainSubmissionStatus:"NOT_SUBMITTED"};
@@ -144,9 +175,9 @@ async function build(ctx,body){
   const unsigned={schema:"inspectescrow.patch3.modelb-unsigned-station-template/2",status:"FRESH_STATION_SIGNATURE_REQUIRED_AT_SUBMISSION_TIME",
     domain:bindings.domain,types:stationTypes,message,signature:null,transactionsSent:0};
   const bundle={schema:"inspectescrow.modelb-browser-evidence-bundle/1",status:"OFFCHAIN_EVIDENCE_PREPARED_UNSIGNED_NOT_SUBMITTED",
-    roleName:meta.role,manifest,specimenManifestHash,evidencePackage,evidencePackageHash,inferenceReport:report,unsigned,
-    signature:null,transactionsSent:0};
-  return {ok:true,status:bundle.status,bundle,hashes:{images:Object.fromEntries(Object.entries(images).map(([view,x])=>[view,x.sha256])),specimenManifestHash,evidencePackageHash},
+    roleName:meta.role,manifest,specimenManifestHash,evidencePackage,evidencePackageHash,inferenceReport:report,
+    xaiHeatmap:report._xaiHeatmap,unsigned,signature:null,transactionsSent:0};
+  return {ok:true,status:bundle.status,bundle,hashes:{images:Object.fromEntries(Object.entries(images).map(([view,x])=>[view,x.sha256])),xaiHeatmapSha256:report._xaiHeatmap.sha256,specimenManifestHash,evidencePackageHash},
     scoreRaw:report.score_raw,scoreScaled:String(report.score_scaled),thresholdScaled:bindings.thresholdScaled,decision:report.decision,
     stationSignatureComplete:false,onchainSubmitted:false,serverStoredOriginals:false,serverStoredBundle:false,transactionsSent:0};
 }

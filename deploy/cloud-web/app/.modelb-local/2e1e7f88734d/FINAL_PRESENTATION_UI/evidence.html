@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>InspectEscrow | 내 검사 기록</title>
   <link rel="stylesheet" href="/evidence.css">
+  <script defer src="/evidence-session.js"></script>
   <script defer src="/evidence.js"></script>
 </head>
 <body>
@@ -26,6 +27,10 @@
       <p>거래 ID·역할·검증 시각·해시·결과만 선택적으로 저장합니다. 원본 이미지, 증거 JSON 본문, Station 서명, 개인키, 지갑 권한은 저장하지 않습니다. 새로고침 후 원본 파일은 반드시 다시 선택해야 합니다.</p>
     </section>
 
+    <section class="security-note" id="auto-handoff" aria-live="polite">
+      <strong>현재 검사 세션 자동 연결</strong>
+      <p id="auto-handoff-message">실시간 AI 검사에서 Evidence를 생성했다면 동일 브라우저 탭에서 원본 3장과 증거가 자동으로 연결됩니다. 외부 증거는 아래에서 직접 선택해 검증하세요.</p>
+    </section>
     <section class="panel import-panel">
       <div class="section-title"><div><span>01</span><h2>증거 불러오기</h2></div><span class="mode">검증 전 · 온체인 전송 없음</span></div>
       <div class="grid two">

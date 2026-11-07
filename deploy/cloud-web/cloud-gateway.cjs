@@ -21,7 +21,7 @@ let activeAICalls=0;
 function protectPublicActions(req,res,pathname){
  if(!["POST","PUT","PATCH","DELETE"].includes(req.method))return false;
  const ip=String(req.headers["x-forwarded-for"]||req.socket.remoteAddress||"unknown").split(",")[0].trim().slice(0,100);
- const heavy=/^\/api\/(?:live\/(?:infer|build|replay)|modelb\/infer|replay\/(?:execute|controlled-score-demo)|e2e\/prepare-|review\/prepare)/.test(pathname);
+ const heavy=/^\/api\/(?:live\/(?:infer|build|replay)|assist\/(?:inspect|explain)|modelb\/infer|replay\/(?:execute|controlled-score-demo)|e2e\/prepare-|review\/prepare)/.test(pathname);
  const windowMs=10*60*1000,now=Date.now();
  for(const [k,v] of publicRequestBudgets)if(now>=v.end)publicRequestBudgets.delete(k);
  function consume(key,max){
@@ -98,6 +98,86 @@ async function aiRequest(method,pathname,body){
  return response.json();
 }
 
+async function advisoryRequest(req,res,url){
+  if(req.method!=="POST"||!["/api/assist/inspect","/api/assist/explain"].includes(url.pathname))
+    return send(res,405,{error:"METHOD_NOT_ALLOWED"});
+  try{
+    const isExplain=url.pathname.endsWith("/explain");
+    const bytes=await readBytes(req,isExplain?9*1024*1024:26*1024*1024);
+    const request=new Request("http://127.0.0.1"+url.pathname,{
+      method:"POST",headers:{"content-type":req.headers["content-type"]||""},body:bytes
+    });
+    const input=await request.formData();
+    const label=String(input.get("specimen_label")||"").trim();
+    if(label.length<2||label.length>100||/[\x00-\x1f]/.test(label))
+      return send(res,400,{error:"INVALID_SPECIMEN_LABEL"});
+    const names=isExplain?["top"]:["top","front","side"];
+    const originals={};
+    for(const name of names){
+      const file=input.get(name);
+      if(!file||typeof file.arrayBuffer!=="function")return send(res,400,{error:"MISSING_VIEW_"+name.toUpperCase()});
+      if(file.size<500||file.size>8*1024*1024)return send(res,413,{error:"INVALID_VIEW_SIZE_"+name.toUpperCase()});
+      if(!/\.(?:jpe?g|png)$/i.test(String(file.name||""))||String(file.name).length>160)
+        return send(res,400,{error:"INVALID_VIEW_FILENAME_"+name.toUpperCase()});
+      const b=Buffer.from(await file.arrayBuffer());
+      const jpeg=b[0]===0xff&&b[1]===0xd8&&b[2]===0xff;
+      const png=b.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]));
+      if(!jpeg&&!png)return send(res,400,{error:"INVALID_VIEW_MAGIC_"+name.toUpperCase()});
+      originals[name]={file,sha256:crypto.createHash("sha256").update(b).digest("hex")};
+    }
+    if(!isExplain&&new Set(names.map(name=>originals[name].sha256)).size!==3)
+      return send(res,400,{error:"DUPLICATE_ORIGINAL_VIEW"});
+    const form=new FormData();
+    for(const name of names)form.append(name,originals[name].file,originals[name].file.name);
+    form.append("expected_top_sha256",originals.top.sha256);
+    form.append("specimen_label",label);
+    const output=await aiRequest("POST",isExplain?"/api/cloud/xai":"/api/cloud/inspect",form);
+    if(isExplain){
+      if(!output.ok||output.heatmap_generated_from_actual_model!==true||
+         output.source_image_sha256!==originals.top.sha256||
+         output.checkpoint_sha256!==CHECKPOINT||
+         !/^[a-f0-9]{64}$/.test(String(output.heatmap_sha256||"")))
+        throw Error("ADVISORY_XAI_PROVENANCE_INVALID");
+      const png=Buffer.from(String(output.heatmap_png_base64||""),"base64");
+      if(png.length<100||png.length>400000||
+         crypto.createHash("sha256").update(png).digest("hex")!==output.heatmap_sha256)
+        throw Error("ADVISORY_XAI_HEATMAP_INTEGRITY_FAILED");
+      return send(res,200,{
+        ok:true,method:"PATCHCORE_NATIVE_ANOMALY_MAP",
+        sourceMethod:output.method,modelCheckpointSha256:CHECKPOINT,
+        originalTopSha256:output.source_image_sha256,scoreScaled:output.score_scaled,
+        decision:output.decision,overlayPngBase64:output.heatmap_png_base64,
+        heatmapSha256:output.heatmap_sha256,rawMapSha256:output.raw_anomaly_map_sha256,
+        quadrants:Array.isArray(output.quadrants)&&output.quadrants.length===4&&
+          output.quadrants.every(q=>typeof q.label==="string"&&Number.isFinite(Number(q.relativeAnomalyIndex))&&
+            Number(q.relativeAnomalyIndex)>=0&&Number(q.relativeAnomalyIndex)<=100)?
+          output.quadrants:(()=>{throw Error("ADVISORY_XAI_GRAPH_DATA_MISSING")})(),
+        quadrantMetric:output.quadrant_metric,quadrantScope:output.quadrant_scope,
+        scope:"METAL_NUT_ONLY",offchain:true,
+        escrowAmountWei:"0",transactionsSent:0,
+        relativeLocalizationOnly:true
+      });
+    }
+    const captures=output.bundle?.manifest?.captureFiles;
+    if(!output.ok||!output.completeThreeViewCapture||
+      !names.every(name=>captures?.[name.toUpperCase()]?.sha256===originals[name].sha256)||
+      output.bundle?.inference?.modelCheckpointSha256!==CHECKPOINT||
+      output.bundle?.evidence?.stationSigned!==false||
+      output.bundle?.evidence?.onchainSubmitted!==false)
+      throw Error("ADVISORY_EVIDENCE_OR_MODEL_BINDING_INVALID");
+    return send(res,200,{
+      ok:true,scope:"METAL_NUT_ONLY",mode:"OFFCHAIN_ADVISORY_NO_ESCROW",
+      decision:output.decision,scoreRaw:output.scoreRaw,scoreScaled:output.scoreScaled,
+      thresholdScaled:output.thresholdScaled,bundle:output.bundle,
+      originalSha256:Object.fromEntries(names.map(name=>[name.toUpperCase(),originals[name].sha256])),
+      originalImageStoredByServer:false,escrowAmountWei:"0",transactionsSent:0,
+      caveat:"No product authenticity, physical identity, legal responsibility, signature or onchain claim."
+    });
+  }catch(error){
+    return send(res,422,{error:"ADVISORY_REQUEST_FAILED",detail:String(error.message||error).slice(0,180),transactionsSent:0});
+  }
+}
+
 function aiError(res,error){send(res,502,{detail:"CLOUD_AI_ADAPTER_ERROR: "+String(error.message||error).slice(0,180)});}
 async function adapter(req,res){
  const endpoint=new URL(req.url,"http://127.0.0.1").pathname;
@@ -134,8 +214,39 @@ async function adapter(req,res){
      const result=await aiRequest("POST","/api/cloud/inspect",form);
      if(result.bundle?.manifest?.captureFiles?.TOP?.sha256!==digest||
          result.bundle?.inference?.modelCheckpointSha256!==CHECKPOINT)throw Error("INFERENCE_ORIGINAL_BINDING_FAILED");
+     const xaiForm=new FormData();
+     xaiForm.append("top",image,image.name||"top.jpg");
+     xaiForm.append("expected_top_sha256",digest);
+     const xai=await aiRequest("POST","/api/cloud/xai",xaiForm);
+     if(!xai.heatmap_generated_from_actual_model||
+        xai.source_image_sha256!==digest||
+        xai.checkpoint_sha256!==CHECKPOINT||
+        String(xai.score_scaled)!==String(result.scoreScaled)||
+        xai.decision!==result.decision||
+        !/^[a-f0-9]{64}$/.test(String(xai.heatmap_sha256||"")))throw Error("XAI_SCORE_OR_INPUT_BINDING_FAILED");
+     if(!Array.isArray(xai.quadrants)||xai.quadrants.length!==4||
+        xai.quadrants.some(q=>typeof q.label!=="string"||
+           !Number.isFinite(q.relativeAnomalyIndex)||q.relativeAnomalyIndex<0||
+           q.relativeAnomalyIndex>100||!Number.isSafeInteger(q.pixelCount)||q.pixelCount<1))
+       throw Error("XAI_4_QUADRANTS_INVALID_OR_MISSING");
+     const xaiBytes=Buffer.from(xai.heatmap_png_base64||"","base64");
+     if(xaiBytes.length<100||xaiBytes.length>400000||
+        crypto.createHash("sha256").update(xaiBytes).digest("hex")!==xai.heatmap_sha256)
+       throw Error("XAI_HEATMAP_BYTES_INVALID");
      modelWasUsed=true;
      return send(res,200,{
+       xai_generated_from_model:true,
+       xai_heatmap_png_base64:xai.heatmap_png_base64,
+       xai_heatmap_sha256:xai.heatmap_sha256,
+       xai_heatmap_bytes:xaiBytes.length,
+       xai_method:xai.method,
+       xai_map_sha256:xai.raw_anomaly_map_sha256,
+       xai_quadrants:xai.quadrants,
+       xai_quadrant_metric:xai.quadrant_metric,
+       xai_quadrant_scope:xai.quadrant_scope,
+       xai_source_top_sha256:digest,
+       xai_score_scaled:xai.score_scaled,
+       xai_model_checkpoint_sha256:CHECKPOINT,
        schema:"InspectEscrow.ModelB.LiveLocalInference.v1",
        status:"OFFCHAIN_DEMO_NOT_ONCHAIN_APPROVED",
        specimen_id:"IE-DEMO-001",specimen_code:"S05",
@@ -181,5 +292,6 @@ http.createServer(async(req,res)=>{
  if(["POST","PUT","PATCH","DELETE"].includes(req.method)&&!allowedOrigin(req))
    return send(res,403,{error:"CROSS_ORIGIN_REJECTED"});
  if(protectPublicActions(req,res,url.pathname))return;
+ if(url.pathname.startsWith("/api/assist/"))return advisoryRequest(req,res,url);
  return proxy(req,res);
 }).listen(PORT,"0.0.0.0",()=>console.log("INSPECTESCROW_INTEGRATED_CLOUD_GATEWAY_READY",PORT));

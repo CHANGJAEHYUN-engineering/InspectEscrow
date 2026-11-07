@@ -48,6 +48,10 @@ async function snapshot(){
   const ready=role==="supplier"?d.safeToPrepareSupplier:role==="buyer"?d.safeToPrepareBuyer:d.safeToPrepareReplay;
   $(role+"-prepare").disabled=!ready||state.busy;
   const p=state.packages[role];$(role+"-sign").disabled=!ready||!p||state.busy;
+  if(role!=="replay"){
+    const exists=!!window.InspectEscrowEvidenceSession?.verified({tradeId:d.tradeId,role});
+    if(!p)$(role+"-prepare").textContent=exists?"검증된 Evidence 이어받기 · 재추론 없음":"실제 AI 재추론·신규 증거 생성";
+  }
   $(role+"-submit").disabled=!ready||!p||!state.signatures[role]||state.busy;
   if(role!=="replay")$(role+"-archived").disabled=!ready||d.chainId===11155111||state.busy;
  }
@@ -70,12 +74,73 @@ function clearRole(role){
 }
 function downloadPackage(role){
  const pkg=state.packages[role];if(!pkg)return;
- const exported={...pkg,signature:state.signatures[role]||null,signatureStatus:state.signatures[role]?"STATION_SIGNATURE_INCLUDED":"UNSIGNED",exportedAtUtc:new Date().toISOString(),transactionsSent:0};
+ const exported=pkg.sourceBundle?structuredClone(pkg.sourceBundle):{...pkg};
+ if(pkg.sourceBundle){
+   exported.unsigned.message=structuredClone(pkg.message);
+   exported.signature=state.signatures[role]||null;
+ }else exported.signature=state.signatures[role]||null;
+ exported.signatureStatus=state.signatures[role]?"STATION_SIGNATURE_INCLUDED":"UNSIGNED";
+ exported.exportedAtUtc=new Date().toISOString();exported.transactionsSent=0;
  const blob=new Blob([JSON.stringify(exported,null,2)+"\n"],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");
  a.href=url;a.download="inspectescrow-"+role+"-evidence-"+activeTrade().slice(2,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
-async function prepare(role){
- if(state.busy)return;state.busy=true;clearRole(role);
+async function importVerifiedEvidence(role){
+ if(state.busy)return;
+ const bridge=window.InspectEscrowEvidenceSession,context={tradeId:activeTrade(),role};
+ const handoff=bridge?.verified(context);
+ if(!handoff)throw Error("이 역할의 검증 완료 Evidence가 없습니다. Evidence 검증을 먼저 진행하세요.");
+ state.busy=true;clearRole(role);
+ try{
+  const d=await snapshot();
+  if(!eq(d.tradeId,handoff.tradeId)||Number(d.chainId)!==Number(handoff.chainId)||
+     !eq(d.contract,handoff.contract))throw Error("검사와 제출 네트워크·거래 불일치");
+  const raw=handoff.bundle,images={};
+  for(const view of ["TOP","FRONT","SIDE"]){
+    const file=handoff.files[view];
+    if(!file)throw Error("동일 세션 원본 누락: "+view);
+    images[view]={name:file.name,data:await b64(file)};
+  }
+  const check=await json("/api/evidence/verify",{method:"POST",
+    headers:{"Content-Type":"application/json","X-InspectEscrow-Local":"1"},
+    body:JSON.stringify({expectedTradeId:d.tradeId,expectedRole:role,bundle:raw,images,verificationMode:"OFFCHAIN_DRAFT"})});
+  if(check.ok!==true||!eq(check.hashes.evidencePackageHash,handoff.evidenceHash)||
+     !eq(raw.evidencePackageHash,raw.unsigned.message.evidencePackageHash))
+    throw Error("검증된 Evidence 해시가 변경되었습니다.");
+  const actor=d.roles?.[role],station=d.roles?.[role+"Station"];
+  if(!actor||!eq(station,raw.unsigned.message.station)||!eq(d.policyHash,raw.unsigned.message.policyHash)||
+     !eq(d.modelBundleHash,raw.unsigned.message.modelBundleHash)||
+     !eq(d.captureProfileHash,raw.unsigned.message.captureProfileHash)||
+     !eq(d.scoreSchemaId,raw.unsigned.message.scoreSchemaId))
+    throw Error("현재 계약과 원래 검사 기준 또는 Station이 일치하지 않습니다.");
+  if(!eq(raw.unsigned.domain.verifyingContract,d.contract)||Number(raw.unsigned.domain.chainId)!==Number(d.chainId))
+    throw Error("증거 EIP-712 도메인 불일치");
+  const pkg={
+    stage:"VERIFIED_EVIDENCE_HANDOFF_NO_REINFERENCE",role,actor,station,tradeId:d.tradeId,
+    domain:structuredClone(raw.unsigned.domain),types:structuredClone(raw.unsigned.types),
+    message:structuredClone(raw.unsigned.message),sourceBundle:structuredClone(raw),
+    evidenceHash:handoff.evidenceHash,preverified:true,manualApprovalRequired:true
+  };
+  state.packages[role]=pkg;state.signatures[role]=null;
+  for(const view of ["top","front","side"]){
+    const dt=new DataTransfer();dt.items.add(handoff.files[view.toUpperCase()]);
+    $(role+"-"+view).files=dt.files;
+  }
+  $(role+"-label").value=String(raw.manifest.specimenId||raw.manifest.operatorSpecimenLabel||"").slice(0,100);
+  $(role+"-download").disabled=false;
+  if($(role+"-handoff"))$(role+"-handoff").textContent="검증된 동일 Evidence 자동 연결 · 원본 3장·XAI 포함 · 해시 "+handoff.evidenceHash+" · Station 서명 전";
+  out(role,"동일 Evidence 이어받기 완료 (AI 재추론 없음, 신규 nonce 생성 없음)\nEvidence "+handoff.evidenceHash+
+    "\nManifest "+pkg.message.specimenManifestHash+"\nXAI "+(raw.evidencePackage.xaiHeatmapSha256||"없음")+
+    "\n현재 상태: "+d.state+" · Station 서명·Actor TX 미실행\n실물 3뷰 확인 체크 후 권한 있는 Station 지갑으로만 서명 가능");
+ }catch(e){
+   clearRole(role);out(role,"동일 Evidence 이어받기 실패: "+envErr(e));
+ }finally{state.busy=false;try{await snapshot();}catch{}}
+}
+async function prepare(role,forceFresh=false){
+ if(state.busy)return;
+ if(role!=="replay"&&!forceFresh&&window.InspectEscrowEvidenceSession?.verified({tradeId:activeTrade(),role}))
+    return importVerifiedEvidence(role);
+ if(forceFresh)window.InspectEscrowEvidenceSession?.invalidate();
+ state.busy=true;clearRole(role);
  try{
   const d=await snapshot();
   const allowed=role==="supplier"?d.safeToPrepareSupplier:role==="buyer"?d.safeToPrepareBuyer:d.safeToPrepareReplay;
@@ -123,6 +188,18 @@ async function sign(role){
  state.busy=true;try{
   await snapshot();const d=state.snapshot;
   if(!((role==="supplier"&&d.safeToPrepareSupplier)||(role==="buyer"&&d.safeToPrepareBuyer)||(role==="replay"&&d.safeToPrepareReplay)))throw Error("거래 상태/마감 변경");
+  if(pkg.sourceBundle){
+    const valid=window.InspectEscrowEvidenceSession?.verified({tradeId:d.tradeId,role});
+    if(!valid||!eq(valid.evidenceHash,pkg.message.evidencePackageHash)||!eq(pkg.evidenceHash,pkg.message.evidencePackageHash))
+      throw Error("이전에 검증한 Evidence와 서명 대상이 다릅니다.");
+    if(!$(role+"-views").checked)throw Error("3뷰 원본 확인에 동의한 뒤 서명하세요.");
+    const issued=Number(d.effectiveTimestamp??d.blockTimestamp);
+    const until=Math.min(Number(d.deadline),issued+600);
+    if(!Number.isSafeInteger(issued)||until<=issued+90)throw Error("서명 유효 기간 부족 · 거래 상태를 확인하세요.");
+    pkg.message.issuedAt=issued;
+    pkg.message.validUntil=until;
+    pkg.sourceBundle.unsigned.message=structuredClone(pkg.message);
+  }
   if(d.blockTimestamp>Number(pkg.message.validUntil)-30)throw Error("서명 유효기간이 짧습니다. 증거를 다시 생성하세요.");
   const provider=await wallet(pkg.station);
   const signer=await provider.getSigner();
@@ -132,6 +209,10 @@ async function sign(role){
   const recovered=e.verifyTypedData(pkg.domain,pkg.types,pkg.message,signature);
   if(!eq(recovered,pkg.station))throw Error("EIP-712 서명자로부터 기대된 Station 주소를 복구하지 못함");
   state.signatures[role]=signature;
+  if(pkg.sourceBundle){
+    pkg.sourceBundle.signature=signature;
+    window.InspectEscrowEvidenceSession.markSigned(pkg.evidenceHash,signature,pkg.message);
+  }
   out(role,"Station 서명 완료 · actor 제출 전\n회복한 서명자: "+recovered+"\n서명 digest: "+
    e.TypedDataEncoder.hash(pkg.domain,pkg.types,pkg.message)+"\n다음으로 MetaMask를 Actor "+pkg.actor+" 계정으로 전환하고 제출을 누르세요.");
  }catch(err){state.signatures[role]=null;out(role,"Station 서명 실패: "+envErr(err));}
@@ -145,6 +226,21 @@ async function submit(role){
    if(d.state!==expectedState||(d.effectiveRemainingSeconds??d.remainingSeconds)<90)throw Error(d.deadlineExpiredByWallClock?"DEADLINE_EXPIRED_BY_WALL_CLOCK":"거래 상태·마감조건이 변경되었습니다");
   if(!eq(d.tradeId,pkg.message.tradeId))throw Error("선택 거래와 준비된 증거의 Trade ID가 다릅니다.");
   if(!eq(d.policyHash,pkg.message.policyHash))throw Error("정책 해시 변경/불일치");
+  if(pkg.sourceBundle){
+    const handed=window.InspectEscrowEvidenceSession?.verified({tradeId:d.tradeId,role});
+    if(!handed||!eq(handed.evidenceHash,pkg.message.evidencePackageHash)||
+       !eq(pkg.sourceBundle.evidencePackageHash,pkg.message.evidencePackageHash))
+      throw Error("온체인 제출 대상이 검증된 Evidence와 다릅니다.");
+    const images={};
+    for(const view of ["TOP","FRONT","SIDE"]){
+      const f=handed.files[view];images[view]={name:f.name,data:await b64(f)};
+    }
+    const latestCheck=await json("/api/evidence/verify",{method:"POST",
+      headers:{"Content-Type":"application/json","X-InspectEscrow-Local":"1"},
+      body:JSON.stringify({expectedTradeId:d.tradeId,expectedRole:role,bundle:pkg.sourceBundle,images})});
+    if(!eq(latestCheck.hashes?.evidencePackageHash,pkg.message.evidencePackageHash))
+      throw Error("제출 전 Evidence 무결성 재검증 실패");
+  }
    const tNow=Number(d.effectiveTimestamp??d.blockTimestamp);
   if(tNow>Number(pkg.message.validUntil)-35||tNow<Number(pkg.message.issuedAt))throw Error("서명 만료·시간 오류: 다시 생성하세요.");
   if(!eq(e.verifyTypedData(pkg.domain,pkg.types,pkg.message,signature),pkg.station))throw Error("Station 서명 불일치");
@@ -215,6 +311,11 @@ async function submit(role){
  finally{state.busy=false;try{await snapshot();}catch(e){}}
 }
 $("refresh").addEventListener("click",()=>snapshot().catch(e=>$("preflight").textContent=envErr(e)));
+async function autoHandoff(){
+ const existing=window.InspectEscrowEvidenceSession?.verified({tradeId:activeTrade()});
+ if(existing&&["supplier","buyer"].includes(existing.role))
+  await importVerifiedEvidence(existing.role);
+}
 for(const role of ["supplier","buyer","replay"]){
  $(role+"-prepare").addEventListener("click",()=>prepare(role));
  $(role+"-sign").addEventListener("click",()=>sign(role));
@@ -222,8 +323,8 @@ for(const role of ["supplier","buyer","replay"]){
  if(role!=="replay"){
   $(role+"-archived").addEventListener("click",()=>prepareArchived(role));
   $(role+"-download").addEventListener("click",()=>downloadPackage(role));
-  for(const view of ["top","front","side"])$(role+"-"+view).addEventListener("change",()=>clearRole(role));
+  for(const view of ["top","front","side"])$(role+"-"+view).addEventListener("change",()=>{if(window.InspectEscrowEvidenceSession?.peek({tradeId:activeTrade(),role}))window.InspectEscrowEvidenceSession.invalidate();clearRole(role);});
  }else $("replay-reason").addEventListener("input",()=>clearRole(role));
 }
-snapshot().catch(err=>$("preflight").textContent="사전검증 실패: "+envErr(err));
+snapshot().then(autoHandoff).catch(err=>$("preflight").textContent="사전검증 실패: "+envErr(err));
 })();

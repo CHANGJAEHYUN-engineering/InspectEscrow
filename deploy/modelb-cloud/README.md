@@ -26,3 +26,6 @@ Original S05 TOP cloud replay made two actual Model B calls on identical origina
 `36,185,043` → synthetic **unsigned** comparison claim `36,185,044` → real rerun `36,185,043`: `INCONSISTENT` at tolerance 0. This comparison sent **zero blockchain TX**.
 
 The demo is not evidence that a cryptographically signed on-chain result was maliciously altered.
+
+## 2026-11-07 PatchCore XAI update
+`cloud_xai.py` derives an anomaly overlay from the **actual frozen PatchCore anomaly_map**, without modifying the model threshold. The output includes a SHA-256 commitment, raw map hash, source TOP hash, and four regional **relative** anomaly indices. The 0–100 regional index is not a defect probability and is not calibrated across separate photos. The cloud app exposes a protected `/api/cloud/xai` endpoint and the gateway forwards it with the server-side environment token. `test_live_xai.mjs` is an optional authorized integration test, requiring `INSPECTESCROW_DEMO_ACCESS_TOKEN`; no secrets are included.

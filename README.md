@@ -1,5 +1,13 @@
 # InspectEscrow
 
+## 2026-11-07 최종 제출 최신본
+
+**[최신 제출용 소스 ZIP](submissions/2026-11-07/InspectEscrow_FINAL_SOURCE_SUBMISSION_20261107.zip)** | **[SHA-256](submissions/2026-11-07/SHA256SUMS.txt)** | **[최종 동기화·검증 및 한계](docs/FINAL_SYNC_20261107_KO.md)**
+
+현재 웹·Model B AI 서비스에서 사용 중인 **에스크로/증거·판단 보조 두 모드, 실제 PatchCore 기반 XAI 히트맵과 4영역 상대 이상도, 3뷰 Evidence 해시 및 화면 간 증거 전달**을 최종 제출 소스에 반영했습니다. 기존 2026-11-06 불변 ZIP·태그는 이전 스냅샷으로 보존합니다.
+
+**주의:** 새 XAI 검증은 오프체인 소스·시연 기능이며 기존 완료 거래에 새 XAI 번들이 서명·온체인 제출됐다고 주장하지 않습니다. 물리적 제품 동일성·배송 책임·반품 회수는 PoC 검증 범위 밖입니다.
+
 **AI 제조 품질검사의 신뢰·분쟁 해결을 위한 블록체인 에스크로 PoC**  
 2026 AI × Blockchain Hackathon · Track 4 · 창지환 팀
 

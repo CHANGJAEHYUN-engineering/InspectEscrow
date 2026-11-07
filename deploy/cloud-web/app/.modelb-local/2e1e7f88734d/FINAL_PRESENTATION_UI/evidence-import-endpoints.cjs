@@ -145,6 +145,24 @@ function verifyStaticEvidence(body){
   if(normalized.manifest.providedCaptureViews)assert(JSON.stringify(normalized.manifest.providedCaptureViews)==='["TOP","FRONT","SIDE"]',"PROVIDED_VIEW_SET_INVALID");
   if(normalized.manifest.completeThreeViewCapture!==undefined)assert(normalized.manifest.completeThreeViewCapture===true,"THREE_VIEW_COMPLETENESS_FALSE");
 
+  if(normalized.evidence.xaiHeatmapSha256){
+    assert(normalized.evidence.xaiProvenance==="MODEL_GENERATED_PATCHCORE_ANOMALY_MAP_VERIFIED","XAI_PROVENANCE_INVALID");
+    const xai=body.xaiHeatmap||normalized.raw.xaiHeatmap;
+    assert(xai,"XAI_EVIDENCE_BYTES_MISSING");
+    const asset=decodeImage(xai,"XAI");
+    assert(asset.sha256===normalized.evidence.xaiHeatmapSha256,"XAI_HEATMAP_HASH_MISMATCH");
+    assert(asset.size===Number(normalized.evidence.xaiHeatmapBytes),"XAI_HEATMAP_SIZE_MISMATCH");
+    assert(asset.name===normalized.evidence.xaiHeatmapFileName,"XAI_HEATMAP_NAME_MISMATCH");
+    assert(normalized.inferenceReport?.xai_generated_from_model===true,"XAI_MODEL_PROVENANCE_MISSING");
+    assert(normalized.inferenceReport?.xai_heatmap_sha256===asset.sha256,"XAI_INFERENCE_HASH_MISMATCH");
+    assert(normalized.inferenceReport?.xai_method===normalized.evidence.xaiMethod,"XAI_METHOD_MISMATCH");
+    assert(normalized.inferenceReport?.xai_map_sha256===normalized.evidence.xaiRawMapSha256,"XAI_MAP_HASH_MISMATCH");
+    assert(normalized.inferenceReport?.xai_source_top_sha256===images.TOP.sha256,"XAI_SOURCE_IMAGE_MISMATCH");
+    assert(normalized.evidence.xaiSourceTopSha256===images.TOP.sha256,"XAI_EVIDENCE_TOP_MISMATCH");
+    assert(String(normalized.inferenceReport?.xai_score_scaled)===String(normalized.evidence.scoreScaled),"XAI_SCORE_MISMATCH");
+  }else{
+    assert(!normalized.raw.xaiHeatmap && !body.xaiHeatmap,"XAI_UNCOMMITTED_FILE_PRESENT");
+  }
   const manifestHash=hashObject(normalized.manifest);
   const evidenceHash=hashObject(normalized.evidence);
   assert(eq(manifestHash,normalized.manifestHash),"SPECIMEN_MANIFEST_HASH_MISMATCH");
@@ -207,7 +225,7 @@ function verifySignatureLocally(staticResult,nowUnix){
   return {status:usableNow?"VALID_NOW":"VALID_BUT_EXPIRED",present:true,valid:true,recoveredSigner:getAddress(recovered),digest,usableNow,issuedAt:issued,validUntil};
 }
 
-async function readOnchain(ctx,staticResult){
+async function readOnchain(ctx,staticResult,allowUnsignedDraftMismatch=false){
   const {tradeId,role,evidenceHash,manifestHash,normalized}=staticResult;
   try{
     const [net,block,terms,state,deadline,inspection]=await Promise.all([
@@ -228,8 +246,8 @@ async function readOnchain(ctx,staticResult){
     const submitted=Number(inspection.submittedAt)!==0;
     const evidenceMatches=submitted&&eq(inspection.evidencePackageHash,evidenceHash);
     const manifestMatches=submitted&&eq(inspection.specimenManifestHash,manifestHash);
-    if(submitted)assert(evidenceMatches,"ONCHAIN_EVIDENCE_HASH_MISMATCH");
-    if(submitted)assert(manifestMatches,"ONCHAIN_MANIFEST_HASH_MISMATCH");
+    if(submitted&&!allowUnsignedDraftMismatch)assert(evidenceMatches,"ONCHAIN_EVIDENCE_HASH_MISMATCH");
+    if(submitted&&!allowUnsignedDraftMismatch)assert(manifestMatches,"ONCHAIN_MANIFEST_HASH_MISMATCH");
     if(submitted)assert(Number(inspection.attempt)===Number(normalized.message.attempt),"ONCHAIN_ATTEMPT_MISMATCH");
     if(submitted)assert(eq(inspection.station,normalized.message.station),"ONCHAIN_STATION_MISMATCH");
     return {source:Number(net.chainId)===11155111?"LIVE_SEPOLIA_READ_ONLY":"LOCAL_ANVIL_READ_ONLY",exists:true,chainId:Number(net.chainId),blockNumber:block.number,blockTimestamp:Number(block.timestamp),state:Number(state),stateName:STATE_NAMES[Number(state)]||"UNKNOWN",deadline:Number(deadline),submitted,evidenceMatches,manifestMatches,outcome:Number(inspection.outcome),scoreScaled:String(inspection.aggregateScoreScaled),station:inspection.station,attempt:Number(inspection.attempt)};
@@ -244,7 +262,12 @@ async function readOnchain(ctx,staticResult){
 
 async function validateEvidencePayload(ctx,body){
   const staticResult=verifyStaticEvidence(body);
-  const onchain=await readOnchain(ctx,staticResult);
+  // Only an unsigned, self-contained inspection bundle can be previewed as an
+  // offchain draft. The standard external/onchain verification remains strict.
+  const isDraft=body?.verificationMode==="OFFCHAIN_DRAFT" &&
+      staticResult.normalized.format==="MODEL_B_BROWSER_EVIDENCE_V1" &&
+      !staticResult.normalized.signature && staticResult.normalized.declaredTransactions===0;
+  const onchain=await readOnchain(ctx,staticResult,isDraft);
   const nowUnix=onchain.blockTimestamp||Math.floor(Date.now()/1000);
   const signature=verifySignatureLocally(staticResult,nowUnix);
   if(signature.present&&signature.digest){
@@ -257,12 +280,15 @@ async function validateEvidencePayload(ctx,body){
   const replayEligible=Boolean(onchain.submitted&&onchain.evidenceMatches&&onchain.manifestMatches);
   const level=replayEligible&&signature.valid?"FULL_VERIFICATION":replayEligible||signature.valid?"PARTIAL_VERIFICATION":"PARTIAL_VERIFICATION";
   const limitations=[];
+  if(isDraft&&onchain.submitted&&!onchain.evidenceMatches)
+    limitations.push("A DIFFERENT inspection is already recorded on-chain for this role. Draft evidence integrity is verified OFFCHAIN ONLY; it is NOT an on-chain match or eligible for transaction submission in the current trade state.");
   if(!signature.present)limitations.push("Station signature bytes are not included in this bundle; on-chain acceptance is checked separately.");
   if(!onchain.exists)limitations.push("Trade does not currently exist on the configured chain.");
   else if(!onchain.submitted)limitations.push("Evidence hash has not been submitted for this role on the configured chain.");
   limitations.push("Image hashes do not prove physical specimen identity or custody.");
   return {
     ok:true,verificationLevel:level,replayInputStatus:replayEligible?"REPLAY_INPUT_ELIGIBLE":"REPLAY_INPUT_BLOCKED",
+    offchainDraftVerification:isDraft,existingOnchainEvidenceDiffers:Boolean(isDraft&&onchain.submitted&&!onchain.evidenceMatches),
     verifiedAt:new Date().toISOString(),format:staticResult.normalized.format,
     tradeId:staticResult.tradeId,role:staticResult.role,roleName:staticResult.roleName,
     station:getAddress(staticResult.normalized.message.station),operatorSpecimenLabel:staticResult.normalized.manifest.operatorSpecimenLabel||staticResult.normalized.manifest.operatorLabel||"UNSPECIFIED",

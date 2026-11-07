@@ -152,6 +152,27 @@ async def inspect(
             "thresholdScaled": THRESHOLD_SCALED, "decision": decision,
             "completeThreeViewCapture": complete, "bundle": bundle}
 
+@app.post("/api/cloud/xai")
+async def xai(
+    top: UploadFile = File(...),
+    expected_top_sha256: str = Form(...),
+    x_demo_token: str | None = Header(default=None),
+):
+    """Returns a model-derived visualization (never a user-supplied heatmap)."""
+    require_token(x_demo_token)
+    image = await validate_image(top, "TOP")
+    if not hmac.compare_digest(image["sha256"], expected_top_sha256.lower()):
+        raise HTTPException(400, "TOP_SHA256_MISMATCH")
+    from cloud_xai import calculate_xai
+    try:
+        result = await run_in_threadpool(calculate_xai, image["data"])
+    except Exception as exc:
+        raise HTTPException(503, "XAI_MODEL_GENERATION_UNAVAILABLE:" + type(exc).__name__) from exc
+    if result["source_image_sha256"] != image["sha256"]:
+        raise HTTPException(500, "XAI_INPUT_BINDING_FAILED")
+    return {"ok": True, **result}
+
+
 @app.post("/api/cloud/verify")
 async def verify(bundle: dict, x_demo_token: str | None = Header(default=None)):
     require_token(x_demo_token)
